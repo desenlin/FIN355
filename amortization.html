@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 351 tool for exploring how principal and interest shares change over the life of a fixed-rate amortizing loan.">
+  <title>How Amortization Changes a Loan Payment | FIN 351</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c95f00;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --principal: #f58220;
+      --interest: #29547c;
+      --white: #ffffff;
+      --success: #16745b;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+
+    button:focus-visible,
+    input:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid rgba(245, 130, 32, 0.45);
+      outline-offset: 2px;
+    }
+
+    .topbar {
+      height: 8px;
+      background: var(--orange);
+    }
+
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 92% 15%, rgba(245, 130, 32, 0.20), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+
+    .hero-inner,
+    main,
+    footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero-inner { padding: 42px 0 46px; }
+
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 830px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4.6vw, 3.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+
+    .hero p {
+      max-width: 780px;
+      margin-bottom: 0;
+      color: #e4edf6;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    main {
+      display: grid;
+      gap: 22px;
+      padding: 28px 0 46px;
+    }
+
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(0, 39, 76, 0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-body { padding: 24px; }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 4px;
+      color: var(--navy);
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-size: 0.9rem;
+      font-weight: 750;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-prefix,
+    .input-suffix {
+      position: absolute;
+      top: 50%;
+      color: var(--muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .input-prefix { left: 13px; }
+    .input-suffix { right: 13px; }
+
+    input[type="number"] {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 38px 10px 13px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 9px;
+      font-size: 1rem;
+      font-weight: 650;
+    }
+
+    .has-prefix input { padding-left: 30px; }
+
+    input[type="number"]:hover { border-color: var(--navy-2); }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 17px;
+    }
+
+    .preset,
+    .view-button,
+    .action-button {
+      min-height: 38px;
+      padding: 8px 13px;
+      color: var(--navy);
+      background: var(--soft);
+      border: 1px solid #c9d2df;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 750;
+    }
+
+    .preset:hover,
+    .view-button:hover,
+    .action-button:hover { background: #e6edf5; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 20px 22px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      font-size: clamp(1.22rem, 2.4vw, 1.72rem);
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .insight-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 18px 22px;
+      background: #f8fafc;
+    }
+
+    .insight {
+      padding: 13px 14px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--orange);
+      border-radius: 9px;
+    }
+
+    .insight strong {
+      display: block;
+      color: var(--navy);
+      font-size: 0.92rem;
+    }
+
+    .insight span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .chart-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .legend-item { display: inline-flex; align-items: center; gap: 7px; }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .button-group {
+      display: inline-flex;
+      padding: 3px;
+      background: var(--soft);
+      border-radius: 10px;
+    }
+
+    .view-button {
+      min-height: 34px;
+      background: transparent;
+      border: 0;
+    }
+
+    .view-button.active {
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .chart-wrap {
+      position: relative;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    #amortizationChart {
+      display: block;
+      width: 100%;
+      min-width: 680px;
+      height: auto;
+      background: linear-gradient(#fff, #fcfdff);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .chart-note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .year-explorer {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.6fr);
+      gap: 24px;
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .year-control label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    #yearLabel {
+      color: var(--orange-dark);
+      font-size: 1.12rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--orange);
+      cursor: pointer;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .composition {
+      margin-top: 20px;
+    }
+
+    .composition-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+      font-size: 0.83rem;
+      font-weight: 800;
+    }
+
+    .principal-text { color: var(--orange-dark); }
+    .interest-text { color: var(--interest); }
+
+    .composition-bar {
+      display: flex;
+      height: 18px;
+      overflow: hidden;
+      background: #dfe6ef;
+      border-radius: 999px;
+    }
+
+    #principalBar,
+    #interestBar { transition: width 220ms ease; }
+    #principalBar { background: var(--principal); }
+    #interestBar { background: var(--interest); }
+
+    .year-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .year-stat {
+      padding: 13px;
+      background: var(--soft);
+      border-radius: 9px;
+    }
+
+    .year-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 750;
+    }
+
+    .year-stat strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .concept {
+      padding: 18px;
+      background: var(--soft);
+      border-top: 4px solid var(--orange);
+      border-radius: 10px;
+    }
+
+    .concept-number {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 10px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: 50%;
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
+    .concept h3 {
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .concept p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .formula-box {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 17px 18px;
+      color: #eaf1f8;
+      background: var(--navy);
+      border-radius: 10px;
+    }
+
+    .formula {
+      padding: 10px 14px;
+      color: var(--navy);
+      background: var(--white);
+      border-radius: 7px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.05rem;
+      white-space: nowrap;
+    }
+
+    .formula-box p { margin: 0; font-size: 0.88rem; }
+
+    .table-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .action-button.primary {
+      color: var(--white);
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .action-button.primary:hover { background: var(--navy-2); }
+
+    .table-wrap {
+      max-height: 520px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+      padding: 11px 13px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: var(--white);
+      background: var(--navy);
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    th:first-child,
+    td:first-child { text-align: center; }
+
+    tbody tr:nth-child(even) { background: #f8fafc; }
+    tbody tr:hover { background: #fff3e8; }
+
+    tbody tr.selected-row {
+      background: #ffead7;
+      box-shadow: inset 4px 0 var(--orange);
+    }
+
+    .table-caption {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .disclaimer {
+      padding: 16px 20px;
+      color: #425066;
+      background: #fff9f3;
+      border: 1px solid #f4cfad;
+      border-radius: 10px;
+      font-size: 0.84rem;
+    }
+
+    footer {
+      padding: 0 0 34px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 860px) {
+      .controls,
+      .concept-grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+      .insight-strip { grid-template-columns: 1fr; }
+      .year-explorer { grid-template-columns: 1fr; }
+      .formula-box { grid-template-columns: 1fr; }
+      .formula { white-space: normal; text-align: center; }
+    }
+
+    @media (max-width: 560px) {
+      .hero-inner { padding: 30px 0 34px; }
+      .card-body { padding: 18px; }
+      .section-heading { display: block; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:nth-child(2) { border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      .year-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chart-toolbar { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media print {
+      body { background: white; }
+      .card { box-shadow: none; break-inside: avoid; }
+      .presets, .table-actions, .view-button { display: none; }
+      .table-wrap { max-height: none; overflow: visible; }
+      #amortizationChart { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="course-tag">FIN 351 · Real Estate Principles</div>
+      <h1>How amortization changes a loan payment</h1>
+      <p>
+        A level-payment loan can have the same monthly payment every month while the
+        share going to principal rises—and the share going to interest falls—over time.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="loanInputsTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="loanInputsTitle">1. Set the loan assumptions</h2>
+            <p>Change any input and the entire amortization schedule updates immediately.</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="field">
+            <label for="loanAmount">Original loan amount</label>
+            <div class="input-wrap has-prefix">
+              <span class="input-prefix" aria-hidden="true">$</span>
+              <input id="loanAmount" type="number" value="400000" min="1000" max="100000000" step="1000" inputmode="decimal">
+            </div>
+          </div>
+          <div class="field">
+            <label for="annualRate">Annual interest rate</label>
+            <div class="input-wrap">
+              <input id="annualRate" type="number" value="6.5" min="0" max="30" step="0.01" inputmode="decimal">
+              <span class="input-suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="loanTerm">Loan term</label>
+            <div class="input-wrap">
+              <input id="loanTerm" type="number" value="30" min="1" max="50" step="1" inputmode="numeric">
+              <span class="input-suffix" aria-hidden="true">years</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="presets" aria-label="Example loan presets">
+          <button class="preset" type="button" data-amount="400000" data-rate="6.5" data-term="30">30-year mortgage</button>
+          <button class="preset" type="button" data-amount="400000" data-rate="6" data-term="15">15-year mortgage</button>
+          <button class="preset" type="button" data-amount="300000" data-rate="4" data-term="30">Lower-rate example</button>
+        </div>
+      </div>
+
+      <div class="metrics" aria-live="polite">
+        <div class="metric">
+          <span class="metric-label">Monthly P&amp;I payment</span>
+          <strong class="metric-value" id="monthlyPayment">—</strong>
+          <span class="metric-note">Constant scheduled payment</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Total of payments</span>
+          <strong class="metric-value" id="totalPayments">—</strong>
+          <span class="metric-note">Principal + interest</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Total interest</span>
+          <strong class="metric-value" id="totalInterest">—</strong>
+          <span class="metric-note">Cost of borrowing over the term</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Interest / original loan</span>
+          <strong class="metric-value" id="interestRatio">—</strong>
+          <span class="metric-note">A term-sensitive cost measure</span>
+        </div>
+      </div>
+
+      <div class="insight-strip" aria-live="polite">
+        <div class="insight">
+          <strong>Principal share in Year 1</strong>
+          <span id="firstYearShare">—</span>
+        </div>
+        <div class="insight">
+          <strong>Principal share in final year</strong>
+          <span id="lastYearShare">—</span>
+        </div>
+        <div class="insight">
+          <strong>Principal becomes the majority</strong>
+          <span id="crossoverYear">—</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="chartTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="chartTitle">2. Watch the payment composition change</h2>
+            <p>Each stacked bar is one loan year. Select a bar or move the year slider.</p>
+          </div>
+        </div>
+
+        <div class="chart-toolbar">
+          <div class="legend" aria-label="Chart legend">
+            <span class="legend-item"><span class="swatch" style="background: var(--principal)"></span>Principal</span>
+            <span class="legend-item"><span class="swatch" style="background: var(--interest)"></span>Interest</span>
+          </div>
+          <div class="button-group" role="group" aria-label="Chart display">
+            <button id="shareView" class="view-button active" type="button" aria-pressed="true">Share of payment</button>
+            <button id="dollarView" class="view-button" type="button" aria-pressed="false">Dollar amount</button>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <svg id="amortizationChart" viewBox="0 0 1000 430" role="img" aria-labelledby="svgTitle svgDescription">
+            <title id="svgTitle">Annual loan payment composition</title>
+            <desc id="svgDescription">Stacked bars show the principal and interest components of payments in each year of the selected loan.</desc>
+          </svg>
+        </div>
+        <p class="chart-note">Tip: compare the orange area near the beginning and end of the loan.</p>
+
+        <div class="year-explorer">
+          <div class="year-control">
+            <label for="yearSlider">
+              Explore one year
+              <span id="yearLabel">Year 1</span>
+            </label>
+            <input id="yearSlider" type="range" min="1" max="30" value="1" step="1">
+            <div class="range-labels"><span>Beginning</span><span>End</span></div>
+
+            <div class="composition" aria-label="Selected year's payment composition">
+              <div class="composition-labels">
+                <span class="principal-text" id="principalShareLabel">Principal —</span>
+                <span class="interest-text" id="interestShareLabel">Interest —</span>
+              </div>
+              <div class="composition-bar" aria-hidden="true">
+                <div id="principalBar"></div>
+                <div id="interestBar"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="year-stats" aria-live="polite">
+            <div class="year-stat"><span>Beginning balance</span><strong id="yearBeginning">—</strong></div>
+            <div class="year-stat"><span>Payments during year</span><strong id="yearPayment">—</strong></div>
+            <div class="year-stat"><span>Principal paid</span><strong id="yearPrincipal">—</strong></div>
+            <div class="year-stat"><span>Interest paid</span><strong id="yearInterest">—</strong></div>
+            <div class="year-stat"><span>Ending balance</span><strong id="yearEnding">—</strong></div>
+            <div class="year-stat"><span>Balance repaid</span><strong id="balanceRepaid">—</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="conceptTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="conceptTitle">3. Why the shares change</h2>
+            <p>The mechanism follows directly from how interest is calculated.</p>
+          </div>
+        </div>
+
+        <div class="concept-grid">
+          <article class="concept">
+            <span class="concept-number">1</span>
+            <h3>Interest comes first</h3>
+            <p>Each month’s interest equals the monthly rate multiplied by the unpaid balance at the start of that month.</p>
+          </article>
+          <article class="concept">
+            <span class="concept-number">2</span>
+            <h3>Principal is the remainder</h3>
+            <p>After interest is covered, the rest of the fixed payment reduces the loan balance.</p>
+          </article>
+          <article class="concept">
+            <span class="concept-number">3</span>
+            <h3>The process accelerates</h3>
+            <p>A smaller balance produces less interest next month, leaving more of the same payment for principal.</p>
+          </article>
+        </div>
+
+        <div class="formula-box">
+          <div class="formula" aria-label="Payment equals principal times r times one plus r to the n, divided by one plus r to the n minus one">
+            Payment = P × r(1 + r)<sup>n</sup> ÷ [(1 + r)<sup>n</sup> − 1]
+          </div>
+          <p>
+            Here, <strong>P</strong> is the original principal, <strong>r</strong> is the monthly interest rate,
+            and <strong>n</strong> is the number of monthly payments. At a zero interest rate, payment equals P ÷ n.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="scheduleTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="scheduleTitle">4. Annual amortization schedule</h2>
+            <p>Monthly calculations are aggregated into loan years for a clearer comparison.</p>
+          </div>
+          <div class="table-actions">
+            <button id="downloadCsv" class="action-button primary" type="button">Download CSV</button>
+            <button id="printPage" class="action-button" type="button">Print</button>
+          </div>
+        </div>
+
+        <div class="table-wrap" tabindex="0" aria-label="Scrollable annual amortization schedule">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Year</th>
+                <th scope="col">Beginning balance</th>
+                <th scope="col">Total payment</th>
+                <th scope="col">Principal</th>
+                <th scope="col">Interest</th>
+                <th scope="col">Principal share</th>
+                <th scope="col">Ending balance</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+          </table>
+        </div>
+        <p class="table-caption">Small differences may occur because displayed amounts are rounded to cents.</p>
+      </div>
+    </section>
+
+    <aside class="disclaimer">
+      <strong>Scope:</strong> This teaching tool models a fully amortizing, fixed-rate loan with monthly payments.
+      It excludes taxes, insurance, mortgage insurance, fees, adjustable rates, and prepayments. Results are
+      educational estimates, not a loan quote.
+    </aside>
+  </main>
+
+  <footer>FIN 351 · Real Estate Principles · Interactive learning tool</footer>
+
+  <div id="liveMessage" class="sr-only" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const COLORS = {
+        navy: "#00274c",
+        principal: "#f58220",
+        interest: "#29547c",
+        grid: "#d8dee9",
+        muted: "#5c677d",
+        selected: "#101828"
+      };
+
+      const state = {
+        schedule: [],
+        monthlyPayment: 0,
+        originalPrincipal: 0,
+        selectedYear: 1,
+        chartMode: "share"
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const money0 = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      });
+      const money2 = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      const percent1 = new Intl.NumberFormat("en-US", {
+        style: "percent",
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      });
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function sanitizeInputs() {
+        const amount = clamp(Number($("loanAmount").value) || 400000, 1000, 100000000);
+        const rate = clamp(Number($("annualRate").value) || 0, 0, 30);
+        const term = clamp(Math.round(Number($("loanTerm").value) || 30), 1, 50);
+        return { amount, rate, term };
+      }
+
+      function calculateSchedule(amount, annualRate, years) {
+        const months = years * 12;
+        const monthlyRate = annualRate / 100 / 12;
+        const payment = monthlyRate === 0
+          ? amount / months
+          : amount * monthlyRate * Math.pow(1 + monthlyRate, months)
+            / (Math.pow(1 + monthlyRate, months) - 1);
+
+        const annual = [];
+        let balance = amount;
+
+        for (let year = 1; year <= years; year += 1) {
+          const beginningBalance = balance;
+          let annualPayment = 0;
+          let annualPrincipal = 0;
+          let annualInterest = 0;
+
+          for (let month = 1; month <= 12; month += 1) {
+            const interest = monthlyRate === 0 ? 0 : balance * monthlyRate;
+            let principal = payment - interest;
+            let actualPayment = payment;
+
+            if (principal > balance || (year === years && month === 12)) {
+              principal = balance;
+              actualPayment = principal + interest;
+            }
+
+            balance = Math.max(0, balance - principal);
+            annualPayment += actualPayment;
+            annualPrincipal += principal;
+            annualInterest += interest;
+          }
+
+          annual.push({
+            year,
+            beginningBalance,
+            payment: annualPayment,
+            principal: annualPrincipal,
+            interest: annualInterest,
+            principalShare: annualPayment === 0 ? 0 : annualPrincipal / annualPayment,
+            endingBalance: balance
+          });
+        }
+
+        return { payment, annual };
+      }
+
+      function updateAll() {
+        const { amount, rate, term } = sanitizeInputs();
+        const result = calculateSchedule(amount, rate, term);
+
+        state.originalPrincipal = amount;
+        state.monthlyPayment = result.payment;
+        state.schedule = result.annual;
+        state.selectedYear = clamp(state.selectedYear, 1, term);
+
+        $("yearSlider").max = String(term);
+        $("yearSlider").value = String(state.selectedYear);
+
+        updateSummary();
+        renderChart();
+        renderTable();
+        updateSelectedYear(false);
+      }
+
+      function updateSummary() {
+        const totalPaid = state.schedule.reduce((sum, row) => sum + row.payment, 0);
+        const totalInterest = state.schedule.reduce((sum, row) => sum + row.interest, 0);
+        const first = state.schedule[0];
+        const last = state.schedule[state.schedule.length - 1];
+        const crossover = state.schedule.find((row) => row.principalShare >= 0.5);
+
+        $("monthlyPayment").textContent = money2.format(state.monthlyPayment);
+        $("totalPayments").textContent = money0.format(totalPaid);
+        $("totalInterest").textContent = money0.format(totalInterest);
+        $("interestRatio").textContent = percent1.format(totalInterest / state.originalPrincipal);
+        $("firstYearShare").textContent = `${percent1.format(first.principalShare)} of payments reduce principal`;
+        $("lastYearShare").textContent = `${percent1.format(last.principalShare)} of payments reduce principal`;
+        $("crossoverYear").textContent = crossover
+          ? `Year ${crossover.year} (${percent1.format(crossover.principalShare)} principal)`
+          : "Not reached during this term";
+      }
+
+      function svgElement(name, attributes = {}) {
+        const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+        Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
+        return element;
+      }
+
+      function addSvgText(svg, text, x, y, attributes = {}) {
+        const node = svgElement("text", { x, y, ...attributes });
+        node.textContent = text;
+        svg.appendChild(node);
+        return node;
+      }
+
+      function niceCeiling(value) {
+        if (value <= 0) return 1;
+        const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+        const normalized = value / magnitude;
+        const nice = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+        return nice * magnitude;
+      }
+
+      function renderChart() {
+        const svg = $("amortizationChart");
+        while (svg.lastChild) svg.removeChild(svg.lastChild);
+
+        const title = svgElement("title", { id: "svgTitle" });
+        title.textContent = state.chartMode === "share"
+          ? "Principal and interest shares of annual payments"
+          : "Principal and interest dollar amounts by year";
+        svg.appendChild(title);
+
+        const desc = svgElement("desc", { id: "svgDescription" });
+        desc.textContent = "Select a bar to inspect that loan year. Principal rises and interest falls over time.";
+        svg.appendChild(desc);
+
+        const width = 1000;
+        const height = 430;
+        const margin = { top: 32, right: 24, bottom: 58, left: 78 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        const data = state.schedule;
+        const maxValue = state.chartMode === "share"
+          ? 1
+          : niceCeiling(Math.max(...data.map((row) => row.payment)));
+
+        for (let tick = 0; tick <= 4; tick += 1) {
+          const fraction = tick / 4;
+          const y = margin.top + innerHeight * (1 - fraction);
+          svg.appendChild(svgElement("line", {
+            x1: margin.left,
+            y1: y,
+            x2: width - margin.right,
+            y2: y,
+            stroke: COLORS.grid,
+            "stroke-width": 1
+          }));
+          const label = state.chartMode === "share"
+            ? `${Math.round(fraction * 100)}%`
+            : compactMoney(maxValue * fraction);
+          addSvgText(svg, label, margin.left - 12, y + 4, {
+            "text-anchor": "end",
+            fill: COLORS.muted,
+            "font-size": 13
+          });
+        }
+
+        addSvgText(svg,
+          state.chartMode === "share" ? "Share of annual payments" : "Annual payment amount",
+          19,
+          margin.top + innerHeight / 2,
+          {
+            fill: COLORS.muted,
+            "font-size": 13,
+            "font-weight": 700,
+            transform: `rotate(-90 19 ${margin.top + innerHeight / 2})`,
+            "text-anchor": "middle"
+          }
+        );
+
+        const slot = innerWidth / data.length;
+        const gap = Math.min(5, slot * 0.22);
+        const barWidth = Math.max(3, slot - gap);
+        const labelEvery = data.length <= 15 ? 1 : data.length <= 30 ? 5 : 10;
+
+        data.forEach((row, index) => {
+          const x = margin.left + index * slot + (slot - barWidth) / 2;
+          const principalValue = state.chartMode === "share" ? row.principalShare : row.principal;
+          const interestValue = state.chartMode === "share" ? 1 - row.principalShare : row.interest;
+          const principalHeight = innerHeight * principalValue / maxValue;
+          const interestHeight = innerHeight * interestValue / maxValue;
+          const principalY = margin.top + innerHeight - principalHeight;
+          const interestY = principalY - interestHeight;
+
+          const group = svgElement("g", {
+            tabindex: 0,
+            role: "button",
+            "aria-label": `Year ${row.year}: ${percent1.format(row.principalShare)} principal, ${percent1.format(1 - row.principalShare)} interest`,
+            "data-year": row.year,
+            style: "cursor:pointer"
+          });
+
+          const tooltip = svgElement("title");
+          tooltip.textContent = `Year ${row.year} — Principal ${money2.format(row.principal)} (${percent1.format(row.principalShare)}); Interest ${money2.format(row.interest)} (${percent1.format(1 - row.principalShare)})`;
+          group.appendChild(tooltip);
+
+          group.appendChild(svgElement("rect", {
+            x,
+            y: principalY,
+            width: barWidth,
+            height: Math.max(0, principalHeight),
+            fill: COLORS.principal
+          }));
+          group.appendChild(svgElement("rect", {
+            x,
+            y: interestY,
+            width: barWidth,
+            height: Math.max(0, interestHeight),
+            fill: COLORS.interest
+          }));
+
+          if (row.year === state.selectedYear) {
+            group.appendChild(svgElement("rect", {
+              x: x - 2,
+              y: margin.top - 2,
+              width: barWidth + 4,
+              height: innerHeight + 4,
+              fill: "none",
+              stroke: COLORS.selected,
+              "stroke-width": 3,
+              rx: 2
+            }));
+          }
+
+          group.addEventListener("click", () => selectYear(row.year));
+          group.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selectYear(row.year);
+            }
+          });
+          svg.appendChild(group);
+
+          if (row.year === 1 || row.year === data.length || row.year % labelEvery === 0) {
+            addSvgText(svg, String(row.year), x + barWidth / 2, height - 31, {
+              "text-anchor": "middle",
+              fill: COLORS.muted,
+              "font-size": 12
+            });
+          }
+        });
+
+        addSvgText(svg, "Loan year", margin.left + innerWidth / 2, height - 7, {
+          "text-anchor": "middle",
+          fill: COLORS.muted,
+          "font-size": 13,
+          "font-weight": 700
+        });
+      }
+
+      function compactMoney(value) {
+        if (value >= 1000000) return `$${(value / 1000000).toFixed(value >= 10000000 ? 0 : 1)}M`;
+        if (value >= 1000) return `$${Math.round(value / 1000)}k`;
+        return `$${Math.round(value)}`;
+      }
+
+      function renderTable() {
+        const body = $("scheduleBody");
+        body.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+
+        state.schedule.forEach((row) => {
+          const tr = document.createElement("tr");
+          tr.dataset.year = String(row.year);
+          if (row.year === state.selectedYear) tr.classList.add("selected-row");
+
+          const values = [
+            row.year,
+            money2.format(row.beginningBalance),
+            money2.format(row.payment),
+            money2.format(row.principal),
+            money2.format(row.interest),
+            percent1.format(row.principalShare),
+            money2.format(row.endingBalance)
+          ];
+
+          values.forEach((value) => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            tr.appendChild(td);
+          });
+
+          tr.addEventListener("click", () => selectYear(row.year));
+          fragment.appendChild(tr);
+        });
+
+        body.appendChild(fragment);
+      }
+
+      function selectYear(year, announce = true) {
+        state.selectedYear = clamp(Number(year), 1, state.schedule.length);
+        $("yearSlider").value = String(state.selectedYear);
+        updateSelectedYear(announce);
+        renderChart();
+
+        document.querySelectorAll("#scheduleBody tr").forEach((row) => {
+          row.classList.toggle("selected-row", Number(row.dataset.year) === state.selectedYear);
+        });
+      }
+
+      function updateSelectedYear(announce) {
+        const row = state.schedule[state.selectedYear - 1];
+        if (!row) return;
+
+        const interestShare = 1 - row.principalShare;
+        $("yearLabel").textContent = `Year ${row.year}`;
+        $("principalShareLabel").textContent = `Principal ${percent1.format(row.principalShare)}`;
+        $("interestShareLabel").textContent = `Interest ${percent1.format(interestShare)}`;
+        $("principalBar").style.width = `${row.principalShare * 100}%`;
+        $("interestBar").style.width = `${interestShare * 100}%`;
+        $("yearBeginning").textContent = money2.format(row.beginningBalance);
+        $("yearPayment").textContent = money2.format(row.payment);
+        $("yearPrincipal").textContent = money2.format(row.principal);
+        $("yearInterest").textContent = money2.format(row.interest);
+        $("yearEnding").textContent = money2.format(row.endingBalance);
+        $("balanceRepaid").textContent = percent1.format(1 - row.endingBalance / state.originalPrincipal);
+
+        if (announce) {
+          $("liveMessage").textContent = `Year ${row.year}: ${percent1.format(row.principalShare)} of payments go to principal.`;
+        }
+      }
+
+      function setChartMode(mode) {
+        state.chartMode = mode;
+        const shareActive = mode === "share";
+        $("shareView").classList.toggle("active", shareActive);
+        $("shareView").setAttribute("aria-pressed", String(shareActive));
+        $("dollarView").classList.toggle("active", !shareActive);
+        $("dollarView").setAttribute("aria-pressed", String(!shareActive));
+        renderChart();
+      }
+
+      function downloadCsv() {
+        const header = [
+          "Year",
+          "Beginning Balance",
+          "Total Payment",
+          "Principal",
+          "Interest",
+          "Principal Share",
+          "Ending Balance"
+        ];
+        const rows = state.schedule.map((row) => [
+          row.year,
+          row.beginningBalance.toFixed(2),
+          row.payment.toFixed(2),
+          row.principal.toFixed(2),
+          row.interest.toFixed(2),
+          (row.principalShare * 100).toFixed(2) + "%",
+          row.endingBalance.toFixed(2)
+        ]);
+        const csv = [header, ...rows]
+          .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
+          .join("\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "annual-amortization-schedule.csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      ["loanAmount", "annualRate", "loanTerm"].forEach((id) => {
+        $(id).addEventListener("input", updateAll);
+        $(id).addEventListener("change", () => {
+          const { amount, rate, term } = sanitizeInputs();
+          $("loanAmount").value = String(amount);
+          $("annualRate").value = String(rate);
+          $("loanTerm").value = String(term);
+          updateAll();
+        });
+      });
+
+      document.querySelectorAll(".preset").forEach((button) => {
+        button.addEventListener("click", () => {
+          $("loanAmount").value = button.dataset.amount;
+          $("annualRate").value = button.dataset.rate;
+          $("loanTerm").value = button.dataset.term;
+          state.selectedYear = 1;
+          updateAll();
+        });
+      });
+
+      $("yearSlider").addEventListener("input", (event) => selectYear(event.target.value, false));
+      $("shareView").addEventListener("click", () => setChartMode("share"));
+      $("dollarView").addEventListener("click", () => setChartMode("dollar"));
+      $("downloadCsv").addEventListener("click", downloadCsv);
+      $("printPage").addEventListener("click", () => window.print());
+
+      updateAll();
+    })();
+  </script>
+</body>
+</html>
