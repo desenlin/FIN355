@@ -1,0 +1,1614 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 351 tool for understanding internal rate of return as a zero of the NPV equation and diagnosing multiple-IRR problems.">
+  <title>Internal Rate of Return as a Zero-NPV Solution | FIN 351</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --positive: #16745b;
+      --negative: #c44235;
+      --curve: #29547c;
+      --selected: #7a3fb0;
+      --warning: #a95d00;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+
+    button:focus-visible,
+    input:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid rgba(245, 130, 32, 0.45);
+      outline-offset: 2px;
+    }
+
+    .topbar { height: 8px; background: var(--orange); }
+
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+
+    .hero-inner,
+    main,
+    footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero-inner { padding: 42px 0 46px; }
+
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 880px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4.6vw, 3.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+
+    .hero p {
+      max-width: 820px;
+      margin-bottom: 0;
+      color: #e4edf6;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    main {
+      display: grid;
+      gap: 22px;
+      padding: 28px 0 46px;
+    }
+
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(0, 39, 76, 0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-body { padding: 24px; }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 4px;
+      color: var(--navy);
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .concept-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .formula-panel,
+    .meaning-panel {
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .formula-panel {
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .formula-panel .eyebrow,
+    .meaning-panel .eyebrow {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .formula-panel .eyebrow { color: #f7b77e; }
+    .meaning-panel .eyebrow { color: var(--orange-dark); }
+
+    .formula-main {
+      margin: 10px 0 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.15rem, 2.2vw, 1.58rem);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .formula-panel p,
+    .meaning-panel p { margin-bottom: 0; font-size: 0.9rem; }
+
+    .meaning-panel {
+      color: var(--ink);
+      background: #fff7ef;
+      border: 1px solid #f2c79f;
+    }
+
+    .meaning-panel strong { color: var(--navy); }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .preset,
+    .action-button,
+    .root-pill {
+      min-height: 38px;
+      padding: 8px 13px;
+      color: var(--navy);
+      background: var(--soft);
+      border: 1px solid #c9d2df;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 780;
+    }
+
+    .preset:hover,
+    .action-button:hover,
+    .root-pill:hover { background: #e6edf5; }
+
+    .preset.danger {
+      color: #8b2c23;
+      background: #fff1ef;
+      border-color: #e6aaa4;
+    }
+
+    .preset.danger:hover { background: #ffe5e1; }
+
+    .cashflow-editor {
+      display: grid;
+      grid-template-columns: minmax(310px, 0.72fr) minmax(0, 1.28fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .editor-panel {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .editor-header strong { font-size: 0.92rem; }
+
+    .editor-actions { display: flex; gap: 6px; }
+
+    .editor-actions button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      color: var(--navy);
+      background: var(--white);
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.08rem;
+      font-weight: 900;
+    }
+
+    .editor-actions button:disabled { cursor: not-allowed; opacity: 0.45; }
+
+    .cashflow-table-wrap { max-height: 360px; overflow: auto; }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: var(--navy);
+      background: #edf2f7;
+      font-size: 0.77rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    th:first-child,
+    td:first-child { width: 32%; text-align: center; }
+
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) { background: #fafbfd; }
+
+    .cash-input-wrap { position: relative; }
+
+    .cash-input-wrap span {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      color: var(--muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .cash-input {
+      width: 100%;
+      min-height: 38px;
+      padding: 7px 9px 7px 25px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 7px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .timeline-panel { min-width: 0; }
+
+    .panel-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .panel-label span {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 650;
+    }
+
+    .svg-scroll { overflow-x: auto; }
+
+    #cashFlowChart,
+    #npvChart {
+      display: block;
+      width: 100%;
+      min-width: 680px;
+      height: auto;
+      background: linear-gradient(#fff, #fcfdff);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .dynamic-equation {
+      margin-top: 12px;
+      padding: 13px 15px;
+      overflow-x: auto;
+      color: var(--navy);
+      background: var(--soft);
+      border-left: 4px solid var(--orange);
+      border-radius: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 22px -24px -24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 19px 21px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      font-size: clamp(1.12rem, 2vw, 1.55rem);
+      font-weight: 860;
+      line-height: 1.22;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .chart-controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 17px;
+      padding: 15px;
+      background: var(--soft);
+      border-radius: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--navy);
+      font-size: 0.82rem;
+      font-weight: 780;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap input[type="number"] {
+      width: 100%;
+      min-height: 42px;
+      padding: 8px 32px 8px 10px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 8px;
+      font-weight: 680;
+    }
+
+    .input-suffix {
+      position: absolute;
+      top: 50%;
+      right: 11px;
+      color: var(--muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .required-return-slider {
+      grid-column: 1 / -1;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--selected);
+      cursor: pointer;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 720;
+    }
+
+    .legend-item { display: inline-flex; align-items: center; gap: 7px; }
+
+    .legend-line {
+      width: 20px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    .chart-tip {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .root-summary {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 14px 15px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .root-summary > strong { margin-right: 4px; color: var(--navy); }
+
+    .root-pill {
+      min-height: 34px;
+      padding: 6px 10px;
+      color: var(--white);
+      background: var(--orange-dark);
+      border-color: var(--orange-dark);
+    }
+
+    .root-pill:hover { background: #a64d00; }
+
+    .diagnostic {
+      margin-top: 15px;
+      padding: 15px 17px;
+      border-left: 5px solid var(--navy);
+      border-radius: 9px;
+    }
+
+    .diagnostic.success {
+      background: #edf8f4;
+      border-color: var(--positive);
+    }
+
+    .diagnostic.warning {
+      background: #fff8e9;
+      border-color: var(--warning);
+    }
+
+    .diagnostic.danger {
+      background: #fff0ee;
+      border-color: var(--negative);
+    }
+
+    .diagnostic h3 {
+      margin-bottom: 5px;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .diagnostic p { margin: 0; color: #425066; font-size: 0.9rem; }
+
+    .multiple-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 20px;
+      background: linear-gradient(135deg, #fff3e9, #fffaf5);
+      border: 1px solid #efc39c;
+      border-radius: 12px;
+    }
+
+    .multiple-hero h3 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 1.15rem;
+    }
+
+    .multiple-hero p { margin-bottom: 10px; color: #425066; font-size: 0.92rem; }
+
+    .example-equation {
+      padding: 16px;
+      color: var(--navy);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .example-equation strong { color: var(--negative); }
+
+    .action-button.primary {
+      color: var(--white);
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .action-button.primary:hover { background: var(--navy-2); }
+
+    .caution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .caution-card {
+      padding: 17px;
+      background: var(--soft);
+      border-top: 4px solid var(--orange);
+      border-radius: 10px;
+    }
+
+    .caution-card h3 {
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-size: 0.98rem;
+    }
+
+    .caution-card p { margin-bottom: 0; color: var(--muted); font-size: 0.88rem; }
+
+    .decision-rule {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 17px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: 10px;
+    }
+
+    .decision-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 50%;
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .decision-rule p { margin: 0; font-size: 0.9rem; }
+
+    .limitations {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .limitation {
+      padding: 14px 15px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+    }
+
+    .limitation strong { display: block; margin-bottom: 3px; color: var(--navy); }
+    .limitation span { color: var(--muted); font-size: 0.86rem; }
+
+    .disclaimer {
+      padding: 16px 20px;
+      color: #425066;
+      background: #fff9f3;
+      border: 1px solid #f4cfad;
+      border-radius: 10px;
+      font-size: 0.84rem;
+    }
+
+    footer {
+      padding: 0 0 34px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 900px) {
+      .concept-intro,
+      .cashflow-editor,
+      .multiple-hero { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+      .caution-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 650px) {
+      .hero-inner { padding: 30px 0 34px; }
+      .card-body { padding: 18px; }
+      .section-heading { display: block; }
+      .chart-controls { grid-template-columns: 1fr; }
+      .required-return-slider { grid-column: auto; }
+      .metrics { grid-template-columns: 1fr; margin: 20px -18px -18px; }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      .limitations { grid-template-columns: 1fr; }
+      .decision-rule { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: var(--white); }
+      .card { box-shadow: none; break-inside: avoid; }
+      .presets, .editor-actions, .action-button, input[type="range"] { display: none; }
+      #cashFlowChart, #npvChart { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="course-tag">FIN 351 · Real Estate Principles</div>
+      <h1>Internal rate of return as a zero-NPV solution</h1>
+      <p>
+        IRR is not entered into the equation as a known input. It is the discount rate
+        that must be solved implicitly so that the present value of all cash flows equals zero.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="conceptTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="conceptTitle">1. The implicit equation</h2>
+            <p>An IRR exists only when at least one admissible discount rate makes NPV exactly zero.</p>
+          </div>
+        </div>
+
+        <div class="concept-intro">
+          <div class="formula-panel">
+            <span class="eyebrow">Definition</span>
+            <div class="formula-main">
+              0 = NPV(IRR) = CF<sub>0</sub> +
+              Σ<sub>t=1</sub><sup>T</sup>
+              CF<sub>t</sub> ÷ (1 + IRR)<sup>t</sup>
+            </div>
+            <p>
+              Because IRR appears inside every discount factor, the equation is generally
+              solved iteratively rather than by rearranging it with ordinary algebra.
+            </p>
+          </div>
+          <div class="meaning-panel">
+            <span class="eyebrow">Economic meaning</span>
+            <p>
+              At an IRR, the negative present value of investment outflows is exactly offset
+              by the positive present value of inflows. <strong>IRR is a break-even discount rate,</strong>
+              not necessarily the correct required return and not a complete measure of investment quality.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="cashFlowTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="cashFlowTitle">2. Build a cash-flow stream</h2>
+            <p>Use a course example or enter your own annual cash flows.</p>
+          </div>
+        </div>
+
+        <div class="presets" aria-label="Cash-flow examples">
+          <button class="preset" type="button" data-preset="anderson">Anderson Apartments · one IRR</button>
+          <button class="preset" type="button" data-preset="oberkircher">Oberkircher Building · one IRR</button>
+          <button class="preset danger" type="button" data-preset="multiple">Multiple-IRR example</button>
+          <button class="preset danger" type="button" data-preset="none">Nonconventional · no IRR</button>
+        </div>
+
+        <div class="cashflow-editor">
+          <div class="editor-panel">
+            <div class="editor-header">
+              <strong>Annual cash flows</strong>
+              <div class="editor-actions" aria-label="Change the number of years">
+                <button id="removeYear" type="button" title="Remove final year" aria-label="Remove final year">−</button>
+                <button id="addYear" type="button" title="Add another year" aria-label="Add another year">+</button>
+              </div>
+            </div>
+            <div class="cashflow-table-wrap">
+              <table>
+                <thead><tr><th scope="col">Time</th><th scope="col">Net cash flow</th></tr></thead>
+                <tbody id="cashFlowRows"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="timeline-panel">
+            <div class="panel-label">
+              <strong>Cash-flow timeline</strong>
+              <span>Inflows above zero; outflows below zero</span>
+            </div>
+            <div class="svg-scroll">
+              <svg id="cashFlowChart" viewBox="0 0 1000 280" role="img" aria-labelledby="cashSvgTitle cashSvgDesc">
+                <title id="cashSvgTitle">Cash-flow timeline</title>
+                <desc id="cashSvgDesc">Positive cash flows appear above the zero line and negative cash flows appear below it.</desc>
+              </svg>
+            </div>
+            <div id="dynamicEquation" class="dynamic-equation" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric">
+            <span class="metric-label">IRR solutions</span>
+            <strong class="metric-value" id="solutionCount">—</strong>
+            <span class="metric-note">Rates greater than −100%</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Solved rate(s)</span>
+            <strong class="metric-value" id="solutionValues">—</strong>
+            <span class="metric-note">Each makes NPV approximately zero</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Cash-flow sign changes</span>
+            <strong class="metric-value" id="signChanges">—</strong>
+            <span class="metric-note">An upper bound, not a guarantee</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">NPV at selected rate</span>
+            <strong class="metric-value" id="selectedNpv">—</strong>
+            <span class="metric-note" id="selectedRateNote">At a 10.0% discount rate</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="profileTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="profileTitle">3. Find IRR on the NPV profile</h2>
+            <p>An IRR is an x-intercept: a discount rate where the NPV curve meets the zero line.</p>
+          </div>
+        </div>
+
+        <div class="chart-controls">
+          <div class="field">
+            <label for="selectedRate">Selected discount rate</label>
+            <div class="input-wrap">
+              <input id="selectedRate" type="number" value="10" min="-95" max="1000" step="0.1" inputmode="decimal">
+              <span class="input-suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="chartMin">Chart minimum rate</label>
+            <div class="input-wrap">
+              <input id="chartMin" type="number" value="-20" min="-95" max="999" step="5" inputmode="decimal">
+              <span class="input-suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="chartMax">Chart maximum rate</label>
+            <div class="input-wrap">
+              <input id="chartMax" type="number" value="80" min="-94" max="1000" step="10" inputmode="decimal">
+              <span class="input-suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="required-return-slider">
+            <label class="sr-only" for="rateSlider">Selected discount rate slider</label>
+            <input id="rateSlider" type="range" min="-20" max="80" value="10" step="0.1">
+            <div class="range-labels"><span id="sliderMinLabel">−20%</span><span>Drag or click the chart</span><span id="sliderMaxLabel">80%</span></div>
+          </div>
+        </div>
+
+        <div class="chart-legend" aria-label="NPV profile legend">
+          <span class="legend-item"><span class="legend-line" style="background: var(--curve)"></span>NPV profile</span>
+          <span class="legend-item"><span class="legend-line" style="background: var(--orange)"></span>IRR / zero-NPV solution</span>
+          <span class="legend-item"><span class="legend-line" style="background: var(--selected)"></span>Selected discount rate</span>
+        </div>
+
+        <div class="svg-scroll">
+          <svg id="npvChart" viewBox="0 0 1000 500" role="img" aria-labelledby="npvSvgTitle npvSvgDesc">
+            <title id="npvSvgTitle">Net present value profile</title>
+            <desc id="npvSvgDesc">The curve plots net present value against the discount rate. Internal rates of return are marked where the curve crosses zero.</desc>
+          </svg>
+        </div>
+        <p class="chart-tip">Click anywhere inside the plot to evaluate NPV at that discount rate.</p>
+
+        <div id="rootSummary" class="root-summary" aria-live="polite"></div>
+        <div id="diagnostic" class="diagnostic" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="card" id="multipleIrrSection" aria-labelledby="multipleTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="multipleTitle">4. When one equation has multiple IRRs</h2>
+            <p>Later negative cash flows can make the NPV profile non-monotonic and create more than one zero point.</p>
+          </div>
+        </div>
+
+        <div class="multiple-hero">
+          <div>
+            <h3>A cash-flow stream with two solutions</h3>
+            <p>
+              Consider an initial outflow of $100, an inflow of $230 in Year 1, and another
+              outflow of $132 in Year 2. The signs change twice: negative → positive → negative.
+            </p>
+            <p>
+              The NPV equation reaches zero at both 10% and 20%. The same project therefore has
+              two mathematically valid IRRs, making the IRR decision rule ambiguous.
+            </p>
+            <p>
+              More precisely, these are multiple mathematical solutions to the zero-NPV equation,
+              not separate market equilibria.
+            </p>
+            <button id="loadMultipleExample" class="action-button primary" type="button">Load this example above</button>
+          </div>
+          <div class="example-equation">
+            0 = −100 + 230 ÷ (1 + IRR)<br>
+            − 132 ÷ (1 + IRR)<sup>2</sup><br>
+            <strong>IRR = 10% or 20%</strong>
+          </div>
+        </div>
+
+        <div class="caution-grid">
+          <article class="caution-card">
+            <h3>Why future outflows matter</h3>
+            <p>
+              Major renovations, capital calls, debt payoffs, remediation, or other later costs
+              can reverse the sign of the cash-flow stream. Those reversals can bend the NPV profile
+              enough to cross zero more than once.
+            </p>
+          </article>
+          <article class="caution-card">
+            <h3>Possible does not mean guaranteed</h3>
+            <p>
+              The number of sign changes is an upper bound on the number of admissible IRRs.
+              Two sign changes may produce two IRRs, one repeated IRR, or no real IRR. Always inspect
+              the NPV profile or solve for all roots.
+            </p>
+          </article>
+          <article class="caution-card">
+            <h3>What to use instead</h3>
+            <p>
+              When multiple IRRs exist, do not rank or accept the investment using IRR. Evaluate
+              NPV at the appropriate risk-adjusted required return and examine the underlying cash-flow pattern.
+            </p>
+          </article>
+        </div>
+
+        <div class="decision-rule">
+          <div class="decision-icon" aria-hidden="true">!</div>
+          <p>
+            <strong>Decision rule:</strong> “IRR &gt; required return” implies a positive NPV only under a
+            conventional, uniquely solved NPV profile. With multiple IRRs, the rule can reverse across
+            different discount-rate ranges and should not be used.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="limitsTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="limitsTitle">5. What IRR does not tell you</h2>
+            <p>A solved rate is useful, but it is not an all-telling performance measure.</p>
+          </div>
+        </div>
+        <div class="limitations">
+          <div class="limitation"><strong>Scale</strong><span>Two investments can have the same IRR but very different dollar investments and NPVs.</span></div>
+          <div class="limitation"><strong>Investment horizon</strong><span>IRR alone does not reveal whether the holding period is short or long.</span></div>
+          <div class="limitation"><strong>Timing and source</strong><span>It does not distinguish early from late cash flows or operations from refinancing and sale proceeds.</span></div>
+          <div class="limitation"><strong>Risk and leverage</strong><span>IRR does not identify the correct discount rate, changing risk over time, or how much leverage produced the return.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="disclaimer">
+      <strong>Instructional scope:</strong> This tool assumes annual end-of-period cash flows and searches
+      for real IRR solutions greater than −100%. It is designed for instruction in FIN 351 at CSUF.
+      Results are educational illustrations and are not financial advice.
+    </aside>
+  </main>
+
+  <footer>
+    Created by Desen Lin for instructional use in FIN 351 at California State University, Fullerton.<br>
+    Educational use only · Not financial advice
+  </footer>
+
+  <div id="liveMessage" class="sr-only" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const COLORS = {
+        navy: "#00274c",
+        orange: "#f58220",
+        curve: "#29547c",
+        selected: "#7a3fb0",
+        positive: "#16745b",
+        negative: "#c44235",
+        grid: "#d8dee9",
+        muted: "#5c677d",
+        white: "#ffffff"
+      };
+
+      const PRESETS = {
+        anderson: {
+          cashflows: [-40000000, 3000000, 5000000, 6500000, 8750000, 92454545],
+          selected: 0.10,
+          min: -0.20,
+          max: 0.80
+        },
+        oberkircher: {
+          cashflows: [-40000000, 4000000, 4300000, 4600000, 4900000, 80971429],
+          selected: 0.10,
+          min: -0.20,
+          max: 0.70
+        },
+        multiple: {
+          cashflows: [-100, 230, -132],
+          selected: 0.15,
+          min: -0.20,
+          max: 0.60
+        },
+        none: {
+          cashflows: [-100, 100, -50],
+          selected: 0.10,
+          min: -0.20,
+          max: 1.00
+        }
+      };
+
+      const state = {
+        cashflows: [...PRESETS.anderson.cashflows],
+        selectedRate: PRESETS.anderson.selected,
+        chartMin: PRESETS.anderson.min,
+        chartMax: PRESETS.anderson.max,
+        roots: []
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const money0 = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      });
+      const money2 = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      const pct1 = new Intl.NumberFormat("en-US", {
+        style: "percent",
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      });
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function npv(rate, cashflows = state.cashflows) {
+        if (rate <= -1) return Number.NaN;
+        return cashflows.reduce((total, cashflow, time) =>
+          total + cashflow / Math.pow(1 + rate, time), 0);
+      }
+
+      function countSignChanges(cashflows) {
+        const nonzero = cashflows.filter((value) => Math.abs(value) > 1e-12);
+        let changes = 0;
+        for (let i = 1; i < nonzero.length; i += 1) {
+          if (Math.sign(nonzero[i]) !== Math.sign(nonzero[i - 1])) changes += 1;
+        }
+        return changes;
+      }
+
+      function complex(re, im = 0) { return { re, im }; }
+      function cAdd(a, b) { return complex(a.re + b.re, a.im + b.im); }
+      function cSub(a, b) { return complex(a.re - b.re, a.im - b.im); }
+      function cMul(a, b) {
+        return complex(a.re * b.re - a.im * b.im, a.re * b.im + a.im * b.re);
+      }
+      function cDiv(a, b) {
+        const d = b.re * b.re + b.im * b.im;
+        if (d < 1e-30) return complex(0, 0);
+        return complex((a.re * b.re + a.im * b.im) / d, (a.im * b.re - a.re * b.im) / d);
+      }
+      function cAbs(a) { return Math.hypot(a.re, a.im); }
+
+      function evaluatePolynomial(coefficients, z) {
+        let value = complex(coefficients[coefficients.length - 1], 0);
+        for (let i = coefficients.length - 2; i >= 0; i -= 1) {
+          value = cAdd(cMul(value, z), complex(coefficients[i], 0));
+        }
+        return value;
+      }
+
+      function polynomialRoots(inputCoefficients) {
+        const coefficients = [...inputCoefficients];
+        const rawScale = Math.max(1, ...coefficients.map((value) => Math.abs(value)));
+        while (coefficients.length > 1 && Math.abs(coefficients.at(-1)) < rawScale * 1e-13) {
+          coefficients.pop();
+        }
+
+        const degree = coefficients.length - 1;
+        if (degree < 1) return [];
+
+        const scale = Math.max(...coefficients.map((value) => Math.abs(value)));
+        const c = coefficients.map((value) => value / scale);
+
+        if (degree === 1) {
+          return [complex(-c[0] / c[1], 0)];
+        }
+
+        if (degree === 2) {
+          const [constant, linear, quadratic] = c;
+          const discriminant = linear * linear - 4 * quadratic * constant;
+          if (discriminant >= 0) {
+            const root = Math.sqrt(discriminant);
+            return [
+              complex((-linear + root) / (2 * quadratic), 0),
+              complex((-linear - root) / (2 * quadratic), 0)
+            ];
+          }
+          const imaginary = Math.sqrt(-discriminant) / (2 * Math.abs(quadratic));
+          const real = -linear / (2 * quadratic);
+          return [complex(real, imaginary), complex(real, -imaginary)];
+        }
+
+        const lead = c[degree];
+        const monic = c.map((value) => value / lead);
+        const radius = 1 + Math.max(...monic.slice(0, -1).map((value) => Math.abs(value)));
+        let roots = Array.from({ length: degree }, (_, index) => {
+          const angle = (2 * Math.PI * index / degree) + 0.37;
+          return complex(radius * Math.cos(angle), radius * Math.sin(angle));
+        });
+
+        for (let iteration = 0; iteration < 300; iteration += 1) {
+          let largestDelta = 0;
+          const next = roots.map((root, i) => {
+            let denominator = complex(1, 0);
+            roots.forEach((other, j) => {
+              if (i !== j) denominator = cMul(denominator, cSub(root, other));
+            });
+            const delta = cDiv(evaluatePolynomial(monic, root), denominator);
+            largestDelta = Math.max(largestDelta, cAbs(delta));
+            return cSub(root, delta);
+          });
+          roots = next;
+          if (largestDelta < 1e-11) break;
+        }
+        return roots;
+      }
+
+      function findIRRs(cashflows) {
+        const scale = Math.max(1, cashflows.reduce((sum, value) => sum + Math.abs(value), 0));
+        const candidates = polynomialRoots(cashflows)
+          .filter((root) => Math.abs(root.im) <= 1e-6 * (1 + Math.abs(root.re)))
+          .map((root) => root.re)
+          .filter((discountFactor) => discountFactor > 1e-10)
+          .map((discountFactor) => 1 / discountFactor - 1)
+          .filter((rate) => Number.isFinite(rate) && rate > -0.999999 && rate < 10000)
+          .filter((rate) => Math.abs(npv(rate, cashflows)) <= scale * 1e-6)
+          .sort((a, b) => a - b);
+
+        return candidates.filter((rate, index) =>
+          index === 0 || Math.abs(rate - candidates[index - 1]) > 1e-5 * (1 + Math.abs(rate))
+        );
+      }
+
+      function loadPreset(name, scrollToChart = false) {
+        const preset = PRESETS[name];
+        state.cashflows = [...preset.cashflows];
+        state.selectedRate = preset.selected;
+        state.chartMin = preset.min;
+        state.chartMax = preset.max;
+        syncRateControls();
+        renderEditor();
+        updateAll();
+        if (scrollToChart) {
+          $("profileTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      function renderEditor() {
+        const body = $("cashFlowRows");
+        body.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+
+        state.cashflows.forEach((cashflow, time) => {
+          const tr = document.createElement("tr");
+          const timeCell = document.createElement("td");
+          timeCell.textContent = time === 0 ? "Time 0" : `Year ${time}`;
+
+          const valueCell = document.createElement("td");
+          const wrap = document.createElement("div");
+          wrap.className = "cash-input-wrap";
+          const prefix = document.createElement("span");
+          prefix.textContent = "$";
+          prefix.setAttribute("aria-hidden", "true");
+          const input = document.createElement("input");
+          input.className = "cash-input";
+          input.type = "number";
+          input.step = "any";
+          input.value = String(cashflow);
+          input.setAttribute("aria-label", `${time === 0 ? "Time 0" : `Year ${time}`} net cash flow`);
+          input.addEventListener("input", () => {
+            state.cashflows[time] = Number(input.value) || 0;
+            updateAll(false);
+          });
+          wrap.append(prefix, input);
+          valueCell.appendChild(wrap);
+          tr.append(timeCell, valueCell);
+          fragment.appendChild(tr);
+        });
+
+        body.appendChild(fragment);
+        $("removeYear").disabled = state.cashflows.length <= 2;
+        $("addYear").disabled = state.cashflows.length >= 12;
+      }
+
+      function updateAll(announce = true) {
+        state.roots = findIRRs(state.cashflows);
+        renderTimeline();
+        renderEquation();
+        renderSummary();
+        renderNpvChart();
+        renderRootSummary();
+        renderDiagnostic();
+        if (announce) {
+          $("liveMessage").textContent = state.roots.length === 1
+            ? `One IRR found at ${pct1.format(state.roots[0])}.`
+            : `${state.roots.length} IRR solutions found.`;
+        }
+      }
+
+      function svgElement(name, attributes = {}) {
+        const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+        Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, String(value)));
+        return node;
+      }
+
+      function addSvgText(svg, text, x, y, attributes = {}) {
+        const node = svgElement("text", { x, y, ...attributes });
+        node.textContent = text;
+        svg.appendChild(node);
+        return node;
+      }
+
+      function resetSvg(svg, titleText, descriptionText, titleId, descriptionId) {
+        while (svg.lastChild) svg.removeChild(svg.lastChild);
+        const title = svgElement("title", { id: titleId });
+        title.textContent = titleText;
+        const desc = svgElement("desc", { id: descriptionId });
+        desc.textContent = descriptionText;
+        svg.append(title, desc);
+      }
+
+      function renderTimeline() {
+        const svg = $("cashFlowChart");
+        resetSvg(
+          svg,
+          "Cash-flow timeline",
+          "Positive cash flows appear above zero and negative cash flows appear below zero.",
+          "cashSvgTitle",
+          "cashSvgDesc"
+        );
+
+        const width = 1000;
+        const height = 280;
+        const margin = { top: 42, right: 25, bottom: 52, left: 25 };
+        const zeroY = 143;
+        const usableWidth = width - margin.left - margin.right;
+        const slot = usableWidth / state.cashflows.length;
+        const barWidth = Math.min(72, slot * 0.56);
+        const maxAbs = Math.max(1, ...state.cashflows.map((value) => Math.abs(value)));
+        const maxBar = 93;
+
+        svg.appendChild(svgElement("line", {
+          x1: margin.left,
+          y1: zeroY,
+          x2: width - margin.right,
+          y2: zeroY,
+          stroke: COLORS.navy,
+          "stroke-width": 2
+        }));
+        addSvgText(svg, "0", 11, zeroY + 4, { fill: COLORS.muted, "font-size": 12 });
+
+        state.cashflows.forEach((value, time) => {
+          const center = margin.left + slot * time + slot / 2;
+          const magnitude = Math.abs(value) / maxAbs * maxBar;
+          const positive = value >= 0;
+          const y = positive ? zeroY - magnitude : zeroY;
+          const rect = svgElement("rect", {
+            x: center - barWidth / 2,
+            y,
+            width: barWidth,
+            height: Math.max(2, magnitude),
+            rx: 3,
+            fill: positive ? COLORS.positive : COLORS.negative
+          });
+          const title = svgElement("title");
+          title.textContent = `${time === 0 ? "Time 0" : `Year ${time}`}: ${money2.format(value)}`;
+          rect.appendChild(title);
+          svg.appendChild(rect);
+
+          const labelY = positive ? Math.max(22, y - 8) : Math.min(height - 42, y + magnitude + 17);
+          addSvgText(svg, compactMoney(value), center, labelY, {
+            "text-anchor": "middle",
+            fill: positive ? COLORS.positive : COLORS.negative,
+            "font-size": 12,
+            "font-weight": 750
+          });
+          addSvgText(svg, time === 0 ? "Time 0" : `Year ${time}`, center, height - 19, {
+            "text-anchor": "middle",
+            fill: COLORS.muted,
+            "font-size": 12
+          });
+        });
+      }
+
+      function renderEquation() {
+        const terms = state.cashflows.map((value, time) => {
+          const sign = value < 0 ? "−" : time === 0 ? "" : "+";
+          const amount = compactMoney(Math.abs(value));
+          return time === 0
+            ? `${value < 0 ? "−" : ""}${amount}`
+            : `${sign} ${amount} ÷ (1 + IRR)^${time}`;
+        });
+        $("dynamicEquation").textContent = `0 = ${terms.join(" ")}`;
+      }
+
+      function renderSummary() {
+        const rootCount = state.roots.length;
+        $("solutionCount").textContent = rootCount === 0 ? "No real IRR" : rootCount === 1 ? "1 IRR" : `${rootCount} IRRs`;
+        $("solutionValues").textContent = rootCount === 0 ? "—" : state.roots.map((rate) => pct1.format(rate)).join(" · ");
+        $("signChanges").textContent = String(countSignChanges(state.cashflows));
+        const value = npv(state.selectedRate);
+        $("selectedNpv").textContent = Number.isFinite(value) ? money0.format(value) : "Undefined";
+        $("selectedRateNote").textContent = `At a ${pct1.format(state.selectedRate)} discount rate`;
+      }
+
+      function sanitizeChartRange() {
+        let min = clamp(Number($("chartMin").value) / 100, -0.95, 9.99);
+        let max = clamp(Number($("chartMax").value) / 100, -0.94, 10);
+        if (max <= min + 0.01) max = Math.min(10, min + 0.10);
+        state.chartMin = min;
+        state.chartMax = max;
+        state.selectedRate = clamp(Number($("selectedRate").value) / 100, min, max);
+        syncRateControls();
+      }
+
+      function syncRateControls() {
+        $("selectedRate").value = trimNumber(state.selectedRate * 100);
+        $("chartMin").value = trimNumber(state.chartMin * 100);
+        $("chartMax").value = trimNumber(state.chartMax * 100);
+        $("rateSlider").min = String(state.chartMin * 100);
+        $("rateSlider").max = String(state.chartMax * 100);
+        $("rateSlider").value = String(state.selectedRate * 100);
+        $("sliderMinLabel").textContent = pct0(state.chartMin);
+        $("sliderMaxLabel").textContent = pct0(state.chartMax);
+      }
+
+      function renderNpvChart() {
+        const svg = $("npvChart");
+        resetSvg(
+          svg,
+          "Net present value profile",
+          "The NPV curve is plotted against the discount rate. Orange markers identify zero-NPV solutions.",
+          "npvSvgTitle",
+          "npvSvgDesc"
+        );
+
+        const width = 1000;
+        const height = 500;
+        const margin = { top: 44, right: 30, bottom: 67, left: 92 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        const samples = [];
+
+        for (let i = 0; i <= 500; i += 1) {
+          const rate = state.chartMin + (state.chartMax - state.chartMin) * i / 500;
+          const value = npv(rate);
+          if (Number.isFinite(value)) samples.push({ rate, value });
+        }
+
+        const sortedAbs = samples.map((point) => Math.abs(point.value)).sort((a, b) => a - b);
+        const percentile = sortedAbs[Math.floor((sortedAbs.length - 1) * 0.96)] || 1;
+        const yMax = niceCeiling(Math.max(1, percentile * 1.08));
+        const xScale = (rate) => margin.left + (rate - state.chartMin) / (state.chartMax - state.chartMin) * innerWidth;
+        const yScale = (value) => margin.top + (yMax - clamp(value, -yMax, yMax)) / (2 * yMax) * innerHeight;
+        const zeroY = yScale(0);
+
+        for (let tick = 0; tick <= 4; tick += 1) {
+          const fraction = tick / 4;
+          const value = -yMax + 2 * yMax * fraction;
+          const y = yScale(value);
+          svg.appendChild(svgElement("line", {
+            x1: margin.left,
+            y1: y,
+            x2: width - margin.right,
+            y2: y,
+            stroke: Math.abs(value) < yMax * 1e-9 ? COLORS.navy : COLORS.grid,
+            "stroke-width": Math.abs(value) < yMax * 1e-9 ? 2.5 : 1,
+            "stroke-dasharray": Math.abs(value) < yMax * 1e-9 ? "7 5" : "none"
+          }));
+          addSvgText(svg, compactMoney(value), margin.left - 12, y + 4, {
+            "text-anchor": "end",
+            fill: COLORS.muted,
+            "font-size": 12
+          });
+        }
+
+        for (let tick = 0; tick <= 5; tick += 1) {
+          const rate = state.chartMin + (state.chartMax - state.chartMin) * tick / 5;
+          const x = xScale(rate);
+          svg.appendChild(svgElement("line", {
+            x1: x, y1: margin.top, x2: x, y2: height - margin.bottom,
+            stroke: COLORS.grid, "stroke-width": 1
+          }));
+          addSvgText(svg, pct0(rate), x, height - 39, {
+            "text-anchor": "middle", fill: COLORS.muted, "font-size": 12
+          });
+        }
+
+        const path = samples.map((point, index) =>
+          `${index === 0 ? "M" : "L"}${xScale(point.rate).toFixed(2)},${yScale(point.value).toFixed(2)}`
+        ).join(" ");
+        svg.appendChild(svgElement("path", {
+          d: path,
+          fill: "none",
+          stroke: COLORS.curve,
+          "stroke-width": 4,
+          "stroke-linejoin": "round",
+          "stroke-linecap": "round"
+        }));
+
+        state.roots.filter((rate) => rate >= state.chartMin && rate <= state.chartMax).forEach((rate, index) => {
+          const x = xScale(rate);
+          const group = svgElement("g");
+          const point = svgElement("circle", {
+            cx: x, cy: zeroY, r: 8, fill: COLORS.orange, stroke: COLORS.white, "stroke-width": 3
+          });
+          const title = svgElement("title");
+          title.textContent = `IRR ${index + 1}: ${pct1.format(rate)}; NPV = ${money2.format(npv(rate))}`;
+          point.appendChild(title);
+          group.appendChild(point);
+          svg.appendChild(group);
+          addSvgText(svg, `IRR ${pct1.format(rate)}`, x, zeroY - 17 - (index % 2) * 17, {
+            "text-anchor": "middle",
+            fill: COLORS.orange,
+            "font-size": 12,
+            "font-weight": 850
+          });
+        });
+
+        const selectedX = xScale(state.selectedRate);
+        const selectedValue = npv(state.selectedRate);
+        const selectedY = yScale(selectedValue);
+        svg.appendChild(svgElement("line", {
+          x1: selectedX, y1: margin.top, x2: selectedX, y2: height - margin.bottom,
+          stroke: COLORS.selected, "stroke-width": 2.5, "stroke-dasharray": "5 5"
+        }));
+        svg.appendChild(svgElement("circle", {
+          cx: selectedX, cy: selectedY, r: 7, fill: COLORS.selected, stroke: COLORS.white, "stroke-width": 3
+        }));
+        addSvgText(svg, `${pct1.format(state.selectedRate)}: ${compactMoney(selectedValue)}`, selectedX, Math.max(22, selectedY - 14), {
+          "text-anchor": selectedX > width - 180 ? "end" : selectedX < 180 ? "start" : "middle",
+          fill: COLORS.selected,
+          "font-size": 12,
+          "font-weight": 800
+        });
+
+        addSvgText(svg, "Net present value", 22, margin.top + innerHeight / 2, {
+          "text-anchor": "middle",
+          fill: COLORS.muted,
+          "font-size": 13,
+          "font-weight": 750,
+          transform: `rotate(-90 22 ${margin.top + innerHeight / 2})`
+        });
+        addSvgText(svg, "Discount rate", margin.left + innerWidth / 2, height - 8, {
+          "text-anchor": "middle", fill: COLORS.muted, "font-size": 13, "font-weight": 750
+        });
+
+        svg.dataset.plotLeft = String(margin.left);
+        svg.dataset.plotRight = String(width - margin.right);
+      }
+
+      function renderRootSummary() {
+        const box = $("rootSummary");
+        box.innerHTML = "";
+        const label = document.createElement("strong");
+        label.textContent = state.roots.length ? "Zero-NPV solution(s):" : "Zero-NPV solutions:";
+        box.appendChild(label);
+
+        if (!state.roots.length) {
+          const message = document.createElement("span");
+          message.textContent = "No admissible real IRR was found for this cash-flow stream.";
+          box.appendChild(message);
+          return;
+        }
+
+        state.roots.forEach((rate, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "root-pill";
+          button.textContent = `IRR ${index + 1}: ${pct1.format(rate)}`;
+          button.title = "Evaluate NPV at this IRR";
+          button.addEventListener("click", () => setSelectedRate(rate));
+          box.appendChild(button);
+        });
+      }
+
+      function renderDiagnostic() {
+        const box = $("diagnostic");
+        const roots = state.roots.length;
+        const changes = countSignChanges(state.cashflows);
+        const conventionalInvestment = state.cashflows[0] < 0
+          && state.cashflows.slice(1).every((value) => value >= 0);
+        box.className = "diagnostic";
+
+        if (roots > 1) {
+          box.classList.add("danger");
+          box.innerHTML = `<h3>Multiple IRRs: do not use the IRR decision rule</h3><p>This cash-flow stream has ${roots} zero-NPV rates. An IRR ranking or comparison with a required return is ambiguous. Use NPV at the appropriate risk-adjusted discount rate instead.</p>`;
+        } else if (roots === 0) {
+          box.classList.add("warning");
+          box.innerHTML = `<h3>No real IRR was found</h3><p>The cash-flow signs change ${changes} time${changes === 1 ? "" : "s"}, but a sign change does not guarantee a real solution. Evaluate the investment using NPV and an economically justified required return.</p>`;
+        } else if (!conventionalInvestment) {
+          box.classList.add("warning");
+          box.innerHTML = `<h3>One IRR found, but the cash-flow pattern is nonconventional</h3><p>The stream changes sign ${changes} time${changes === 1 ? "" : "s"}, but it does not follow the standard pattern of an initial outflow followed only by inflows. Inspect the full NPV profile and use NPV at the required return before relying on IRR.</p>`;
+        } else {
+          box.classList.add("success");
+          box.innerHTML = `<h3>A unique IRR was found</h3><p>The cash-flow stream changes sign once and produces one admissible IRR of ${pct1.format(state.roots[0])}. For this conventional profile, NPV is positive below the IRR and negative above it.</p>`;
+        }
+      }
+
+      function setSelectedRate(rate, announce = true) {
+        state.selectedRate = clamp(rate, state.chartMin, state.chartMax);
+        $("selectedRate").value = trimNumber(state.selectedRate * 100);
+        $("rateSlider").value = String(state.selectedRate * 100);
+        renderSummary();
+        renderNpvChart();
+        if (announce) {
+          $("liveMessage").textContent = `At ${pct1.format(state.selectedRate)}, NPV is ${money2.format(npv(state.selectedRate))}.`;
+        }
+      }
+
+      function compactMoney(value) {
+        if (!Number.isFinite(value)) return "Undefined";
+        const sign = value < 0 ? "−" : "";
+        const absolute = Math.abs(value);
+        if (absolute >= 1000000000) return `${sign}$${(absolute / 1000000000).toFixed(absolute >= 10000000000 ? 0 : 1)}B`;
+        if (absolute >= 1000000) return `${sign}$${(absolute / 1000000).toFixed(absolute >= 10000000 ? 0 : 1)}M`;
+        if (absolute >= 1000) return `${sign}$${(absolute / 1000).toFixed(absolute >= 10000 ? 0 : 1)}k`;
+        return `${sign}$${absolute.toFixed(absolute < 10 && absolute !== 0 ? 2 : 0)}`;
+      }
+
+      function niceCeiling(value) {
+        if (!Number.isFinite(value) || value <= 0) return 1;
+        const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+        const normalized = value / magnitude;
+        const nice = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+        return nice * magnitude;
+      }
+
+      function pct0(value) {
+        return `${Math.round(value * 100)}%`;
+      }
+
+      function trimNumber(value) {
+        return String(Number(value.toFixed(4)));
+      }
+
+      document.querySelectorAll(".preset").forEach((button) => {
+        button.addEventListener("click", () => loadPreset(button.dataset.preset));
+      });
+
+      $("addYear").addEventListener("click", () => {
+        if (state.cashflows.length < 12) {
+          state.cashflows.push(0);
+          renderEditor();
+          updateAll();
+        }
+      });
+
+      $("removeYear").addEventListener("click", () => {
+        if (state.cashflows.length > 2) {
+          state.cashflows.pop();
+          renderEditor();
+          updateAll();
+        }
+      });
+
+      ["chartMin", "chartMax"].forEach((id) => {
+        $(id).addEventListener("change", () => {
+          sanitizeChartRange();
+          updateAll(false);
+        });
+      });
+
+      $("selectedRate").addEventListener("change", () => {
+        sanitizeChartRange();
+        setSelectedRate(state.selectedRate);
+      });
+
+      $("rateSlider").addEventListener("input", (event) => {
+        setSelectedRate(Number(event.target.value) / 100, false);
+      });
+
+      $("npvChart").addEventListener("click", (event) => {
+        const svg = $("npvChart");
+        const bounds = svg.getBoundingClientRect();
+        const viewX = (event.clientX - bounds.left) / bounds.width * 1000;
+        const left = Number(svg.dataset.plotLeft || 92);
+        const right = Number(svg.dataset.plotRight || 970);
+        if (viewX < left || viewX > right) return;
+        const fraction = (viewX - left) / (right - left);
+        setSelectedRate(state.chartMin + fraction * (state.chartMax - state.chartMin));
+      });
+
+      $("loadMultipleExample").addEventListener("click", () => loadPreset("multiple", true));
+
+      syncRateControls();
+      renderEditor();
+      updateAll(false);
+    })();
+  </script>
+</body>
+</html>
