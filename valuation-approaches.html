@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 comparison of DCF, direct capitalization, and net asset value for a real estate company.">
+  <title>Three Valuation Approaches | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --green: #16745b;
+      --red: #b84235;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    input:focus-visible, summary:focus-visible { outline: 3px solid rgba(245, 130, 32, 0.45); outline-offset: 2px; }
+    .topbar { height: 8px; background: var(--orange); }
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+    .hero-inner, main, footer { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .hero-inner { padding: 42px 0 46px; }
+    .course-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 940px; margin-bottom: 12px; font-size: clamp(2rem, 4.6vw, 3.45rem); line-height: 1.08; letter-spacing: -0.035em; }
+    .hero p { max-width: 900px; margin-bottom: 8px; color: #e4edf6; font-size: clamp(1rem, 2vw, 1.18rem); }
+    .creator { color: #f8c99f !important; font-size: 0.9rem !important; font-weight: 700; }
+    main { display: grid; gap: 22px; padding: 28px 0 46px; }
+    .card { overflow: hidden; background: var(--white); border: 1px solid rgba(0, 39, 76, 0.10); border-radius: 16px; box-shadow: var(--shadow); }
+    .card-body { padding: 24px; }
+    .section-heading { margin-bottom: 20px; }
+    .section-heading h2 { margin-bottom: 4px; color: var(--navy); font-size: 1.42rem; line-height: 1.25; }
+    .section-heading p { margin-bottom: 0; color: var(--muted); font-size: 0.94rem; }
+    .method-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .method { padding: 18px; background: #f8fafc; border: 1px solid var(--line); border-top: 4px solid var(--navy); border-radius: 12px; }
+    .method:nth-child(2) { border-top-color: var(--orange); }
+    .method:nth-child(3) { border-top-color: var(--green); }
+    .method h3 { margin-bottom: 5px; color: var(--navy); font-size: 1rem; }
+    .method p { margin-bottom: 8px; color: var(--muted); font-size: 0.86rem; }
+    .formula { margin: 0 !important; color: var(--ink) !important; font-weight: 750; }
+    .controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .control-group { min-width: 0; padding: 15px; background: #f8fafc; border: 1px solid var(--line); border-top: 4px solid var(--navy); border-radius: 10px; }
+    .control-group.market { border-top-color: var(--orange); }
+    .control-group.nav { border-top-color: var(--green); }
+    .control-group h3 { margin-bottom: 3px; color: var(--navy); font-size: 1rem; }
+    .group-note { margin-bottom: 13px; color: var(--muted); font-size: 0.78rem; }
+    .control { margin-top: 13px; }
+    .control label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; color: var(--navy); font-size: 0.82rem; font-weight: 780; }
+    .control output { color: var(--orange-dark); white-space: nowrap; }
+    .control-row { display: grid; grid-template-columns: minmax(0, 1fr) 98px; gap: 9px; align-items: center; }
+    input[type="range"] { width: 100%; accent-color: var(--orange); cursor: pointer; }
+    input[type="number"] { width: 100%; min-height: 36px; padding: 6px 8px; color: var(--ink); background: var(--white); border: 1px solid #aeb9c8; border-radius: 7px; text-align: right; font-size: 0.82rem; font-weight: 650; }
+    .unit-note { margin: 5px 0 0; color: var(--muted); font-size: 0.72rem; }
+    details { margin-top: 14px; background: #fbfcfe; border: 1px solid var(--line); border-radius: 9px; }
+    summary { padding: 11px 12px; color: var(--navy); cursor: pointer; font-size: 0.82rem; font-weight: 800; }
+    details .control { margin: 0; padding: 0 12px 12px; }
+    .result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .result { min-width: 0; padding: 17px 18px; border-right: 1px solid var(--line); }
+    .result:last-child { border-right: 0; }
+    .result-label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 0.75rem; font-weight: 750; text-transform: uppercase; letter-spacing: 0.04em; }
+    .result-value { display: block; color: var(--navy); font-size: clamp(1.12rem, 2.3vw, 1.55rem); font-weight: 850; line-height: 1.2; overflow-wrap: anywhere; }
+    .result-context { display: block; margin-top: 4px; color: var(--muted); font-size: 0.76rem; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr); gap: 24px; align-items: start; }
+    .chart-title { margin-bottom: 3px; color: var(--navy); font-size: 1.06rem; }
+    .chart-subtitle { margin-bottom: 16px; color: var(--muted); font-size: 0.84rem; }
+    .bars { display: grid; gap: 18px; }
+    .bar-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-size: 0.84rem; }
+    .bar-label { color: var(--navy); font-weight: 800; }
+    .bar-value { color: var(--ink); font-weight: 800; white-space: nowrap; }
+    .bar-track { height: 32px; overflow: hidden; background: #e8edf3; border-radius: 7px; }
+    .bar-fill { width: 0; height: 100%; min-width: 2px; transition: width 180ms ease; }
+    .bar-fill.dcf { background: var(--navy-2); }
+    .bar-fill.cap { background: var(--orange); }
+    .bar-fill.nav { background: var(--green); }
+    .bar-caption { margin: 6px 0 0; color: var(--muted); font-size: 0.76rem; }
+    .comparison-note { margin: 17px 0 0; padding: 14px 16px; color: var(--navy); background: #fff7ef; border-left: 5px solid var(--orange); border-radius: 8px; font-size: 0.86rem; font-weight: 650; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+    th, td { padding: 9px 7px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+    th { color: var(--navy); font-size: 0.72rem; letter-spacing: 0.03em; text-transform: uppercase; }
+    td:not(:first-child), th:not(:first-child) { text-align: right; }
+    .total td { color: var(--navy); font-weight: 850; }
+    .sensitivity-table td:not(:first-child), .sensitivity-table th:not(:first-child) { text-align: right; }
+    .rate { display: block; color: var(--muted); font-size: 0.7rem; font-weight: 500; white-space: nowrap; }
+    .lesson-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .lesson { padding: 16px 18px; background: #f8fafc; border-left: 4px solid var(--navy); border-radius: 8px; }
+    .lesson:nth-child(2) { border-left-color: var(--orange); }
+    .lesson:nth-child(3) { border-left-color: var(--green); }
+    .lesson strong { display: block; margin-bottom: 4px; color: var(--navy); font-size: 0.88rem; }
+    .lesson span { color: var(--muted); font-size: 0.8rem; }
+    .teaching-note { margin: 18px 0 0; padding: 14px 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); font-size: 0.79rem; }
+    .teaching-note strong { color: var(--navy); }
+    footer { padding: 0 0 38px; color: var(--muted); text-align: center; font-size: 0.8rem; }
+    footer strong { color: var(--navy); }
+    @media (max-width: 940px) {
+      .method-grid, .controls, .lesson-grid { grid-template-columns: 1fr; }
+      .workspace { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .hero-inner { padding: 34px 0 38px; }
+      .card-body { padding: 18px; }
+      .result-grid { grid-template-columns: 1fr; }
+      .result { border-right: 0; border-bottom: 1px solid var(--line); }
+      .result:last-child { border-bottom: 0; }
+      th, td { padding: 8px 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .bar-fill { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="course-tag">FIN 355 · Real estate company valuation</span>
+      <h1>Three Valuation Approaches: DCF, Cap Rate, and NAV</h1>
+      <p>Change the operating, market, and balance-sheet assumptions to see why three reasonable methods can produce different estimates of equity value.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="approaches-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="approaches-title">The same company viewed through three lenses</h2>
+          <p>Each method answers a different valuation question. The starting values reproduce the FJCL classroom example from Chapter 12, subject to rounding.</p>
+        </div>
+        <div class="method-grid">
+          <article class="method">
+            <h3>Discounted cash flow (DCF)</h3>
+            <p>Values the forecast operating cash flows plus a terminal sale value, all discounted to today.</p>
+            <p class="formula">PV of forecast cash flows + terminal value − debt</p>
+          </article>
+          <article class="method">
+            <h3>Direct capitalization</h3>
+            <p>Capitalizes a stabilized operating cash flow using one market cap rate, then deducts debt.</p>
+            <p class="formula">Stabilized cash flow ÷ cap rate − debt</p>
+          </article>
+          <article class="method">
+            <h3>Net asset value (NAV)</h3>
+            <p>Values the property portfolio and other assets separately, then subtracts liabilities and preferred stock.</p>
+            <p class="formula">Gross asset value − liabilities − preferred stock</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="model-title">Change the assumptions</h2>
+          <p>Move any slider or enter a value. All three estimates, the valuation bars, calculation details, and sensitivity cases update immediately.</p>
+        </div>
+
+        <div class="controls">
+          <section class="control-group" aria-labelledby="operations-inputs">
+            <h3 id="operations-inputs">Operating outlook</h3>
+            <p class="group-note">Scale the four-year cash-flow forecast or tilt its growth path.</p>
+            <div class="control">
+              <label for="scale-range">Forecast cash-flow scale <output id="scale-output">100%</output></label>
+              <div class="control-row"><input id="scale-range" type="range" min="70" max="130" step="1" value="100" aria-label="Forecast cash flow scale"><input id="scale-number" type="number" min="70" max="130" step="1" value="100" aria-label="Forecast cash flow scale percent"></div>
+              <p class="unit-note">100% uses the Year 1–4 operating cash flows shown in the slides.</p>
+            </div>
+            <div class="control">
+              <label for="growth-range">Growth adjustment <output id="growth-output">0.0 pp/year</output></label>
+              <div class="control-row"><input id="growth-range" type="range" min="-3" max="3" step="0.1" value="0" aria-label="Annual growth adjustment in percentage points"><input id="growth-number" type="number" min="-3" max="3" step="0.1" value="0" aria-label="Annual growth adjustment in percentage points"></div>
+              <p class="unit-note">Applied cumulatively after Year 1; it also changes stabilized Year 4 cash flow.</p>
+            </div>
+            <div class="control">
+              <label for="nav-noi-range">NAV property NOI <output id="nav-noi-output">$244.2M</output></label>
+              <div class="control-row"><input id="nav-noi-range" type="range" min="160000" max="320000" step="1000" value="244227" aria-label="NAV property net operating income in thousands"><input id="nav-noi-number" type="number" min="160000" max="320000" step="1000" value="244227" aria-label="NAV property net operating income in thousands"></div>
+              <p class="unit-note">The NAV example uses property NOI, which differs from company operating cash flow.</p>
+            </div>
+          </section>
+
+          <section class="control-group market" aria-labelledby="market-inputs">
+            <h3 id="market-inputs">Market pricing</h3>
+            <p class="group-note">Required returns and cap rates translate cash flow into value.</p>
+            <div class="control">
+              <label for="discount-range">DCF discount rate <output id="discount-output">11.0%</output></label>
+              <div class="control-row"><input id="discount-range" type="range" min="7" max="15" step="0.1" value="11" aria-label="DCF discount rate"><input id="discount-number" type="number" min="7" max="15" step="0.1" value="11" aria-label="DCF discount rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="terminal-cap-range">DCF terminal cap rate <output id="terminal-cap-output">8.0%</output></label>
+              <div class="control-row"><input id="terminal-cap-range" type="range" min="5" max="12" step="0.1" value="8" aria-label="DCF terminal capitalization rate"><input id="terminal-cap-number" type="number" min="5" max="12" step="0.1" value="8" aria-label="DCF terminal capitalization rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="direct-cap-range">Direct cap rate <output id="direct-cap-output">8.0%</output></label>
+              <div class="control-row"><input id="direct-cap-range" type="range" min="5" max="12" step="0.1" value="8" aria-label="Direct capitalization rate"><input id="direct-cap-number" type="number" min="5" max="12" step="0.1" value="8" aria-label="Direct capitalization rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="nav-cap-range">NAV property cap rate <output id="nav-cap-output">9.0%</output></label>
+              <div class="control-row"><input id="nav-cap-range" type="range" min="6" max="12" step="0.1" value="9" aria-label="NAV property capitalization rate"><input id="nav-cap-number" type="number" min="6" max="12" step="0.1" value="9" aria-label="NAV property capitalization rate percent"></div>
+            </div>
+          </section>
+
+          <section class="control-group nav" aria-labelledby="balance-inputs">
+            <h3 id="balance-inputs">Debt and other NAV items</h3>
+            <p class="group-note">Enterprise or gross asset value becomes equity value after claims are deducted.</p>
+            <div class="control">
+              <label for="dcf-debt-range">DCF average debt <output id="dcf-debt-output">$1,027.8M</output></label>
+              <div class="control-row"><input id="dcf-debt-range" type="range" min="500000" max="1800000" step="10000" value="1027810" aria-label="Average debt for DCF in thousands"><input id="dcf-debt-number" type="number" min="500000" max="1800000" step="10000" value="1027810" aria-label="Average debt for DCF in thousands"></div>
+            </div>
+            <div class="control">
+              <label for="cap-debt-range">Year 4 debt for cap method <output id="cap-debt-output">$1,237.8M</output></label>
+              <div class="control-row"><input id="cap-debt-range" type="range" min="500000" max="1800000" step="10000" value="1237790" aria-label="Year 4 debt for capitalization method in thousands"><input id="cap-debt-number" type="number" min="500000" max="1800000" step="10000" value="1237790" aria-label="Year 4 debt for capitalization method in thousands"></div>
+            </div>
+            <details>
+              <summary>Other NAV assets and claims</summary>
+              <div class="control">
+                <label for="other-income-range">Other-income value scale <output id="other-income-output">100%</output></label>
+                <div class="control-row"><input id="other-income-range" type="range" min="50" max="150" step="1" value="100" aria-label="Scale applied to capitalized other income"><input id="other-income-number" type="number" min="50" max="150" step="1" value="100" aria-label="Scale applied to capitalized other income percent"></div>
+              </div>
+              <div class="control">
+                <label for="other-assets-range">Other assets <output id="other-assets-output">$82.2M</output></label>
+                <div class="control-row"><input id="other-assets-range" type="range" min="0" max="200000" step="5000" value="82156" aria-label="Other assets in thousands"><input id="other-assets-number" type="number" min="0" max="200000" step="5000" value="82156" aria-label="Other assets in thousands"></div>
+              </div>
+              <div class="control">
+                <label for="liabilities-range">Total liabilities <output id="liabilities-output">$1,447.0M</output></label>
+                <div class="control-row"><input id="liabilities-range" type="range" min="500000" max="2200000" step="10000" value="1447031" aria-label="Total liabilities in thousands"><input id="liabilities-number" type="number" min="500000" max="2200000" step="10000" value="1447031" aria-label="Total liabilities in thousands"></div>
+              </div>
+              <div class="control">
+                <label for="preferred-range">Preferred stock <output id="preferred-output">$16.0M</output></label>
+                <div class="control-row"><input id="preferred-range" type="range" min="0" max="100000" step="1000" value="16000" aria-label="Preferred stock in thousands"><input id="preferred-number" type="number" min="0" max="100000" step="1000" value="16000" aria-label="Preferred stock in thousands"></div>
+              </div>
+            </details>
+          </section>
+        </div>
+
+        <div class="result-grid" aria-live="polite">
+          <div class="result"><span class="result-label">DCF equity value</span><strong class="result-value" id="dcf-result">$1,342.1M</strong><span class="result-context" id="dcf-context">Four-year forecast plus terminal value</span></div>
+          <div class="result"><span class="result-label">Cap-rate equity value</span><strong class="result-value" id="cap-result">$1,431.0M</strong><span class="result-context" id="cap-context">6.6% above DCF</span></div>
+          <div class="result"><span class="result-label">Net asset value</span><strong class="result-value" id="nav-result">$1,435.1M</strong><span class="result-context" id="nav-context">6.9% above DCF</span></div>
+        </div>
+
+        <div class="workspace">
+          <div>
+            <h3 class="chart-title">Implied equity value</h3>
+            <p class="chart-subtitle">All values are in millions of dollars. The longest bar is the highest current estimate—not automatically the best method.</p>
+            <div class="bars" id="valuation-bars" role="img" aria-label="Comparison of DCF, direct capitalization, and net asset value estimates">
+              <div class="bar-row">
+                <div class="bar-head"><span class="bar-label">Discounted cash flow</span><span class="bar-value" id="bar-value-dcf">$1,342.1M</span></div>
+                <div class="bar-track"><div class="bar-fill dcf" id="bar-dcf"></div></div>
+                <p class="bar-caption" id="bar-caption-dcf">PV of enterprise cash flows less average debt</p>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="bar-label">Direct capitalization</span><span class="bar-value" id="bar-value-cap">$1,431.0M</span></div>
+                <div class="bar-track"><div class="bar-fill cap" id="bar-cap"></div></div>
+                <p class="bar-caption" id="bar-caption-cap">Stabilized Year 4 cash flow capitalized at 8.0%, less Year 4 debt</p>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="bar-label">Net asset value</span><span class="bar-value" id="bar-value-nav">$1,435.1M</span></div>
+                <div class="bar-track"><div class="bar-fill nav" id="bar-nav"></div></div>
+                <p class="bar-caption" id="bar-caption-nav">Property portfolio plus other assets, less liabilities and preferred stock</p>
+              </div>
+            </div>
+            <p class="comparison-note" id="comparison-note">The three estimates cluster within 6.9% of DCF in the baseline example. Their similarity is an outcome of the assumptions, not a rule.</p>
+          </div>
+
+          <div>
+            <h3 class="chart-title">Calculation bridge</h3>
+            <p class="chart-subtitle">Each method reaches equity value through a different numerator, market multiple, and deduction.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Calculation</th><th>DCF</th><th>Cap rate</th><th>NAV</th></tr></thead>
+                <tbody>
+                  <tr><td>Operating or property value</td><td id="bridge-dcf-base">$2,369.9M</td><td id="bridge-cap-base">$2,668.8M</td><td id="bridge-nav-property">$2,713.6M</td></tr>
+                  <tr><td>Other assets / income value</td><td>—</td><td>—</td><td id="bridge-nav-other">$184.5M</td></tr>
+                  <tr><td>Debt / liabilities / preferred</td><td id="bridge-dcf-deduction">($1,027.8M)</td><td id="bridge-cap-deduction">($1,237.8M)</td><td id="bridge-nav-deduction">($1,463.0M)</td></tr>
+                  <tr class="total"><td>Equity value</td><td id="bridge-dcf-equity">$1,342.1M</td><td id="bridge-cap-equity">$1,431.0M</td><td id="bridge-nav-equity">$1,435.1M</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="sensitivity-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="sensitivity-title">Required-return sensitivity</h2>
+          <p>A lower discount or cap rate produces a higher value because the same cash flow is divided by, or discounted at, a smaller required return.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="sensitivity-table">
+            <thead><tr><th>Approach</th><th>Lower required return</th><th>Current assumption</th><th>Higher required return</th></tr></thead>
+            <tbody>
+              <tr><td>DCF</td><td id="dcf-low">$1,491.6M<span class="rate">10.0% discount rate</span></td><td id="dcf-mid">$1,342.1M<span class="rate">11.0% discount rate</span></td><td id="dcf-high">$1,204.5M<span class="rate">12.0% discount rate</span></td></tr>
+              <tr><td>Direct capitalization</td><td id="cap-low">$1,608.9M<span class="rate">7.5% cap rate</span></td><td id="cap-mid">$1,431.0M<span class="rate">8.0% cap rate</span></td><td id="cap-high">$1,273.4M<span class="rate">8.5% cap rate</span></td></tr>
+              <tr><td>NAV</td><td id="nav-low">$1,594.7M<span class="rate">8.5% property cap rate</span></td><td id="nav-mid">$1,435.1M<span class="rate">9.0% property cap rate</span></td><td id="nav-high">$1,292.3M<span class="rate">9.5% property cap rate</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="lessons-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="lessons-title">What each approach emphasizes</h2>
+          <p>Valuation is not simply choosing the largest result. Analysts compare methods, test assumptions, and explain why the estimates differ.</p>
+        </div>
+        <div class="lesson-grid">
+          <div class="lesson"><strong>DCF is dynamic</strong><span>It reflects a multi-period business plan and management’s effect on acquisitions, developments, dispositions, and operating cash flow.</span></div>
+          <div class="lesson"><strong>Direct capitalization is compact</strong><span>It turns one stabilized cash flow into value quickly, but the estimate is highly dependent on the selected cap rate and stabilized year.</span></div>
+          <div class="lesson"><strong>NAV is asset focused</strong><span>It values the portfolio and other assets separately. It can miss management value or hidden liabilities not captured in the asset schedule.</span></div>
+        </div>
+        <p class="teaching-note"><strong>Classroom simplification.</strong> This model follows the Chapter 12 examples and uses displayed values in thousands of dollars. Minor differences from the slides may arise from rounding. It does not model taxes, share counts, dilution, control premiums, marketability discounts, or every asset and liability item a professional valuation may require.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>Created by Desen Lin</strong> for instructional purposes in FIN 355 at California State University, Fullerton.<br>
+    This educational illustration is not financial, investment, tax, or legal advice.
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const baseCashFlows = [184195, 193374, 202905, 213502];
+      const baseOtherIncomeValue = 11789 * 4.7 + 1656 * 4.8 + 6965 * 5.6;
+
+      const controls = [
+        { id: "scale", kind: "percent0" },
+        { id: "growth", kind: "pp" },
+        { id: "nav-noi", kind: "money" },
+        { id: "discount", kind: "percent1" },
+        { id: "terminal-cap", kind: "percent1" },
+        { id: "direct-cap", kind: "percent1" },
+        { id: "nav-cap", kind: "percent1" },
+        { id: "dcf-debt", kind: "money" },
+        { id: "cap-debt", kind: "money" },
+        { id: "other-income", kind: "percent0" },
+        { id: "other-assets", kind: "money" },
+        { id: "liabilities", kind: "money" },
+        { id: "preferred", kind: "money" }
+      ];
+
+      const byId = (id) => document.getElementById(id);
+      const money = (value) => {
+        const sign = value < 0 ? "−" : "";
+        return sign + "$" + Math.abs(value / 1000).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "M";
+      };
+      const moneyParen = (value) => "(" + money(Math.abs(value)) + ")";
+      const pct = (value) => Number(value).toFixed(1) + "%";
+      const signedPct = (value) => (value >= 0 ? "+" : "") + value.toFixed(1) + "%";
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+      function formatOutput(control, value) {
+        if (control.kind === "money") return money(value);
+        if (control.kind === "pp") return Number(value).toFixed(1) + " pp/year";
+        if (control.kind === "percent1") return pct(value);
+        return Math.round(value) + "%";
+      }
+
+      function syncPair(control, source) {
+        const range = byId(control.id + "-range");
+        const number = byId(control.id + "-number");
+        let value = Number(source.value);
+        if (!Number.isFinite(value)) value = Number(range.value);
+        value = clamp(value, Number(range.min), Number(range.max));
+        range.value = String(value);
+        number.value = String(value);
+        byId(control.id + "-output").textContent = formatOutput(control, value);
+      }
+
+      function read(id) {
+        return Number(byId(id + "-range").value);
+      }
+
+      function cashFlows() {
+        const scale = read("scale") / 100;
+        const growthAdjustment = read("growth") / 100;
+        return baseCashFlows.map((value, index) => value * scale * Math.pow(1 + growthAdjustment, index));
+      }
+
+      function dcfValue(discountPercent) {
+        const flows = cashFlows();
+        const rate = discountPercent / 100;
+        const terminalCap = read("terminal-cap") / 100;
+        const enterprise = flows.reduce((sum, flow, index) => sum + flow / Math.pow(1 + rate, index + 1), 0) + (flows[3] / terminalCap) / Math.pow(1 + rate, 4);
+        return { enterprise, equity: enterprise - read("dcf-debt"), flows };
+      }
+
+      function capValue(capPercent) {
+        const stabilized = cashFlows()[3];
+        const enterprise = stabilized / (capPercent / 100);
+        return { enterprise, equity: enterprise - read("cap-debt"), stabilized };
+      }
+
+      function navValue(capPercent) {
+        const property = read("nav-noi") / (capPercent / 100);
+        const otherIncome = baseOtherIncomeValue * read("other-income") / 100;
+        const otherAssets = read("other-assets");
+        const grossAssets = property + otherIncome + otherAssets;
+        const deduction = read("liabilities") + read("preferred");
+        return { property, otherIncome, otherAssets, grossAssets, deduction, equity: grossAssets - deduction };
+      }
+
+      function sensitivityCell(id, value, rate, label) {
+        byId(id).innerHTML = money(value) + '<span class="rate">' + pct(rate) + " " + label + "</span>";
+      }
+
+      function render() {
+        const discount = read("discount");
+        const directCap = read("direct-cap");
+        const navCap = read("nav-cap");
+        const dcf = dcfValue(discount);
+        const cap = capValue(directCap);
+        const nav = navValue(navCap);
+        const results = [dcf.equity, cap.equity, nav.equity];
+        const maximum = Math.max(...results, 1);
+        const minimum = Math.min(...results);
+        const spread = dcf.equity !== 0 ? (maximum - minimum) / Math.abs(dcf.equity) * 100 : 0;
+
+        byId("dcf-result").textContent = money(dcf.equity);
+        byId("cap-result").textContent = money(cap.equity);
+        byId("nav-result").textContent = money(nav.equity);
+        byId("cap-context").textContent = signedPct((cap.equity / dcf.equity - 1) * 100) + " versus DCF";
+        byId("nav-context").textContent = signedPct((nav.equity / dcf.equity - 1) * 100) + " versus DCF";
+
+        [["dcf", dcf.equity], ["cap", cap.equity], ["nav", nav.equity]].forEach(([id, value]) => {
+          byId("bar-" + id).style.width = Math.max(0, value) / maximum * 100 + "%";
+          byId("bar-value-" + id).textContent = money(value);
+        });
+        byId("bar-caption-cap").textContent = "Stabilized Year 4 cash flow capitalized at " + pct(directCap) + ", less Year 4 debt";
+        byId("comparison-note").textContent = "The current estimates span " + money(maximum - minimum) + ", or " + Math.abs(spread).toFixed(1) + "% of DCF equity value. Their similarity or difference is an outcome of the assumptions, not a rule.";
+        byId("valuation-bars").setAttribute("aria-label", "DCF equity value " + money(dcf.equity) + ", direct capitalization equity value " + money(cap.equity) + ", and net asset value " + money(nav.equity));
+
+        byId("bridge-dcf-base").textContent = money(dcf.enterprise);
+        byId("bridge-cap-base").textContent = money(cap.enterprise);
+        byId("bridge-nav-property").textContent = money(nav.property);
+        byId("bridge-nav-other").textContent = money(nav.otherIncome + nav.otherAssets);
+        byId("bridge-dcf-deduction").textContent = moneyParen(read("dcf-debt"));
+        byId("bridge-cap-deduction").textContent = moneyParen(read("cap-debt"));
+        byId("bridge-nav-deduction").textContent = moneyParen(nav.deduction);
+        byId("bridge-dcf-equity").textContent = money(dcf.equity);
+        byId("bridge-cap-equity").textContent = money(cap.equity);
+        byId("bridge-nav-equity").textContent = money(nav.equity);
+
+        const dcfLowRate = Math.max(0.5, discount - 1);
+        const dcfHighRate = discount + 1;
+        const capLowRate = Math.max(0.5, directCap - 0.5);
+        const capHighRate = directCap + 0.5;
+        const navLowRate = Math.max(0.5, navCap - 0.5);
+        const navHighRate = navCap + 0.5;
+        sensitivityCell("dcf-low", dcfValue(dcfLowRate).equity, dcfLowRate, "discount rate");
+        sensitivityCell("dcf-mid", dcf.equity, discount, "discount rate");
+        sensitivityCell("dcf-high", dcfValue(dcfHighRate).equity, dcfHighRate, "discount rate");
+        sensitivityCell("cap-low", capValue(capLowRate).equity, capLowRate, "cap rate");
+        sensitivityCell("cap-mid", cap.equity, directCap, "cap rate");
+        sensitivityCell("cap-high", capValue(capHighRate).equity, capHighRate, "cap rate");
+        sensitivityCell("nav-low", navValue(navLowRate).equity, navLowRate, "property cap rate");
+        sensitivityCell("nav-mid", nav.equity, navCap, "property cap rate");
+        sensitivityCell("nav-high", navValue(navHighRate).equity, navHighRate, "property cap rate");
+      }
+
+      controls.forEach((control) => {
+        const range = byId(control.id + "-range");
+        const number = byId(control.id + "-number");
+        range.addEventListener("input", () => { syncPair(control, range); render(); });
+        number.addEventListener("input", () => { syncPair(control, number); render(); });
+        syncPair(control, range);
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
