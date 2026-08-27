@@ -85,6 +85,7 @@ The collection is designed to grow over time. New interactive tools and course p
 
 All calculations run within the browser. The tools do not collect or transmit student inputs.
 
+<!--
 ## Adding Future Resources
 
 The repository is organized so that each interactive resource can be maintained as a standalone HTML page. To add a future resource:
@@ -93,7 +94,7 @@ The repository is organized so that each interactive resource can be maintained 
 2. Confirm that it opens correctly through GitHub Pages.
 3. Add its title, description, and public link to the table above.
 
-This structure keeps individual tools easy to update while providing one central catalog for FIN 355 students.
+This structure keeps individual tools easy to update while providing one central catalog for FIN 355 students. -->
 
 ## Educational Scope
 
