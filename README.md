@@ -1,7 +1,7 @@
 <h1 align="center">FIN 355 · Real Estate Investment Analysis</h1>
 
 <p align="center"><strong>Interactive Learning Resources at Cal State Fullerton</strong></p>
-<p align="center"><strong>Created by <a href="https://desenlin.github.io/">Desen Lin</a></strong></p>
+<p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong></p>
 <p align="center"><em>Developed for instructional use at California State University, Fullerton (CSUF). These materials are educational and do not constitute financial advice.</em></p>
 
 ---
@@ -46,5 +46,5 @@ The examples simplify some real-world details so that students can focus on the 
 
 ---
 
-<p align="center"><strong>Created by <a href="https://desenlin.github.io/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
+<p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
 <p align="center"><em>These materials are provided for educational use and should not be interpreted as financial advice.</em></p>
