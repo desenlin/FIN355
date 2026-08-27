@@ -14,10 +14,27 @@ The collection is designed to grow over time. New interactive tools and course p
 
 ## Interactive Learning Tools
 
-| Resource | What It Demonstrates | Links |
-| --- | --- | --- |
-| **How Amortization Changes a Loan Payment** | Shows how a fixed monthly payment is divided between principal and interest, why the principal share rises over time, and how the annual amortization schedule changes with the loan amount, interest rate, and term. | [Launch the tool](https://desenlin.github.io/FIN355/amortization.html) |
-| **Internal Rate of Return as a Zero-NPV Solution** | Visualizes IRR as an x-intercept of the NPV profile, lets students edit annual cash flows, and demonstrates why nonconventional cash flows can produce multiple IRRs or no real IRR. | [Launch the tool](https://desenlin.github.io/FIN355/irr.html) |
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Resource</th>
+      <th scope="col">What It Demonstrates</th>
+      <th scope="col">Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>How Amortization Changes a Loan Payment</strong></td>
+      <td>Shows how a fixed monthly payment is divided between principal and interest, why the principal share rises over time, and how the annual amortization schedule changes with the loan amount, interest rate, and term.</td>
+      <td><a href="https://desenlin.github.io/FIN355/amortization.html">Launch the tool</a></td>
+    </tr>
+    <tr>
+      <td><strong>Internal Rate of Return as a Zero-NPV Solution</strong></td>
+      <td>Visualizes IRR as an x-intercept of the NPV profile, lets students edit annual cash flows, and demonstrates why nonconventional cash flows can produce multiple IRRs or no real IRR.</td>
+      <td><a href="https://desenlin.github.io/FIN355/irr.html">Launch the tool</a></td>
+    </tr>
+  </tbody>
+</table>
 <!--  · [View source](./amortization.html) --> 
 <!--  · [View source](./irr.html) -->
 
