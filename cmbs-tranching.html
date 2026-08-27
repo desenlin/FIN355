@@ -1,0 +1,1521 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 tool for understanding CMBS tranching, pricing, subordination, and the first-loss waterfall.">
+  <title>CMBS Tranching and the First-Loss Waterfall | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --positive: #16745b;
+      --negative: #c44235;
+      --warning: #a95d00;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+      --aaa: #1f4e79;
+      --aa: #2d6c9f;
+      --a: #4b8bb8;
+      --bbb: #79a9cb;
+      --bb: #f1a45d;
+      --unrated: #d95b43;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+
+    button:focus-visible,
+    input:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid rgba(245, 130, 32, 0.45);
+      outline-offset: 2px;
+    }
+
+    .topbar { height: 8px; background: var(--orange); }
+
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+
+    .hero-inner,
+    main,
+    footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero-inner { padding: 42px 0 46px; }
+
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 920px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4.6vw, 3.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+
+    .hero p {
+      max-width: 850px;
+      margin-bottom: 8px;
+      color: #e4edf6;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    .creator {
+      color: #f8c99f !important;
+      font-size: 0.9rem !important;
+      font-weight: 700;
+    }
+
+    main {
+      display: grid;
+      gap: 22px;
+      padding: 28px 0 46px;
+    }
+
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(0, 39, 76, 0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-body { padding: 24px; }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 4px;
+      color: var(--navy);
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .intro-grid,
+    .workspace-grid,
+    .economics-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .flow-panel,
+    .rule-panel {
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .flow-panel {
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .rule-panel {
+      background: #fff7ef;
+      border: 1px solid #f2c79f;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--orange-dark);
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .flow-panel .eyebrow { color: #f7b77e; }
+
+    .flow-steps {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+      margin: 16px 0 12px;
+      text-align: center;
+    }
+
+    .flow-step {
+      min-height: 78px;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      font-weight: 800;
+    }
+
+    .flow-arrow { color: var(--orange); font-size: 1.5rem; font-weight: 900; }
+
+    .flow-panel p,
+    .rule-panel p { margin-bottom: 0; font-size: 0.9rem; }
+
+    .priority-list {
+      display: grid;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .priority-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 11px;
+      background: var(--white);
+      border: 1px solid #efd5bd;
+      border-radius: 8px;
+    }
+
+    .priority-row strong { color: var(--navy); }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-size: 0.86rem;
+      font-weight: 780;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-prefix,
+    .input-suffix {
+      position: absolute;
+      top: 50%;
+      color: var(--muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .input-prefix { left: 12px; }
+    .input-suffix { right: 12px; }
+
+    input[type="number"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 34px 9px 12px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 9px;
+      font-weight: 650;
+    }
+
+    .has-prefix input { padding-left: 28px; }
+    input[type="number"]:hover { border-color: var(--navy-2); }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--orange);
+      cursor: pointer;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .preset,
+    .action-button {
+      min-height: 38px;
+      padding: 8px 13px;
+      color: var(--navy);
+      background: var(--soft);
+      border: 1px solid #c9d2df;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 780;
+    }
+
+    .preset:hover,
+    .action-button:hover { background: #e6edf5; }
+
+    .action-button.primary {
+      color: var(--white);
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .action-button.primary:hover { background: var(--navy-2); }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 20px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 18px 20px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      font-size: clamp(1.16rem, 2.2vw, 1.62rem);
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .editor-panel,
+    .visual-panel,
+    .economics-panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--white);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .panel-header strong { font-size: 0.92rem; }
+    .panel-header span { color: #dce9f5; font-size: 0.78rem; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+
+    th, td {
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--navy);
+      background: #edf2f7;
+      font-size: 0.74rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    th:first-child,
+    td:first-child { text-align: left; }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) { background: #fafbfd; }
+
+    .tranche-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 820;
+    }
+
+    .swatch {
+      width: 11px;
+      height: 11px;
+      flex: 0 0 auto;
+      border-radius: 3px;
+    }
+
+    .table-input {
+      width: 82px !important;
+      min-height: 34px !important;
+      padding: 6px 25px 6px 8px !important;
+      text-align: right;
+      font-size: 0.88rem;
+    }
+
+    .table-input-wrap { position: relative; display: inline-block; }
+    .table-input-wrap span {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      color: var(--muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+
+    .table-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      background: #f8fafc;
+      border-top: 1px solid var(--line);
+      font-size: 0.84rem;
+    }
+
+    .status-ok { color: var(--positive); font-weight: 820; }
+    .status-warning { color: var(--warning); font-weight: 820; }
+
+    .chart-wrap {
+      width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+    }
+
+    svg { display: block; width: 100%; height: auto; }
+
+    .chart-note,
+    .table-caption {
+      margin: 10px 14px 14px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .loss-control {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 170px;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .loss-control label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .loss-control label span { color: var(--orange-dark); }
+
+    .loss-grid {
+      display: grid;
+      grid-template-columns: minmax(360px, 0.88fr) minmax(0, 1.12fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .loss-cell {
+      color: var(--negative);
+      font-weight: 780;
+    }
+
+    .remaining-cell { color: var(--positive); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin: 0 0 12px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .formula-box {
+      margin-top: 18px;
+      padding: 17px 19px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: 10px;
+    }
+
+    .formula {
+      margin-bottom: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1rem, 2vw, 1.28rem);
+      text-align: center;
+    }
+
+    .formula-box p { margin-bottom: 0; color: #dce9f5; font-size: 0.86rem; }
+
+    .price-bars { display: grid; gap: 17px; padding: 18px; }
+
+    .price-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr) 100px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .price-row span:first-child { color: var(--navy); font-weight: 800; }
+    .price-row strong { color: var(--navy); text-align: right; }
+
+    .bar-track {
+      height: 22px;
+      overflow: hidden;
+      background: #e9eef4;
+      border-radius: 999px;
+    }
+
+    .bar-fill { height: 100%; border-radius: inherit; transition: width 180ms ease; }
+    .bar-fill.untranched { background: #8aa3ba; }
+    .bar-fill.tranched { background: var(--orange); }
+
+    .economics-notes {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      background: #fff7ef;
+      border-top: 1px solid #f2c79f;
+    }
+
+    .economics-notes div {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      font-size: 0.88rem;
+    }
+
+    .economics-notes strong { color: var(--navy); }
+
+    .takeaways {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .takeaway {
+      padding: 17px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--orange);
+      border-radius: 10px;
+    }
+
+    .takeaway h3 { margin-bottom: 7px; color: var(--navy); font-size: 1rem; }
+    .takeaway p { margin-bottom: 0; color: var(--muted); font-size: 0.87rem; }
+
+    .disclaimer {
+      padding: 18px 20px;
+      color: #5b4300;
+      background: #fff8df;
+      border: 1px solid #e8cf78;
+      border-radius: 11px;
+      font-size: 0.86rem;
+    }
+
+    footer {
+      padding: 0 0 34px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.82rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 950px) {
+      .controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+      .workspace-grid,
+      .economics-grid,
+      .loss-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .hero-inner { padding: 34px 0 38px; }
+      .card-body { padding: 19px; }
+      .intro-grid { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .takeaways { grid-template-columns: 1fr; }
+      .flow-steps { grid-template-columns: 1fr; }
+      .flow-arrow { transform: rotate(90deg); }
+      .loss-control { grid-template-columns: 1fr; }
+      .price-row { grid-template-columns: 95px minmax(0, 1fr); }
+      .price-row strong { grid-column: 2; }
+      .section-heading { display: block; }
+      .section-heading .action-button { margin-top: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-inner,
+      main,
+      footer { width: min(100% - 20px, 1180px); }
+      .controls { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric,
+      .metric:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      .loss-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    @media print {
+      body { background: var(--white); }
+      .hero { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .card { break-inside: avoid; box-shadow: none; }
+      .presets, .action-button { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="course-tag">FIN 355 · Real Estate Investment Analysis</div>
+      <h1>CMBS Tranching and the First-Loss Waterfall</h1>
+      <p>
+        Build a CMBS capital stack, trace how losses move from junior to senior bonds,
+        and connect investor yield requirements to pool pricing and lender economics.
+      </p>
+      <p class="creator">Created by Desen Lin for instructional use at Cal State Fullerton</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="conceptTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="conceptTitle">1. One mortgage pool, several risk positions</h2>
+            <p>Tranching changes who absorbs losses first; it does not change the pool's aggregate loss.</p>
+          </div>
+        </div>
+
+        <div class="intro-grid">
+          <div class="flow-panel">
+            <span class="eyebrow">Securitization flow</span>
+            <div class="flow-steps" aria-label="Mortgages flow into a pool and then into tranches">
+              <div class="flow-step">Commercial mortgages</div>
+              <div class="flow-arrow" aria-hidden="true">→</div>
+              <div class="flow-step">CMBS mortgage pool</div>
+              <div class="flow-arrow" aria-hidden="true">→</div>
+              <div class="flow-step">Rated tranches</div>
+            </div>
+            <p>Investors buy different slices of the same collateral according to their risk and return preferences.</p>
+          </div>
+
+          <div class="rule-panel">
+            <span class="eyebrow">Priority rule</span>
+            <p><strong>Payment priority runs downward; loss priority runs upward.</strong></p>
+            <div class="priority-list">
+              <div class="priority-row"><strong>Senior</strong><span>Paid first · Last loss · Lower required yield</span></div>
+              <div class="priority-row"><strong>Mezzanine</strong><span>Intermediate protection, risk, and yield</span></div>
+              <div class="priority-row"><strong>Junior</strong><span>Paid last · First loss · Higher required yield</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="buildTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="buildTitle">2. Build and price the capital stack</h2>
+            <p>Edit the pool assumptions, tranche shares, or buyer yields. Dollar amounts are in millions.</p>
+          </div>
+          <button id="resetAll" class="action-button" type="button">Reset course example</button>
+        </div>
+
+        <div class="controls">
+          <div class="field">
+            <label for="poolPrincipal">Pool principal ($MM)</label>
+            <div class="input-wrap has-prefix"><span class="input-prefix">$</span><input id="poolPrincipal" type="number" min="1" max="100000" step="10" value="500"></div>
+          </div>
+          <div class="field">
+            <label for="poolCoupon">Pool coupon</label>
+            <div class="input-wrap"><input id="poolCoupon" type="number" min="0" max="30" step="0.1" value="7"><span class="input-suffix">%</span></div>
+          </div>
+          <div class="field">
+            <label for="poolTerm">Loan term</label>
+            <div class="input-wrap"><input id="poolTerm" type="number" min="1" max="40" step="1" value="10"><span class="input-suffix">years</span></div>
+          </div>
+          <div class="field">
+            <label for="untranchedPrice">Untranched price ($MM)</label>
+            <div class="input-wrap has-prefix"><span class="input-prefix">$</span><input id="untranchedPrice" type="number" min="0" max="100000" step="0.1" value="518"></div>
+          </div>
+          <div class="field">
+            <label for="recoveryRate">Recovery on defaulted loans</label>
+            <div class="input-wrap"><input id="recoveryRate" type="number" min="0" max="100" step="1" value="0"><span class="input-suffix">%</span></div>
+          </div>
+        </div>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric">
+            <span class="metric-label">Face-weighted target yield</span>
+            <span id="weightedYield" class="metric-value">—</span>
+            <span id="pricingYieldNote" class="metric-note">—</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Illustrative tranched price</span>
+            <span id="tranchedPrice" class="metric-value">—</span>
+            <span class="metric-note">Course spreadsheet benchmark: $529.1 MM</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Price gain from tranching</span>
+            <span id="priceGain" class="metric-value">—</span>
+            <span id="priceGainNote" class="metric-note">—</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Purchaser net cash flow</span>
+            <span id="purchaserNet" class="metric-value">—</span>
+            <span class="metric-note">Undiscounted pool cash inflows less price</span>
+          </div>
+        </div>
+
+        <div class="workspace-grid" style="margin-top: 20px;">
+          <div class="editor-panel">
+            <div class="panel-header"><strong>Tranche assumptions</strong><span>Share and target buyer yield</span></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th scope="col">Tranche</th><th scope="col">Pool share</th><th scope="col">Face value</th><th scope="col">Buyer yield</th></tr>
+                </thead>
+                <tbody id="trancheEditorBody"></tbody>
+              </table>
+            </div>
+            <div class="table-summary"><span>Entered shares</span><strong id="shareStatus">—</strong></div>
+          </div>
+
+          <div class="visual-panel">
+            <div class="panel-header"><strong>Capital stack and current losses</strong><span>Senior at top · Junior at bottom</span></div>
+            <div class="chart-wrap">
+              <svg id="stackChart" viewBox="0 0 760 560" role="img" aria-labelledby="stackTitle stackDesc">
+                <title id="stackTitle">CMBS capital stack</title>
+                <desc id="stackDesc">Tranches are ordered from senior at the top to junior at the bottom. Losses enter from the bottom.</desc>
+              </svg>
+            </div>
+            <p class="chart-note">The tranche sizes are normalized for the visual if entered shares do not sum to 100%.</p>
+          </div>
+        </div>
+
+        <div class="formula-box">
+          <div class="formula">Pool price = PV of annual pool interest + PV of balloon principal</div>
+          <p>
+            Following the course example, the page rounds the face-weighted target yield to one decimal percentage point
+            before pricing the interest-only pool. The spreadsheet's $529.1 million value is a rounded trial-and-error benchmark.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="waterfallTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="waterfallTitle">3. Send a loss through the first-loss waterfall</h2>
+            <p>Choose a pool default rate. Recoveries reduce the effective principal loss before it reaches the bonds.</p>
+          </div>
+        </div>
+
+        <div class="loss-control">
+          <div>
+            <label for="defaultSlider">Pool default rate <span id="defaultRateLabel">5.0%</span></label>
+            <input id="defaultSlider" type="range" min="0" max="100" step="0.1" value="5">
+            <div class="presets" aria-label="Default-rate examples">
+              <button class="preset loss-preset" type="button" data-rate="2">2% slide example</button>
+              <button class="preset loss-preset" type="button" data-rate="5">5% slide example</button>
+              <button class="preset loss-preset" type="button" data-rate="11">11% slide example</button>
+              <button class="preset loss-preset" type="button" data-rate="0">No defaults</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="defaultRate">Exact default rate</label>
+            <div class="input-wrap"><input id="defaultRate" type="number" min="0" max="100" step="0.1" value="5"><span class="input-suffix">%</span></div>
+          </div>
+        </div>
+
+        <div class="metrics" style="margin-top: 0;">
+          <div class="metric">
+            <span class="metric-label">Effective pool loss</span>
+            <span id="totalPoolLoss" class="metric-value">—</span>
+            <span id="effectiveLossRate" class="metric-note">—</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">First-loss tranche</span>
+            <span id="firstLossTranche" class="metric-value">—</span>
+            <span class="metric-note">Lowest priority in the stack</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Most senior tranche hit</span>
+            <span id="highestTrancheHit" class="metric-value">—</span>
+            <span class="metric-note">None means all tranches remain intact</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">AAA subordination</span>
+            <span id="aaaProtection" class="metric-value">—</span>
+            <span class="metric-note">Losses absorbed below AAA before attachment</span>
+          </div>
+        </div>
+
+        <div class="loss-grid" style="margin-top: 20px;">
+          <div class="visual-panel">
+            <div class="panel-header"><strong>Loss absorption by tranche</strong><span>Red overlay = principal loss</span></div>
+            <div class="chart-wrap">
+              <svg id="lossStackChart" viewBox="0 0 760 560" role="img" aria-labelledby="lossStackTitle lossStackDesc">
+                <title id="lossStackTitle">CMBS losses by tranche</title>
+                <desc id="lossStackDesc">Pool losses are allocated from the unrated tranche upward through more senior tranches.</desc>
+              </svg>
+            </div>
+          </div>
+
+          <div class="editor-panel">
+            <div class="panel-header"><strong>Waterfall calculation</strong><span>Attachment and detachment points</span></div>
+            <div class="table-wrap" tabindex="0" aria-label="Scrollable tranche loss allocation table">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Tranche</th>
+                    <th scope="col">Face</th>
+                    <th scope="col">Attach</th>
+                    <th scope="col">Detach</th>
+                    <th scope="col">Loss</th>
+                    <th scope="col">Loss rate</th>
+                    <th scope="col">Remaining</th>
+                  </tr>
+                </thead>
+                <tbody id="lossTableBody"></tbody>
+              </table>
+            </div>
+            <p class="table-caption">Attachment is the amount of subordinate principal that must be exhausted before this tranche begins to lose principal.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="profileTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="profileTitle">4. See each tranche's nonlinear loss exposure</h2>
+            <p>A tranche is protected below its attachment point, loses principal between attachment and detachment, and is exhausted above detachment.</p>
+          </div>
+        </div>
+        <div id="profileLegend" class="legend" aria-label="Tranche loss profile legend"></div>
+        <div class="chart-wrap">
+          <svg id="lossProfileChart" viewBox="0 0 1000 430" role="img" aria-labelledby="profileSvgTitle profileSvgDesc">
+            <title id="profileSvgTitle">Tranche loss rates as pool losses rise</title>
+            <desc id="profileSvgDesc">Each line shows a tranche loss rate from zero to one hundred percent as the pool loss rate rises.</desc>
+          </svg>
+        </div>
+        <p id="profileNote" class="chart-note">—</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="economicsTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="economicsTitle">5. Connect tranching to issuance economics</h2>
+            <p>Tailoring bonds to investors can increase proceeds, but the benefit must exceed added structuring and issuance costs.</p>
+          </div>
+        </div>
+
+        <div class="economics-grid">
+          <div class="economics-panel">
+            <div class="panel-header"><strong>Illustrative pool sale price</strong><span>$MM per pool</span></div>
+            <div class="price-bars">
+              <div class="price-row"><span>Untranched</span><div class="bar-track"><div id="untranchedBar" class="bar-fill untranched"></div></div><strong id="untranchedBarValue">—</strong></div>
+              <div class="price-row"><span>Tranched</span><div class="bar-track"><div id="tranchedBar" class="bar-fill tranched"></div></div><strong id="tranchedBarValue">—</strong></div>
+            </div>
+            <div class="economics-notes">
+              <div><span>Incremental sale proceeds</span><strong id="incrementalProceeds">—</strong></div>
+              <div><span>Additional issuance cost per pool</span><strong>$3.0 MM</strong></div>
+              <div><span>Net incremental proceeds per pool</span><strong id="netIncrementalProceeds">—</strong></div>
+            </div>
+          </div>
+
+          <div class="economics-panel">
+            <div class="panel-header"><strong>Course lender-return illustration</strong><span>Four pools per year · 10-year horizon</span></div>
+            <div class="metrics" style="grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; border-top: 0;">
+              <div class="metric">
+                <span class="metric-label">Untranched lender IRR</span>
+                <span id="untranchedLenderIrr" class="metric-value">—</span>
+                <span class="metric-note">$8 MM issuance cost per pool</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Tranched lender IRR</span>
+                <span id="tranchedLenderIrr" class="metric-value">—</span>
+                <span class="metric-note">$11 MM issuance cost per pool</span>
+              </div>
+            </div>
+            <div class="economics-notes">
+              <div><span>Annual untranched net cash flow</span><strong id="untranchedAnnual">—</strong></div>
+              <div><span>Annual tranched net cash flow</span><strong id="tranchedAnnual">—</strong></div>
+              <div><span>Course benchmarks</span><strong>8.56% vs. 14.84%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="takeawayTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="takeawayTitle">6. Three conclusions to carry forward</h2>
+            <p>Use the tool to separate collateral risk, security design, and economic value.</p>
+          </div>
+        </div>
+        <div class="takeaways">
+          <article class="takeaway"><h3>Losses are redistributed</h3><p>Subordination protects senior bonds by concentrating early losses in junior bonds. The pool's total loss is unchanged.</p></article>
+          <article class="takeaway"><h3>Ratings reflect position</h3><p>Attachment, detachment, collateral quality, and structural protections shape credit risk. The illustrative labels here are not agency ratings.</p></article>
+          <article class="takeaway"><h3>Value creation is conditional</h3><p>Tranching can raise sale proceeds when investor demand lowers required yields, but higher transaction costs and model risk can offset that gain.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <aside class="disclaimer">
+      <strong>Instructional scope:</strong> This simplified model assumes an annual-pay, interest-only mortgage pool with a balloon principal payment,
+      proportional interest allocation, principal losses allocated strictly from junior to senior, and a single recovery assumption.
+      It excludes payment timing, interest shortfalls, prepayments, extensions, servicing advances, fees, reserves, triggers, appraisal reductions,
+      special-servicing recoveries, and other CMBS waterfall provisions. Ratings and yields are illustrative. Educational use only; not financial advice.
+    </aside>
+  </main>
+
+  <footer>
+    Created by Desen Lin for instructional use in FIN 355 at California State University, Fullerton.<br>
+    Educational use only · Not financial advice
+  </footer>
+
+  <div id="liveMessage" class="sr-only" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const COLORS = {
+        navy: "#00274c",
+        orange: "#f58220",
+        negative: "#c44235",
+        grid: "#d8dee9",
+        muted: "#5c677d",
+        white: "#ffffff"
+      };
+
+      const COURSE_TRANCHES = [
+        { rating: "AAA", share: 60, yield: 5.8, color: "#1f4e79" },
+        { rating: "AA", share: 10, yield: 6.2, color: "#2d6c9f" },
+        { rating: "A", share: 10, yield: 6.4, color: "#4b8bb8" },
+        { rating: "BBB", share: 10, yield: 6.8, color: "#79a9cb" },
+        { rating: "BB", share: 6, yield: 7.0, color: "#f1a45d" },
+        { rating: "Unrated", share: 4, yield: 9.0, color: "#d95b43" }
+      ];
+
+      const state = {
+        trancheInputs: COURSE_TRANCHES.map((row) => ({ ...row })),
+        tranches: [],
+        totalLoss: 0,
+        effectiveLossRate: 0,
+        tranchedPrice: 0,
+        pricingYield: 0
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const money1 = new Intl.NumberFormat("en-US", {
+        style: "currency", currency: "USD", minimumFractionDigits: 1, maximumFractionDigits: 1
+      });
+      const money2 = new Intl.NumberFormat("en-US", {
+        style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2
+      });
+      const pct0 = new Intl.NumberFormat("en-US", {
+        style: "percent", maximumFractionDigits: 0
+      });
+      const pct1 = new Intl.NumberFormat("en-US", {
+        style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1
+      });
+      const pct2 = new Intl.NumberFormat("en-US", {
+        style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2
+      });
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function numberValue(id, fallback, min, max) {
+        const raw = Number($(id).value);
+        return clamp(Number.isFinite(raw) ? raw : fallback, min, max);
+      }
+
+      function getAssumptions() {
+        return {
+          principal: numberValue("poolPrincipal", 500, 1, 100000),
+          coupon: numberValue("poolCoupon", 7, 0, 30) / 100,
+          term: Math.round(numberValue("poolTerm", 10, 1, 40)),
+          untranchedPrice: numberValue("untranchedPrice", 518, 0, 100000),
+          recovery: numberValue("recoveryRate", 0, 0, 100) / 100,
+          defaultRate: numberValue("defaultRate", 5, 0, 100) / 100
+        };
+      }
+
+      function presentValueOfBulletPool(principal, coupon, yieldRate, term) {
+        const annualInterest = principal * coupon;
+        if (Math.abs(yieldRate) < 1e-12) return annualInterest * term + principal;
+        const annuityFactor = (1 - Math.pow(1 + yieldRate, -term)) / yieldRate;
+        return annualInterest * annuityFactor + principal / Math.pow(1 + yieldRate, term);
+      }
+
+      function npv(rate, cashflows) {
+        if (rate <= -1) return Number.NaN;
+        return cashflows.reduce((sum, value, time) => sum + value / Math.pow(1 + rate, time), 0);
+      }
+
+      function solveIrr(cashflows) {
+        let low = -0.99;
+        let high = 5;
+        let lowValue = npv(low, cashflows);
+        let highValue = npv(high, cashflows);
+        if (!Number.isFinite(lowValue) || !Number.isFinite(highValue) || lowValue * highValue > 0) return Number.NaN;
+        for (let i = 0; i < 180; i += 1) {
+          const mid = (low + high) / 2;
+          const midValue = npv(mid, cashflows);
+          if (Math.abs(midValue) < 1e-10) return mid;
+          if (lowValue * midValue <= 0) {
+            high = mid;
+            highValue = midValue;
+          } else {
+            low = mid;
+            lowValue = midValue;
+          }
+        }
+        return (low + high) / 2;
+      }
+
+      function buildTranches(principal, effectiveLossRate) {
+        const enteredTotal = state.trancheInputs.reduce((sum, row) => sum + Math.max(0, Number(row.share) || 0), 0);
+        const denominator = enteredTotal > 0 ? enteredTotal : 100;
+        const tranches = state.trancheInputs.map((row) => ({
+          ...row,
+          enteredShare: Math.max(0, Number(row.share) || 0) / 100,
+          share: Math.max(0, Number(row.share) || 0) / denominator,
+          yieldRate: Math.max(0, Number(row.yield) || 0) / 100
+        }));
+
+        let attachment = 0;
+        for (let i = tranches.length - 1; i >= 0; i -= 1) {
+          const tranche = tranches[i];
+          tranche.face = principal * tranche.share;
+          tranche.attachment = attachment;
+          tranche.detachment = attachment + tranche.share;
+          attachment = tranche.detachment;
+        }
+
+        let remainingLoss = principal * effectiveLossRate;
+        for (let i = tranches.length - 1; i >= 0; i -= 1) {
+          const tranche = tranches[i];
+          tranche.loss = Math.min(tranche.face, Math.max(0, remainingLoss));
+          remainingLoss = Math.max(0, remainingLoss - tranche.loss);
+          tranche.lossRate = tranche.face > 0 ? tranche.loss / tranche.face : 0;
+          tranche.remaining = Math.max(0, tranche.face - tranche.loss);
+        }
+
+        return { tranches, enteredTotal };
+      }
+
+      function renderTrancheEditor() {
+        const body = $("trancheEditorBody");
+        body.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+
+        state.trancheInputs.forEach((tranche, index) => {
+          const tr = document.createElement("tr");
+
+          const labelCell = document.createElement("td");
+          const label = document.createElement("span");
+          label.className = "tranche-label";
+          const swatch = document.createElement("span");
+          swatch.className = "swatch";
+          swatch.style.background = tranche.color;
+          const text = document.createElement("span");
+          text.textContent = tranche.rating;
+          label.append(swatch, text);
+          labelCell.appendChild(label);
+
+          const shareCell = document.createElement("td");
+          shareCell.appendChild(makePercentInput(tranche.share, `${tranche.rating} pool share`, (value) => {
+            state.trancheInputs[index].share = value;
+            updateAll();
+          }));
+
+          const faceCell = document.createElement("td");
+          faceCell.id = `face-${index}`;
+          faceCell.textContent = "—";
+
+          const yieldCell = document.createElement("td");
+          yieldCell.appendChild(makePercentInput(tranche.yield, `${tranche.rating} buyer yield`, (value) => {
+            state.trancheInputs[index].yield = value;
+            updateAll();
+          }, 0.1));
+
+          tr.append(labelCell, shareCell, faceCell, yieldCell);
+          fragment.appendChild(tr);
+        });
+        body.appendChild(fragment);
+      }
+
+      function makePercentInput(value, label, callback, step = 1) {
+        const wrap = document.createElement("span");
+        wrap.className = "table-input-wrap";
+        const input = document.createElement("input");
+        input.className = "table-input";
+        input.type = "number";
+        input.min = "0";
+        input.max = "100";
+        input.step = String(step);
+        input.value = String(value);
+        input.setAttribute("aria-label", label);
+        const suffix = document.createElement("span");
+        suffix.textContent = "%";
+        input.addEventListener("input", () => callback(Math.max(0, Number(input.value) || 0)));
+        wrap.append(input, suffix);
+        return wrap;
+      }
+
+      function updateAll(announce = false) {
+        const assumptions = getAssumptions();
+        const effectiveLossRate = assumptions.defaultRate * (1 - assumptions.recovery);
+        const built = buildTranches(assumptions.principal, effectiveLossRate);
+        state.tranches = built.tranches;
+        state.totalLoss = assumptions.principal * effectiveLossRate;
+        state.effectiveLossRate = effectiveLossRate;
+
+        const rawWeightedYield = state.tranches.reduce((sum, row) => sum + row.share * row.yieldRate, 0);
+        const pricingYield = Math.round(rawWeightedYield * 1000) / 1000;
+        state.pricingYield = pricingYield;
+        state.tranchedPrice = presentValueOfBulletPool(
+          assumptions.principal, assumptions.coupon, pricingYield, assumptions.term
+        );
+
+        updateEditorOutputs(built.enteredTotal);
+        updatePricingMetrics(assumptions, rawWeightedYield);
+        updateLossMetrics(assumptions);
+        renderStack($("stackChart"), false);
+        renderStack($("lossStackChart"), true);
+        renderLossTable();
+        renderLossProfile();
+        updateEconomics(assumptions);
+
+        if (announce) {
+          $("liveMessage").textContent = `Pool default rate ${pct1.format(assumptions.defaultRate)}; total principal loss ${money1.format(state.totalLoss)} million.`;
+        }
+      }
+
+      function updateEditorOutputs(enteredTotal) {
+        state.tranches.forEach((tranche, index) => {
+          $(`face-${index}`).textContent = `${money1.format(tranche.face)} MM`;
+        });
+        const status = $("shareStatus");
+        status.textContent = `${enteredTotal.toFixed(1)}%${Math.abs(enteredTotal - 100) < 0.01 ? " · Valid stack" : " · Normalized in calculations"}`;
+        status.className = Math.abs(enteredTotal - 100) < 0.01 ? "status-ok" : "status-warning";
+      }
+
+      function updatePricingMetrics(assumptions, rawWeightedYield) {
+        const totalPoolCash = assumptions.principal * assumptions.coupon * assumptions.term + assumptions.principal;
+        const gain = state.tranchedPrice - assumptions.untranchedPrice;
+        $("weightedYield").textContent = pct2.format(rawWeightedYield);
+        $("pricingYieldNote").textContent = `Pricing rate rounded to ${pct2.format(state.pricingYield)}`;
+        $("tranchedPrice").textContent = `${money2.format(state.tranchedPrice)} MM`;
+        $("priceGain").textContent = `${money2.format(gain)} MM`;
+        $("priceGainNote").textContent = `${pct1.format(gain / Math.max(1e-9, assumptions.untranchedPrice))} above the untranched price`;
+        $("purchaserNet").textContent = `${money2.format(totalPoolCash - state.tranchedPrice)} MM`;
+      }
+
+      function updateLossMetrics(assumptions) {
+        const hit = state.tranches.find((row) => row.loss > 1e-8);
+        const aaa = state.tranches[0];
+        $("totalPoolLoss").textContent = `${money1.format(state.totalLoss)} MM`;
+        $("effectiveLossRate").textContent = `${pct1.format(state.effectiveLossRate)} of pool principal after ${pct0.format(assumptions.recovery)} recovery`;
+        $("firstLossTranche").textContent = state.tranches.at(-1)?.rating || "—";
+        $("highestTrancheHit").textContent = hit ? hit.rating : "None";
+        $("aaaProtection").textContent = pct1.format(aaa.attachment);
+        $("defaultRateLabel").textContent = pct1.format(assumptions.defaultRate);
+      }
+
+      function svgElement(name, attributes = {}) {
+        const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+        Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, String(value)));
+        return node;
+      }
+
+      function addSvgText(svg, text, x, y, attributes = {}) {
+        const node = svgElement("text", { x, y, ...attributes });
+        node.textContent = text;
+        svg.appendChild(node);
+        return node;
+      }
+
+      function resetSvg(svg, titleText, descriptionText, titleId, descriptionId) {
+        while (svg.lastChild) svg.removeChild(svg.lastChild);
+        const title = svgElement("title", { id: titleId });
+        title.textContent = titleText;
+        const desc = svgElement("desc", { id: descriptionId });
+        desc.textContent = descriptionText;
+        svg.append(title, desc);
+      }
+
+      function renderStack(svg, emphasizeLoss) {
+        const titleId = svg.id === "stackChart" ? "stackTitle" : "lossStackTitle";
+        const descId = svg.id === "stackChart" ? "stackDesc" : "lossStackDesc";
+        resetSvg(
+          svg,
+          emphasizeLoss ? "CMBS loss allocation" : "CMBS capital stack",
+          "Tranches run from AAA at the top to unrated at the bottom. Losses are shown in red from the bottom upward.",
+          titleId,
+          descId
+        );
+
+        const stackX = 290;
+        const stackY = 48;
+        const stackWidth = 220;
+        const stackHeight = 450;
+        let y = stackY;
+
+        state.tranches.forEach((tranche) => {
+          const height = tranche.share * stackHeight;
+          const rect = svgElement("rect", {
+            x: stackX,
+            y,
+            width: stackWidth,
+            height,
+            fill: tranche.color,
+            stroke: COLORS.white,
+            "stroke-width": 2
+          });
+          const tip = svgElement("title");
+          tip.textContent = `${tranche.rating}: ${pct1.format(tranche.share)} of pool, ${money1.format(tranche.face)} million face, ${pct1.format(tranche.lossRate)} loss`;
+          rect.appendChild(tip);
+          svg.appendChild(rect);
+
+          if (tranche.lossRate > 0) {
+            const lossHeight = height * tranche.lossRate;
+            svg.appendChild(svgElement("rect", {
+              x: stackX,
+              y: y + height - lossHeight,
+              width: stackWidth,
+              height: lossHeight,
+              fill: emphasizeLoss ? "#a62924" : "rgba(166, 41, 36, 0.72)"
+            }));
+          }
+
+          const centerY = y + height / 2;
+          addSvgText(svg, `${tranche.rating} · ${pct0.format(tranche.share)}`, stackX - 15, centerY + 5, {
+            "text-anchor": "end", fill: COLORS.navy, "font-size": 14, "font-weight": 800
+          });
+          addSvgText(svg, tranche.loss > 0 ? `${money1.format(tranche.loss)} loss` : "Protected", stackX + stackWidth + 15, centerY + 5, {
+            fill: tranche.loss > 0 ? COLORS.negative : COLORS.muted,
+            "font-size": 13,
+            "font-weight": tranche.loss > 0 ? 800 : 600
+          });
+          y += height;
+        });
+
+        const currentLoss = clamp(state.effectiveLossRate, 0, 1);
+        const lossY = stackY + stackHeight * (1 - currentLoss);
+        svg.appendChild(svgElement("line", {
+          x1: stackX - 28,
+          y1: lossY,
+          x2: stackX + stackWidth + 28,
+          y2: lossY,
+          stroke: COLORS.negative,
+          "stroke-width": 3,
+          "stroke-dasharray": "7 5"
+        }));
+        addSvgText(svg, `Pool loss ${pct1.format(currentLoss)}`, stackX + stackWidth / 2, Math.max(23, lossY - 8), {
+          "text-anchor": "middle", fill: COLORS.negative, "font-size": 13, "font-weight": 850
+        });
+
+        svg.appendChild(svgElement("line", { x1: 650, y1: 90, x2: 650, y2: 455, stroke: COLORS.navy, "stroke-width": 3 }));
+        svg.appendChild(svgElement("polygon", { points: "650,486 640,454 660,454", fill: COLORS.navy }));
+        addSvgText(svg, "Last loss", 650, 67, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 14, "font-weight": 850 });
+        addSvgText(svg, "First loss", 650, 521, { "text-anchor": "middle", fill: COLORS.negative, "font-size": 14, "font-weight": 850 });
+      }
+
+      function renderLossTable() {
+        const body = $("lossTableBody");
+        body.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+
+        state.tranches.forEach((tranche) => {
+          const tr = document.createElement("tr");
+          const values = [
+            tranche.rating,
+            `${money1.format(tranche.face)} MM`,
+            pct1.format(tranche.attachment),
+            pct1.format(tranche.detachment),
+            `${money1.format(tranche.loss)} MM`,
+            pct1.format(tranche.lossRate),
+            `${money1.format(tranche.remaining)} MM`
+          ];
+          values.forEach((value, index) => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            if (index === 4 || index === 5) td.className = tranche.loss > 0 ? "loss-cell" : "";
+            if (index === 6) td.className = "remaining-cell";
+            tr.appendChild(td);
+          });
+          fragment.appendChild(tr);
+        });
+        body.appendChild(fragment);
+      }
+
+      function renderLossProfile() {
+        const svg = $("lossProfileChart");
+        resetSvg(
+          svg,
+          "Tranche loss profiles",
+          "Lines show the percentage of each tranche lost for pool loss rates from zero to one hundred percent.",
+          "profileSvgTitle",
+          "profileSvgDesc"
+        );
+
+        const width = 1000;
+        const height = 430;
+        const margin = { top: 28, right: 30, bottom: 62, left: 78 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        const xScale = (value) => margin.left + value * innerWidth;
+        const yScale = (value) => margin.top + (1 - value) * innerHeight;
+
+        for (let tick = 0; tick <= 4; tick += 1) {
+          const value = tick / 4;
+          const y = yScale(value);
+          svg.appendChild(svgElement("line", { x1: margin.left, y1: y, x2: width - margin.right, y2: y, stroke: COLORS.grid, "stroke-width": 1 }));
+          addSvgText(svg, `${Math.round(value * 100)}%`, margin.left - 12, y + 4, { "text-anchor": "end", fill: COLORS.muted, "font-size": 13 });
+        }
+
+        for (let tick = 0; tick <= 5; tick += 1) {
+          const value = tick / 5;
+          const x = xScale(value);
+          svg.appendChild(svgElement("line", { x1: x, y1: margin.top, x2: x, y2: height - margin.bottom, stroke: COLORS.grid, "stroke-width": 1 }));
+          addSvgText(svg, `${Math.round(value * 100)}%`, x, height - margin.bottom + 25, { "text-anchor": "middle", fill: COLORS.muted, "font-size": 13 });
+        }
+
+        addSvgText(svg, "Pool principal loss rate", margin.left + innerWidth / 2, height - 12, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 14, "font-weight": 800 });
+        const yLabel = addSvgText(svg, "Tranche principal loss rate", 19, margin.top + innerHeight / 2, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 14, "font-weight": 800 });
+        yLabel.setAttribute("transform", `rotate(-90 19 ${margin.top + innerHeight / 2})`);
+
+        state.tranches.forEach((tranche) => {
+          const points = [];
+          for (let step = 0; step <= 200; step += 1) {
+            const poolLoss = step / 200;
+            const trancheLoss = tranche.share > 0
+              ? clamp((poolLoss - tranche.attachment) / tranche.share, 0, 1)
+              : 0;
+            points.push(`${step === 0 ? "M" : "L"}${xScale(poolLoss).toFixed(2)},${yScale(trancheLoss).toFixed(2)}`);
+          }
+          const path = svgElement("path", {
+            d: points.join(" "),
+            fill: "none",
+            stroke: tranche.color,
+            "stroke-width": 3
+          });
+          const tip = svgElement("title");
+          tip.textContent = `${tranche.rating}: attaches at ${pct1.format(tranche.attachment)}, detaches at ${pct1.format(tranche.detachment)}`;
+          path.appendChild(tip);
+          svg.appendChild(path);
+
+          const currentLoss = clamp((state.effectiveLossRate - tranche.attachment) / Math.max(1e-12, tranche.share), 0, 1);
+          svg.appendChild(svgElement("circle", {
+            cx: xScale(state.effectiveLossRate),
+            cy: yScale(currentLoss),
+            r: 5,
+            fill: tranche.color,
+            stroke: COLORS.white,
+            "stroke-width": 2
+          }));
+        });
+
+        const currentX = xScale(clamp(state.effectiveLossRate, 0, 1));
+        svg.appendChild(svgElement("line", {
+          x1: currentX, y1: margin.top, x2: currentX, y2: height - margin.bottom,
+          stroke: COLORS.negative, "stroke-width": 2, "stroke-dasharray": "6 5"
+        }));
+
+        const legend = $("profileLegend");
+        legend.innerHTML = "";
+        state.tranches.forEach((tranche) => {
+          const item = document.createElement("span");
+          item.className = "legend-item";
+          const swatch = document.createElement("span");
+          swatch.className = "swatch";
+          swatch.style.background = tranche.color;
+          item.append(swatch, document.createTextNode(`${tranche.rating} (${pct1.format(tranche.attachment)}-${pct1.format(tranche.detachment)})`));
+          legend.appendChild(item);
+        });
+
+        $("profileNote").textContent = `The dashed vertical line marks the current effective pool loss rate of ${pct1.format(state.effectiveLossRate)}.`;
+      }
+
+      function updateEconomics(assumptions) {
+        const untranched = assumptions.untranchedPrice;
+        const tranched = state.tranchedPrice;
+        const maxPrice = Math.max(1, untranched, tranched) * 1.04;
+        $("untranchedBar").style.width = `${clamp(untranched / maxPrice * 100, 0, 100)}%`;
+        $("tranchedBar").style.width = `${clamp(tranched / maxPrice * 100, 0, 100)}%`;
+        $("untranchedBarValue").textContent = `${money1.format(untranched)} MM`;
+        $("tranchedBarValue").textContent = `${money1.format(tranched)} MM`;
+
+        const incremental = tranched - untranched;
+        const additionalCost = 3;
+        $("incrementalProceeds").textContent = `${money2.format(incremental)} MM`;
+        $("netIncrementalProceeds").textContent = `${money2.format(incremental - additionalCost)} MM`;
+
+        const poolsPerYear = 4;
+        const originationProfitRate = 0.002;
+        const untranchedCost = 8;
+        const tranchedCost = 11;
+        const annualUntranched = poolsPerYear * (untranched - assumptions.principal + assumptions.principal * originationProfitRate - untranchedCost);
+        const annualTranched = poolsPerYear * (tranched - assumptions.principal + assumptions.principal * originationProfitRate - tranchedCost);
+        const untranchedCashflows = [-(assumptions.principal + untranchedCost)];
+        const tranchedCashflows = [-(assumptions.principal + tranchedCost)];
+        for (let year = 1; year <= assumptions.term; year += 1) {
+          untranchedCashflows.push(annualUntranched + (year === assumptions.term ? assumptions.principal : 0));
+          tranchedCashflows.push(annualTranched + (year === assumptions.term ? assumptions.principal : 0));
+        }
+        const untranchedIrr = solveIrr(untranchedCashflows);
+        const tranchedIrr = solveIrr(tranchedCashflows);
+        $("untranchedLenderIrr").textContent = Number.isFinite(untranchedIrr) ? pct2.format(untranchedIrr) : "No solution";
+        $("tranchedLenderIrr").textContent = Number.isFinite(tranchedIrr) ? pct2.format(tranchedIrr) : "No solution";
+        $("untranchedAnnual").textContent = `${money1.format(annualUntranched)} MM`;
+        $("tranchedAnnual").textContent = `${money1.format(annualTranched)} MM`;
+      }
+
+      function resetCourseExample() {
+        $("poolPrincipal").value = "500";
+        $("poolCoupon").value = "7";
+        $("poolTerm").value = "10";
+        $("untranchedPrice").value = "518";
+        $("recoveryRate").value = "0";
+        $("defaultRate").value = "5";
+        $("defaultSlider").value = "5";
+        state.trancheInputs = COURSE_TRANCHES.map((row) => ({ ...row }));
+        renderTrancheEditor();
+        updateAll(true);
+      }
+
+      ["poolPrincipal", "poolCoupon", "poolTerm", "untranchedPrice", "recoveryRate"].forEach((id) => {
+        $(id).addEventListener("input", () => updateAll());
+      });
+
+      $("defaultRate").addEventListener("input", () => {
+        const value = numberValue("defaultRate", 5, 0, 100);
+        $("defaultSlider").value = String(value);
+        updateAll(true);
+      });
+
+      $("defaultSlider").addEventListener("input", () => {
+        $("defaultRate").value = $("defaultSlider").value;
+        updateAll(true);
+      });
+
+      document.querySelectorAll(".loss-preset").forEach((button) => {
+        button.addEventListener("click", () => {
+          const value = button.dataset.rate;
+          $("defaultRate").value = value;
+          $("defaultSlider").value = value;
+          updateAll(true);
+        });
+      });
+
+      $("resetAll").addEventListener("click", resetCourseExample);
+
+      renderTrancheEditor();
+      updateAll();
+    })();
+  </script>
+</body>
+</html>
