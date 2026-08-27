@@ -639,9 +639,12 @@
 
         const callout = $("decisionCallout");
         callout.className = `callout ${feasible ? "feasible" : "infeasible"}`;
+        const landInstruction = c.maxLandGsf < 0
+          ? `No nonnegative land price can make the project feasible under the remaining assumptions.`
+          : `Reduce land cost to ${money(c.maxLandGsf)}/GSF, or change another model assumption.`;
         callout.innerHTML = feasible
           ? `<strong>Feasible:</strong> Expected yield on cost is ${percent(c.yieldOnCost)}, above the ${percent(a.requiredReturn)} required return. The project has ${money(rentGap)} of rent cushion and ${money(landGap)} of land-cost cushion per GSF.`
-          : `<strong>Not feasible:</strong> Expected yield on cost is ${percent(c.yieldOnCost)}, below the ${percent(a.requiredReturn)} required return. Raise market rent to ${money(c.replacementRentLsf)}/LSF, reduce land cost to ${money(c.maxLandGsf)}/GSF, or change another model assumption.`;
+          : `<strong>Not feasible:</strong> Expected yield on cost is ${percent(c.yieldOnCost)}, below the ${percent(a.requiredReturn)} required return. Raise market rent to ${money(c.replacementRentLsf)}/LSF. ${landInstruction}`;
 
         renderBoundary(a, c);
       }
