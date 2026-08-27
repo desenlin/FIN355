@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 tool showing how LTV, DSCR, and debt-yield constraints determine the maximum commercial mortgage loan.">
+  <title>Commercial Mortgage Loan Sizing | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --green: #16745b;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    input:focus-visible { outline: 3px solid rgba(245, 130, 32, 0.45); outline-offset: 2px; }
+    .topbar { height: 8px; background: var(--orange); }
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+    .hero-inner, main, footer { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .hero-inner { padding: 42px 0 46px; }
+    .course-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 940px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4.6vw, 3.45rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+    .hero p { max-width: 900px; margin-bottom: 8px; color: #e4edf6; font-size: clamp(1rem, 2vw, 1.18rem); }
+    .creator { color: #f8c99f !important; font-size: 0.9rem !important; font-weight: 700; }
+    main { display: grid; gap: 22px; padding: 28px 0 46px; }
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(0, 39, 76, 0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card-body { padding: 24px; }
+    .section-heading { margin-bottom: 20px; }
+    .section-heading h2 { margin-bottom: 4px; color: var(--navy); font-size: 1.42rem; line-height: 1.25; }
+    .section-heading p { margin-bottom: 0; color: var(--muted); font-size: 0.94rem; }
+    .concept-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .concept-panel { padding: 18px; background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; }
+    .concept-panel h3 { margin-bottom: 7px; color: var(--navy); font-size: 1rem; }
+    .concept-panel p { margin-bottom: 5px; color: var(--muted); font-size: 0.9rem; }
+    .formula { color: var(--ink) !important; font-family: Georgia, "Times New Roman", serif; font-size: 1rem !important; }
+    .master-formula {
+      margin-top: 16px;
+      padding: 17px 19px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: 10px;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(0.94rem, 2vw, 1.18rem);
+    }
+    .master-formula strong { color: #ffd2aa; }
+    .controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .control-group {
+      min-width: 0;
+      padding: 15px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--navy);
+      border-radius: 10px;
+    }
+    .control-group.thresholds { border-top-color: var(--orange); }
+    .control-group h3 { margin-bottom: 3px; color: var(--navy); font-size: 1rem; }
+    .group-note { margin-bottom: 13px; color: var(--muted); font-size: 0.78rem; }
+    .control { margin-top: 13px; }
+    .control label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: var(--navy);
+      font-size: 0.82rem;
+      font-weight: 780;
+    }
+    .control output { color: var(--orange-dark); white-space: nowrap; }
+    .control-row { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 9px; align-items: center; }
+    input[type="range"] { width: 100%; accent-color: var(--orange); cursor: pointer; }
+    input[type="number"] {
+      width: 100%;
+      min-height: 36px;
+      padding: 6px 8px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 7px;
+      text-align: right;
+      font-size: 0.84rem;
+      font-weight: 650;
+    }
+    .unit-note { margin: 5px 0 0; color: var(--muted); font-size: 0.72rem; }
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr 0.9fr;
+      margin: 20px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .result { min-width: 0; padding: 17px 18px; border-right: 1px solid var(--line); }
+    .result:last-child { border-right: 0; }
+    .result-label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 0.78rem; font-weight: 750; text-transform: uppercase; letter-spacing: 0.04em; }
+    .result-value { display: block; color: var(--navy); font-size: clamp(1.15rem, 2.7vw, 1.75rem); font-weight: 850; line-height: 1.18; overflow-wrap: anywhere; }
+    .result-context { display: block; margin-top: 4px; color: var(--muted); font-size: 0.78rem; }
+    .result.binding .result-value { color: var(--orange-dark); }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 22px; align-items: start; }
+    .chart-title { margin-bottom: 3px; color: var(--navy); font-size: 1.06rem; }
+    .chart-subtitle { margin-bottom: 16px; color: var(--muted); font-size: 0.84rem; }
+    .bars { display: grid; gap: 18px; }
+    .bar-row { min-width: 0; }
+    .bar-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-size: 0.84rem; }
+    .bar-label { color: var(--navy); font-weight: 800; }
+    .bar-value { color: var(--ink); font-weight: 800; white-space: nowrap; }
+    .bar-track { position: relative; height: 28px; overflow: hidden; background: #e8edf3; border-radius: 7px; }
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      background: var(--navy-2);
+      border-radius: 7px;
+      transition: width 180ms ease, background-color 180ms ease;
+    }
+    .bar-row.binding .bar-fill { background: var(--orange); }
+    .bar-caption { margin: 6px 0 0; color: var(--muted); font-size: 0.76rem; }
+    .axis { display: flex; justify-content: space-between; margin-top: 9px; color: var(--muted); font-size: 0.72rem; }
+    .explanation {
+      margin: 18px 0 0;
+      padding: 14px 16px;
+      color: var(--navy);
+      background: #fff7ef;
+      border-left: 5px solid var(--orange);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+    th { color: var(--navy); font-size: 0.75rem; letter-spacing: 0.03em; text-transform: uppercase; }
+    td:nth-child(n+2), th:nth-child(n+2) { text-align: right; }
+    .pass { color: var(--green); font-weight: 800; }
+    .bind { color: var(--orange-dark); font-weight: 800; }
+    .drivers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+    .driver { padding: 13px; background: #f8fafc; border: 1px solid var(--line); border-radius: 9px; }
+    .driver strong { display: block; margin-bottom: 3px; color: var(--navy); font-size: 0.84rem; }
+    .driver span { color: var(--muted); font-size: 0.78rem; }
+    .note { margin: 17px 0 0; color: var(--muted); font-size: 0.8rem; }
+    footer { padding: 0 0 38px; color: var(--muted); text-align: center; font-size: 0.8rem; }
+    footer strong { color: var(--navy); }
+
+    @media (max-width: 900px) {
+      .concept-grid, .controls { grid-template-columns: 1fr; }
+      .workspace { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .hero-inner { padding: 34px 0 38px; }
+      .card-body { padding: 18px; }
+      .result-grid { grid-template-columns: 1fr; }
+      .result { border-right: 0; border-bottom: 1px solid var(--line); }
+      .result:last-child { border-bottom: 0; }
+      .drivers { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .bar-fill { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="course-tag">FIN 355 · Commercial debt underwriting</span>
+      <h1>Commercial Mortgage Loan Sizing</h1>
+      <p>See how maximum LTV, minimum DSCR, and minimum debt yield become three loan ceilings - and why the smallest ceiling determines the lender's maximum loan.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="logic-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="logic-title">One loan must pass all three tests</h2>
+          <p>Lenders impose a maximum leverage ratio and minimum coverage and yield ratios. Each test can be rearranged into a maximum supportable loan.</p>
+        </div>
+        <div class="concept-grid">
+          <article class="concept-panel">
+            <h3>Maximum LTV</h3>
+            <p class="formula">LTV = Loan / Property value</p>
+            <p>Loan ceiling = Property value × Maximum LTV</p>
+          </article>
+          <article class="concept-panel">
+            <h3>Minimum DSCR</h3>
+            <p class="formula">DSCR = NOI / Annual debt service</p>
+            <p>Loan ceiling = NOI / (Minimum DSCR × Mortgage constant)</p>
+          </article>
+          <article class="concept-panel">
+            <h3>Minimum debt yield</h3>
+            <p class="formula">Debt yield = NOI / Loan</p>
+            <p>Loan ceiling = NOI / Minimum debt yield</p>
+          </article>
+        </div>
+        <div class="master-formula" aria-label="Maximum loan equals the minimum of the LTV, DSCR, and debt-yield loan ceilings">
+          Maximum permitted loan = <strong>minimum</strong> of { LTV ceiling, DSCR ceiling, debt-yield ceiling }
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="explore-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="explore-title">Change the underwriting assumptions</h2>
+          <p>Move any slider or enter a value. The loan ceilings, binding test, and implied ratios update immediately.</p>
+        </div>
+
+        <div class="controls">
+          <section class="control-group" aria-labelledby="property-inputs">
+            <h3 id="property-inputs">Property cash flow</h3>
+            <p class="group-note">These inputs affect collateral value and repayment capacity.</p>
+            <div class="control">
+              <label for="property-value-range">Property value <output id="property-value-output">$25.00M</output></label>
+              <div class="control-row">
+                <input id="property-value-range" type="range" min="5" max="100" step="0.5" value="25" aria-label="Property value in millions of dollars">
+                <input id="property-value-number" type="number" min="5" max="100" step="0.5" value="25" aria-label="Property value in millions of dollars">
+              </div>
+              <p class="unit-note">$ millions</p>
+            </div>
+            <div class="control">
+              <label for="noi-range">First-year NOI <output id="noi-output">$1.75M</output></label>
+              <div class="control-row">
+                <input id="noi-range" type="range" min="0.25" max="8" step="0.05" value="1.75" aria-label="First-year net operating income in millions of dollars">
+                <input id="noi-number" type="number" min="0.25" max="8" step="0.05" value="1.75" aria-label="First-year net operating income in millions of dollars">
+              </div>
+              <p class="unit-note">$ millions per year</p>
+            </div>
+          </section>
+
+          <section class="control-group" aria-labelledby="debt-inputs">
+            <h3 id="debt-inputs">Debt payment terms</h3>
+            <p class="group-note">Monthly amortization is converted into annual debt service.</p>
+            <div class="control">
+              <label for="rate-range">Interest rate <output id="rate-output">6.50%</output></label>
+              <div class="control-row">
+                <input id="rate-range" type="range" min="2" max="12" step="0.05" value="6.5" aria-label="Annual mortgage interest rate">
+                <input id="rate-number" type="number" min="2" max="12" step="0.05" value="6.5" aria-label="Annual mortgage interest rate">
+              </div>
+            </div>
+            <div class="control">
+              <label for="amort-range">Amortization period <output id="amort-output">30 years</output></label>
+              <div class="control-row">
+                <input id="amort-range" type="range" min="10" max="40" step="1" value="30" aria-label="Loan amortization period in years">
+                <input id="amort-number" type="number" min="10" max="40" step="1" value="30" aria-label="Loan amortization period in years">
+              </div>
+            </div>
+          </section>
+
+          <section class="control-group thresholds" aria-labelledby="threshold-inputs">
+            <h3 id="threshold-inputs">Lender thresholds</h3>
+            <p class="group-note">Illustrative boundaries; actual underwriting varies by transaction.</p>
+            <div class="control">
+              <label for="ltv-range">Maximum LTV <output id="ltv-output">75.0%</output></label>
+              <div class="control-row">
+                <input id="ltv-range" type="range" min="50" max="85" step="0.5" value="75" aria-label="Maximum loan-to-value ratio">
+                <input id="ltv-number" type="number" min="50" max="85" step="0.5" value="75" aria-label="Maximum loan-to-value ratio">
+              </div>
+              <p class="unit-note">Common boundary: about 70-80%</p>
+            </div>
+            <div class="control">
+              <label for="dscr-range">Minimum DSCR <output id="dscr-output">1.20×</output></label>
+              <div class="control-row">
+                <input id="dscr-range" type="range" min="1" max="1.6" step="0.01" value="1.2" aria-label="Minimum debt service coverage ratio">
+                <input id="dscr-number" type="number" min="1" max="1.6" step="0.01" value="1.2" aria-label="Minimum debt service coverage ratio">
+              </div>
+              <p class="unit-note">Common floor: 1.20× or greater</p>
+            </div>
+            <div class="control">
+              <label for="dy-range">Minimum debt yield <output id="dy-output">10.0%</output></label>
+              <div class="control-row">
+                <input id="dy-range" type="range" min="5" max="15" step="0.1" value="10" aria-label="Minimum debt yield ratio">
+                <input id="dy-number" type="number" min="5" max="15" step="0.1" value="10" aria-label="Minimum debt yield ratio">
+              </div>
+              <p class="unit-note">Common range: about 8-13%</p>
+            </div>
+          </section>
+        </div>
+
+        <div class="result-grid" aria-live="polite">
+          <div class="result">
+            <span class="result-label">Maximum permitted loan</span>
+            <strong class="result-value" id="max-loan">$17.50M</strong>
+            <span class="result-context" id="loan-per-sf">The largest loan that passes every test</span>
+          </div>
+          <div class="result binding">
+            <span class="result-label">Binding constraint</span>
+            <strong class="result-value" id="binding-constraint">Debt yield</strong>
+            <span class="result-context">The tightest loan ceiling</span>
+          </div>
+          <div class="result">
+            <span class="result-label">Annual debt service</span>
+            <strong class="result-value" id="annual-debt-service">$1.33M</strong>
+            <span class="result-context" id="mortgage-constant">7.58% mortgage constant</span>
+          </div>
+        </div>
+
+        <div class="workspace">
+          <div>
+            <h3 class="chart-title">Maximum loan supported by each test</h3>
+            <p class="chart-subtitle">The shortest bar is binding because the proposed loan must remain below all three ceilings.</p>
+            <div class="bars" id="capacity-bars" role="img" aria-label="Comparison of maximum loan amounts supported by LTV, DSCR, and debt-yield tests">
+              <div class="bar-row" id="bar-row-ltv">
+                <div class="bar-head"><span class="bar-label">LTV ceiling</span><span class="bar-value" id="bar-value-ltv">$18.75M</span></div>
+                <div class="bar-track"><div class="bar-fill" id="bar-fill-ltv"></div></div>
+                <p class="bar-caption" id="bar-caption-ltv">Property value × maximum LTV</p>
+              </div>
+              <div class="bar-row" id="bar-row-dscr">
+                <div class="bar-head"><span class="bar-label">DSCR ceiling</span><span class="bar-value" id="bar-value-dscr">$19.23M</span></div>
+                <div class="bar-track"><div class="bar-fill" id="bar-fill-dscr"></div></div>
+                <p class="bar-caption" id="bar-caption-dscr">NOI / (minimum DSCR × mortgage constant)</p>
+              </div>
+              <div class="bar-row binding" id="bar-row-dy">
+                <div class="bar-head"><span class="bar-label">Debt-yield ceiling</span><span class="bar-value" id="bar-value-dy">$17.50M</span></div>
+                <div class="bar-track"><div class="bar-fill" id="bar-fill-dy"></div></div>
+                <p class="bar-caption" id="bar-caption-dy">NOI / minimum debt yield</p>
+              </div>
+            </div>
+            <div class="axis" aria-hidden="true"><span>$0</span><span id="axis-max">$20.19M</span></div>
+            <p class="explanation" id="binding-explanation">The debt-yield test is tightest at $17.50M. The LTV and DSCR tests permit larger loans, but all three inequalities must hold.</p>
+          </div>
+
+          <div>
+            <h3 class="chart-title">Ratios at the permitted loan</h3>
+            <p class="chart-subtitle">Each calculated ratio satisfies its lender threshold; a binding test has no remaining headroom.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Test</th><th>Calculated</th><th>Requirement</th><th>Result</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>LTV</td><td id="actual-ltv">70.0%</td><td id="required-ltv">≤ 75.0%</td><td id="status-ltv" class="pass">Pass</td></tr>
+                  <tr><td>DSCR</td><td id="actual-dscr">1.32×</td><td id="required-dscr">≥ 1.20×</td><td id="status-dscr" class="pass">Pass</td></tr>
+                  <tr><td>Debt yield</td><td id="actual-dy">10.0%</td><td id="required-dy">≥ 10.0%</td><td id="status-dy" class="bind">Binding</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="note"><strong>Interpretation:</strong> Debt yield is the lender's cap rate because it divides the property's NOI by the lender's capital at risk. Unlike DSCR, it does not depend on the interest rate or amortization schedule.</p>
+          </div>
+        </div>
+
+        <div class="drivers" aria-label="Which assumptions affect each loan sizing test">
+          <div class="driver"><strong>Property value → LTV only</strong><span>A higher appraised value raises the LTV-based ceiling but does not directly change DSCR or debt yield.</span></div>
+          <div class="driver"><strong>NOI → DSCR and debt yield</strong><span>A higher NOI supports both more annual debt service and a larger lender-cap-rate loan.</span></div>
+          <div class="driver"><strong>Rate and amortization → DSCR only</strong><span>A higher payment constant lowers the DSCR-based loan ceiling while leaving LTV and debt yield unchanged.</span></div>
+        </div>
+        <p class="note">The tool assumes level monthly payments with a fixed annual interest rate and fully amortizing loan. It omits lender fees, interest-only periods, reserves, subordinate debt, and other covenants.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Created by Desen Lin</strong> for instructional use in FIN 355 at California State University, Fullerton.</p>
+    <p>This educational illustration is not financial advice or a substitute for a lender's underwriting and term sheet.</p>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const definitions = {
+        "property-value": { min: 5, max: 100, output: "property-value-output", format: value => money(value) },
+        "noi": { min: 0.25, max: 8, output: "noi-output", format: value => money(value) },
+        "rate": { min: 2, max: 12, output: "rate-output", format: value => value.toFixed(2) + "%" },
+        "amort": { min: 10, max: 40, output: "amort-output", format: value => Math.round(value) + " years" },
+        "ltv": { min: 50, max: 85, output: "ltv-output", format: value => value.toFixed(1) + "%" },
+        "dscr": { min: 1, max: 1.6, output: "dscr-output", format: value => value.toFixed(2) + "×" },
+        "dy": { min: 5, max: 15, output: "dy-output", format: value => value.toFixed(1) + "%" }
+      };
+
+      const labels = {
+        ltv: "LTV",
+        dscr: "DSCR",
+        dy: "Debt yield"
+      };
+
+      function money(value) {
+        if (!Number.isFinite(value)) return "-";
+        if (Math.abs(value) >= 1) return "$" + value.toFixed(2) + "M";
+        return "$" + Math.round(value * 1000).toLocaleString("en-US") + "K";
+      }
+
+      function readValue(key) {
+        return Number(document.getElementById(key + "-range").value);
+      }
+
+      function annualMortgageConstant(ratePercent, amortizationYears) {
+        const monthlyRate = ratePercent / 100 / 12;
+        const payments = amortizationYears * 12;
+        if (monthlyRate === 0) return 12 / payments;
+        return 12 * monthlyRate / (1 - Math.pow(1 + monthlyRate, -payments));
+      }
+
+      function bindControls() {
+        Object.entries(definitions).forEach(([key, definition]) => {
+          const range = document.getElementById(key + "-range");
+          const number = document.getElementById(key + "-number");
+          const output = document.getElementById(definition.output);
+
+          const syncFromRange = () => {
+            number.value = range.value;
+            output.textContent = definition.format(Number(range.value));
+            render();
+          };
+          const syncFromNumber = () => {
+            const parsed = Number(number.value);
+            if (!Number.isFinite(parsed)) return;
+            const clamped = Math.min(definition.max, Math.max(definition.min, parsed));
+            range.value = String(clamped);
+            output.textContent = definition.format(clamped);
+            render();
+          };
+          const clampNumber = () => {
+            const parsed = Number(number.value);
+            const clamped = Number.isFinite(parsed) ? Math.min(definition.max, Math.max(definition.min, parsed)) : Number(range.value);
+            number.value = String(clamped);
+            range.value = String(clamped);
+            output.textContent = definition.format(clamped);
+            render();
+          };
+
+          range.addEventListener("input", syncFromRange);
+          number.addEventListener("input", syncFromNumber);
+          number.addEventListener("change", clampNumber);
+        });
+      }
+
+      function render() {
+        const propertyValue = readValue("property-value");
+        const noi = readValue("noi");
+        const rate = readValue("rate");
+        const amortization = readValue("amort");
+        const maxLtv = readValue("ltv") / 100;
+        const minDscr = readValue("dscr");
+        const minDebtYield = readValue("dy") / 100;
+        const mortgageConstant = annualMortgageConstant(rate, amortization);
+
+        const capacities = {
+          ltv: propertyValue * maxLtv,
+          dscr: noi / (minDscr * mortgageConstant),
+          dy: noi / minDebtYield
+        };
+        const values = Object.values(capacities);
+        const permittedLoan = Math.min(...values);
+        const chartMax = Math.max(...values) * 1.05;
+        const tieTolerance = Math.max(permittedLoan * 0.001, 0.001);
+        const bindingKeys = Object.keys(capacities).filter(key => Math.abs(capacities[key] - permittedLoan) <= tieTolerance);
+        const annualDebtService = permittedLoan * mortgageConstant;
+
+        document.getElementById("max-loan").textContent = money(permittedLoan);
+        document.getElementById("binding-constraint").textContent = bindingKeys.map(key => labels[key]).join(" + ");
+        document.getElementById("annual-debt-service").textContent = money(annualDebtService);
+        document.getElementById("mortgage-constant").textContent = (mortgageConstant * 100).toFixed(2) + "% mortgage constant";
+        document.getElementById("axis-max").textContent = money(chartMax);
+
+        Object.entries(capacities).forEach(([key, capacity]) => {
+          const isBinding = bindingKeys.includes(key);
+          document.getElementById("bar-value-" + key).textContent = money(capacity);
+          document.getElementById("bar-fill-" + key).style.width = Math.max(0, Math.min(100, capacity / chartMax * 100)).toFixed(2) + "%";
+          document.getElementById("bar-row-" + key).classList.toggle("binding", isBinding);
+        });
+
+        const actualLtv = permittedLoan / propertyValue;
+        const actualDscr = noi / annualDebtService;
+        const actualDebtYield = noi / permittedLoan;
+        document.getElementById("actual-ltv").textContent = (actualLtv * 100).toFixed(1) + "%";
+        document.getElementById("actual-dscr").textContent = actualDscr.toFixed(2) + "×";
+        document.getElementById("actual-dy").textContent = (actualDebtYield * 100).toFixed(1) + "%";
+        document.getElementById("required-ltv").textContent = "≤ " + (maxLtv * 100).toFixed(1) + "%";
+        document.getElementById("required-dscr").textContent = "≥ " + minDscr.toFixed(2) + "×";
+        document.getElementById("required-dy").textContent = "≥ " + (minDebtYield * 100).toFixed(1) + "%";
+
+        ["ltv", "dscr", "dy"].forEach(key => {
+          const cell = document.getElementById("status-" + key);
+          const isBinding = bindingKeys.includes(key);
+          cell.textContent = isBinding ? "Binding" : "Pass";
+          cell.className = isBinding ? "bind" : "pass";
+        });
+
+        const bindingNames = bindingKeys.map(key => labels[key]);
+        let lead;
+        if (bindingNames.length === 1) {
+          lead = "The " + bindingNames[0] + " test is tightest at " + money(permittedLoan) + ".";
+        } else {
+          lead = bindingNames.join(" and ") + " tie at " + money(permittedLoan) + ".";
+        }
+        const otherNames = Object.keys(capacities).filter(key => !bindingKeys.includes(key)).map(key => labels[key]);
+        const tail = otherNames.length ? " The " + otherNames.join(" and ") + " test" + (otherNames.length > 1 ? "s permit" : " permits") + " a larger loan, but all three inequalities must hold." : " All three tests bind at the same loan amount.";
+        document.getElementById("binding-explanation").textContent = lead + tail;
+
+        document.getElementById("capacity-bars").setAttribute(
+          "aria-label",
+          "LTV supports " + money(capacities.ltv) + ", DSCR supports " + money(capacities.dscr) + ", and debt yield supports " + money(capacities.dy) + ". The maximum permitted loan is " + money(permittedLoan) + "."
+        );
+      }
+
+      bindControls();
+      render();
+    })();
+  </script>
+</body>
+</html>
