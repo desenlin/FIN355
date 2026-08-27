@@ -29,6 +29,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.github.io/FIN355/amortization.html">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Commercial Mortgage Loan Sizing</strong></td>
+      <td>Compares the maximum loan supported by LTV, DSCR, and debt-yield underwriting tests, identifies the binding constraint, and shows how property, loan-term, and lender-threshold assumptions change each ceiling.</td>
+      <td><a href="https://desenlin.github.io/FIN355/loan-sizing.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>Internal Rate of Return as a Zero-NPV Solution</strong></td>
       <td>Visualizes IRR as an x-intercept of the NPV profile, lets students edit annual cash flows, and demonstrates why nonconventional cash flows can produce multiple IRRs or no real IRR.</td>
       <td><a href="https://desenlin.github.io/FIN355/irr.html">Launch the tool</a></td>
@@ -50,7 +55,8 @@ The collection is designed to grow over time. New interactive tools and course p
     </tr>
   </tbody>
 </table>
-<!--  · [View source](./amortization.html) --> 
+<!--  · [View source](./amortization.html) -->
+<!--  · [View source](./loan-sizing.html) --> 
 <!--  · [View source](./irr.html) -->
 <!--  · [View source](./cmbs-tranching.html) -->
 <!--  · [View source](./net-effective-rent.html) -->
