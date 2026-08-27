@@ -54,6 +54,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.github.io/FIN355/development-feasibility.html">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Three Real Estate Company Valuation Approaches</strong></td>
+      <td>Compares discounted cash flow, direct capitalization, and net asset value, showing how operating forecasts, required returns, cap rates, debt, and other balance-sheet assumptions change the implied equity value.</td>
+      <td><a href="https://desenlin.github.io/FIN355/valuation-approaches.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>Real Estate Exit Strategies: Sale, Refinancing, and Like-Kind Exchange</strong></td>
       <td>Compares immediate cash, retained real estate equity, debt, transaction costs, and current taxes across a sale, cash-out refinancing, and Section 1031 exchange, including the taxable-boot boundary for partial versus full deferral.</td>
       <td><a href="https://desenlin.github.io/FIN355/exit-strategies.html">Launch the tool</a></td>
@@ -67,6 +72,7 @@ The collection is designed to grow over time. New interactive tools and course p
 <!--  · [View source](./net-effective-rent.html) -->
 <!--  · [View source](./development-feasibility.html) -->
 <!--  · [View source](./exit-strategies.html) -->
+<!--  · [View source](./valuation-approaches.html) -->
 
 > Additional FIN 355 tools and pages will be listed here as they are developed.
 
