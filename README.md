@@ -53,6 +53,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td>Uses one development model to solve either for the minimum replacement rent or the maximum supportable land cost, with a live feasibility boundary linking rent, land, NOI, and yield on cost.</td>
       <td><a href="https://desenlin.github.io/FIN355/development-feasibility.html">Launch the tool</a></td>
     </tr>
+    <tr>
+      <td><strong>Real Estate Exit Strategies: Sale, Refinancing, and Like-Kind Exchange</strong></td>
+      <td>Compares immediate cash, retained real estate equity, debt, transaction costs, and current taxes across a sale, cash-out refinancing, and Section 1031 exchange, including the taxable-boot boundary for partial versus full deferral.</td>
+      <td><a href="https://desenlin.github.io/FIN355/exit-strategies.html">Launch the tool</a></td>
+    </tr>
   </tbody>
 </table>
 <!--  · [View source](./amortization.html) -->
@@ -61,6 +66,7 @@ The collection is designed to grow over time. New interactive tools and course p
 <!--  · [View source](./cmbs-tranching.html) -->
 <!--  · [View source](./net-effective-rent.html) -->
 <!--  · [View source](./development-feasibility.html) -->
+<!--  · [View source](./exit-strategies.html) -->
 
 > Additional FIN 355 tools and pages will be listed here as they are developed.
 
