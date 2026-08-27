@@ -33,10 +33,16 @@ The collection is designed to grow over time. New interactive tools and course p
       <td>Visualizes IRR as an x-intercept of the NPV profile, lets students edit annual cash flows, and demonstrates why nonconventional cash flows can produce multiple IRRs or no real IRR.</td>
       <td><a href="https://desenlin.github.io/FIN355/irr.html">Launch the tool</a></td>
     </tr>
+    <tr>
+      <td><strong>CMBS Tranching and the First-Loss Waterfall</strong></td>
+      <td>Builds a six-tranche CMBS capital stack, connects investor yields to pool pricing, and allocates collateral losses from the first-loss bond upward through attachment and detachment points.</td>
+      <td><a href="https://desenlin.github.io/FIN355/cmbs-tranching.html">Launch the tool</a></td>
+    </tr>
   </tbody>
 </table>
 <!--  · [View source](./amortization.html) --> 
 <!--  · [View source](./irr.html) -->
+<!--  · [View source](./cmbs-tranching.html) -->
 
 > Additional FIN 355 tools and pages will be listed here as they are developed.
 
