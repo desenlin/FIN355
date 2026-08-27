@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 tool for development feasibility, replacement rent, yield on cost, and residual land valuation.">
+  <title>Development Feasibility: Replacement Rent and Land Value | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --positive: #16745b;
+      --negative: #c44235;
+      --warning: #a95d00;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    button:focus-visible, input:focus-visible, summary:focus-visible {
+      outline: 3px solid rgba(245, 130, 32, 0.45);
+      outline-offset: 2px;
+    }
+    .topbar { height: 8px; background: var(--orange); }
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+    .hero-inner, main, footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .hero-inner { padding: 42px 0 46px; }
+    .course-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 940px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4.6vw, 3.45rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+    .hero p {
+      max-width: 880px;
+      margin-bottom: 8px;
+      color: #e4edf6;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+    .creator { color: #f8c99f !important; font-size: 0.9rem !important; font-weight: 700; }
+    main { display: grid; gap: 22px; padding: 28px 0 46px; }
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(0, 39, 76, 0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card-body { padding: 24px; }
+    .section-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    .section-heading h2 {
+      margin-bottom: 4px;
+      color: var(--navy);
+      font-size: 1.42rem;
+      line-height: 1.25;
+    }
+    .section-heading p { margin-bottom: 0; color: var(--muted); font-size: 0.94rem; }
+    .concept-grid, .workspace-grid, .inverse-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+    .concept-panel {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .concept-panel:first-child { color: var(--white); background: var(--navy); border-color: var(--navy); }
+    .concept-panel:last-child { background: #fff7ef; border-color: #f2c79f; }
+    .concept-panel h3 { margin-bottom: 8px; font-size: 1.08rem; }
+    .concept-panel:first-child h3 { color: var(--white); }
+    .concept-panel:last-child h3 { color: var(--navy); }
+    .concept-panel p { margin-bottom: 0; font-size: 0.9rem; }
+    .concept-panel:first-child p { color: #dce9f5; }
+    .eyebrow {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--orange-dark);
+      font-size: 0.75rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .concept-panel:first-child .eyebrow { color: #f7b77e; }
+    .equivalence {
+      margin-top: 18px;
+      padding: 17px 19px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: 10px;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1rem, 2vw, 1.24rem);
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+      margin-bottom: 18px;
+    }
+    .control {
+      min-width: 0;
+      padding: 13px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .control.core { border-top: 4px solid var(--orange); }
+    .control label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 0.84rem;
+      font-weight: 780;
+    }
+    .control output { color: var(--orange-dark); white-space: nowrap; }
+    .control-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 88px;
+      gap: 9px;
+      align-items: center;
+    }
+    input[type="range"] { width: 100%; accent-color: var(--orange); cursor: pointer; }
+    input[type="number"] {
+      width: 100%;
+      min-height: 36px;
+      padding: 6px 8px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 7px;
+      text-align: right;
+      font-size: 0.84rem;
+      font-weight: 650;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .action-button {
+      min-height: 38px;
+      padding: 8px 13px;
+      color: var(--navy);
+      background: var(--soft);
+      border: 1px solid #c9d2df;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 780;
+    }
+    .action-button:hover { background: #e6edf5; }
+    .action-button:disabled { color: #8993a2; background: #eef1f5; cursor: not-allowed; }
+    .action-button.primary { color: var(--white); background: var(--navy); border-color: var(--navy); }
+    .action-button.primary:hover { background: var(--navy-2); }
+    details {
+      margin-bottom: 18px;
+      background: #fbfcfe;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    summary { padding: 12px 14px; color: var(--navy); cursor: pointer; font-weight: 800; }
+    details .controls { margin: 0; padding: 4px 14px 14px; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 18px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .metric { min-width: 0; padding: 17px 18px; border-right: 1px solid var(--line); }
+    .metric:last-child { border-right: 0; }
+    .metric-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 0.73rem;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      font-size: clamp(1.14rem, 2.2vw, 1.58rem);
+      font-weight: 850;
+      line-height: 1.2;
+    }
+    .metric-note { display: block; margin-top: 4px; color: var(--muted); font-size: 0.76rem; }
+    .positive { color: var(--positive) !important; }
+    .negative { color: var(--negative) !important; }
+    .warning { color: var(--warning) !important; }
+    .visual-panel, .table-panel, .model-panel {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      color: var(--white);
+      background: var(--navy);
+    }
+    .panel-header strong { font-size: 0.92rem; }
+    .panel-header span { color: #dce9f5; font-size: 0.78rem; }
+    .chart-wrap { width: 100%; min-width: 0; overflow-x: auto; }
+    svg { display: block; width: 100%; height: auto; }
+    .chart-note { margin: 10px 14px 14px; color: var(--muted); font-size: 0.8rem; }
+    .inverse-card { padding: 19px; border-radius: 11px; }
+    .inverse-card.rent { color: var(--white); background: var(--navy); }
+    .inverse-card.land { background: #fff7ef; border: 1px solid #f2c79f; }
+    .inverse-card h3 { margin-bottom: 7px; font-size: 1.05rem; }
+    .inverse-card.land h3 { color: var(--navy); }
+    .inverse-output { display: block; margin: 12px 0 5px; font-size: clamp(1.55rem, 3vw, 2.2rem); font-weight: 880; }
+    .inverse-card.rent .inverse-output { color: #f8c99f; }
+    .inverse-card.land .inverse-output { color: var(--orange-dark); }
+    .inverse-card p { margin-bottom: 0; font-size: 0.86rem; }
+    .inverse-card.rent p { color: #dce9f5; }
+    .model-body { padding: 17px; }
+    .model-row { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 15px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .model-row:last-child { border-bottom: 0; }
+    .model-row span { color: var(--muted); }
+    .model-row strong { color: var(--navy); text-align: right; }
+    .yield-track {
+      position: relative;
+      height: 28px;
+      margin: 18px 0 8px;
+      overflow: hidden;
+      background: #e8edf3;
+      border-radius: 999px;
+    }
+    .yield-fill { height: 100%; width: 0; background: var(--positive); border-radius: inherit; transition: width 150ms ease; }
+    .yield-target { position: absolute; top: -4px; bottom: -4px; width: 3px; background: var(--navy); }
+    .yield-labels { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 0.78rem; }
+    .callout {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+    }
+    .callout.feasible { color: #0d5542; background: #e8f6f1; border: 1px solid #89c8b5; }
+    .callout.infeasible { color: #7e2c24; background: #fff0ed; border: 1px solid #e8aaa2; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+      font-size: 0.84rem;
+    }
+    th { color: var(--navy); background: #edf2f7; font-size: 0.72rem; letter-spacing: 0.03em; text-transform: uppercase; }
+    th:first-child, td:first-child { text-align: left; }
+    tbody tr:nth-child(even) { background: #fafbfd; }
+    tbody tr:last-child td { border-bottom: 0; }
+    .takeaways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .takeaway { padding: 17px; background: #f8fafc; border: 1px solid var(--line); border-top: 4px solid var(--orange); border-radius: 10px; }
+    .takeaway h3 { margin-bottom: 7px; color: var(--navy); font-size: 1rem; }
+    .takeaway p { margin-bottom: 0; color: var(--muted); font-size: 0.87rem; }
+    .disclaimer { padding: 18px 20px; color: #5b4300; background: #fff8df; border: 1px solid #e8cf78; border-radius: 11px; font-size: 0.86rem; }
+    footer { padding: 0 0 34px; color: var(--muted); text-align: center; font-size: 0.82rem; }
+
+    @media (max-width: 920px) {
+      .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .hero-inner { padding: 34px 0 38px; }
+      .card-body { padding: 18px; }
+      .concept-grid, .controls, .inverse-grid, .takeaways { grid-template-columns: 1fr; }
+      .section-heading { display: block; }
+      .section-heading .action-button { margin-top: 12px; }
+    }
+    @media (max-width: 480px) {
+      .hero-inner, main, footer { width: min(100% - 20px, 1180px); }
+      .metrics { grid-template-columns: 1fr; }
+      .metric, .metric:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .yield-fill { transition: none; } }
+    @media print {
+      body { background: var(--white); }
+      .hero { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .card { break-inside: avoid; box-shadow: none; }
+      .actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="course-tag">FIN 355 · Real Estate Investment Analysis</div>
+      <h1>Development Feasibility: Replacement Rent and Land Value</h1>
+      <p>Use one development model in two directions: solve for the rent needed to justify a land cost, or solve for the land price supported by a market rent.</p>
+      <p class="creator">Created by Desen Lin for instructional use at Cal State Fullerton</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="conceptTitle">
+      <div class="card-body">
+        <div class="section-heading"><div><h2 id="conceptTitle">One feasibility boundary, two inverse questions</h2><p>A project is feasible only when its stabilized yield on total development cost meets the required return.</p></div></div>
+        <div class="concept-grid">
+          <article class="concept-panel">
+            <span class="eyebrow">Land cost is given</span>
+            <h3>What replacement rent is required?</h3>
+            <p>Back-solve for the minimum market rent per leasable square foot that produces enough NOI to cover the chosen land, hard, and soft costs at the required yield.</p>
+          </article>
+          <article class="concept-panel">
+            <span class="eyebrow">Market rent is given</span>
+            <h3>What is the maximum land cost?</h3>
+            <p>Capitalize the stabilized NOI at the required return, then subtract hard and soft costs. The remainder is the residual value available for land.</p>
+          </article>
+        </div>
+        <div class="equivalence">Market rent ≥ replacement rent &nbsp; ⇔ &nbsp; land cost ≤ maximum land cost &nbsp; ⇔ &nbsp; yield on cost ≥ required return</div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="modelTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div><h2 id="modelTitle">Interactive development model</h2><p>Move market rent or land cost continuously. Both inverse solutions and the feasibility chart update from the same assumptions.</p></div>
+          <button id="resetAll" class="action-button" type="button">Reset residual-land example</button>
+        </div>
+
+        <div class="controls">
+          <div class="control core">
+            <label for="marketRent">Market rent per LSF <output id="marketRentOut">$38.00</output></label>
+            <div class="control-row"><input id="marketRent" type="range" min="15" max="60" step="0.001" value="38"><input id="marketRentNum" type="number" min="15" max="60" step="0.001" value="38" aria-label="Market rent exact value"></div>
+          </div>
+          <div class="control core">
+            <label for="landCost">Land cost per building GSF <output id="landCostOut">$30.00</output></label>
+            <div class="control-row"><input id="landCost" type="range" min="0" max="80" step="0.001" value="30"><input id="landCostNum" type="number" min="0" max="80" step="0.001" value="30" aria-label="Land cost exact value"></div>
+          </div>
+          <div class="control core">
+            <label for="requiredReturn">Required return <output id="requiredReturnOut">10.0%</output></label>
+            <div class="control-row"><input id="requiredReturn" type="range" min="4" max="18" step="0.1" value="10"><input id="requiredReturnNum" type="number" min="4" max="18" step="0.1" value="10" aria-label="Required return exact value"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="animateRent" class="action-button primary" type="button">Animate market rent</button>
+          <button id="animateLand" class="action-button primary" type="button">Animate land cost</button>
+          <button id="setReplacement" class="action-button" type="button">Set rent to break-even</button>
+          <button id="setMaximumLand" class="action-button" type="button">Set land to maximum</button>
+          <button id="courseRentPreset" class="action-button" type="button">Course rent example ($30)</button>
+        </div>
+
+        <details>
+          <summary>Building, operating, and site assumptions</summary>
+          <div class="controls">
+            <div class="control">
+              <label for="efficiency">Leasable-space efficiency <output id="efficiencyOut">70.0%</output></label>
+              <div class="control-row"><input id="efficiency" type="range" min="45" max="95" step="1" value="70"><input id="efficiencyNum" type="number" min="45" max="95" step="1" value="70" aria-label="Leasable-space efficiency exact value"></div>
+            </div>
+            <div class="control">
+              <label for="vacancy">Stabilized vacancy <output id="vacancyOut">5.0%</output></label>
+              <div class="control-row"><input id="vacancy" type="range" min="0" max="25" step="0.5" value="5"><input id="vacancyNum" type="number" min="0" max="25" step="0.5" value="5" aria-label="Stabilized vacancy exact value"></div>
+            </div>
+            <div class="control">
+              <label for="operatingCost">Operating cost per GSF <output id="operatingCostOut">$10.00</output></label>
+              <div class="control-row"><input id="operatingCost" type="range" min="0" max="25" step="0.25" value="10"><input id="operatingCostNum" type="number" min="0" max="25" step="0.25" value="10" aria-label="Operating cost exact value"></div>
+            </div>
+            <div class="control">
+              <label for="softCost">Soft cost per GSF <output id="softCostOut">$30.00</output></label>
+              <div class="control-row"><input id="softCost" type="range" min="0" max="70" step="1" value="30"><input id="softCostNum" type="number" min="0" max="70" step="1" value="30" aria-label="Soft cost exact value"></div>
+            </div>
+            <div class="control">
+              <label for="hardCost">Hard cost per GSF <output id="hardCostOut">$90.00</output></label>
+              <div class="control-row"><input id="hardCost" type="range" min="30" max="180" step="1" value="90"><input id="hardCostNum" type="number" min="30" max="180" step="1" value="90" aria-label="Hard cost exact value"></div>
+            </div>
+            <div class="control">
+              <label for="siteAcres">Development site <output id="siteAcresOut">1.00 acre</output></label>
+              <div class="control-row"><input id="siteAcres" type="range" min="0.25" max="10" step="0.25" value="1"><input id="siteAcresNum" type="number" min="0.25" max="10" step="0.25" value="1" aria-label="Site acres exact value"></div>
+            </div>
+            <div class="control">
+              <label for="far">Floor area ratio <output id="farOut">1.00×</output></label>
+              <div class="control-row"><input id="far" type="range" min="0.25" max="5" step="0.25" value="1"><input id="farNum" type="number" min="0.25" max="5" step="0.25" value="1" aria-label="Floor area ratio exact value"></div>
+            </div>
+          </div>
+        </details>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><span class="metric-label">Expected yield on cost</span><strong id="yieldOnCost" class="metric-value positive">10.18%</strong><span id="yieldNote" class="metric-note">0.18 percentage points above required</span></div>
+          <div class="metric"><span class="metric-label">Replacement rent</span><strong id="replacementRent" class="metric-value">$37.59/LSF</strong><span class="metric-note">Minimum market rent for feasibility</span></div>
+          <div class="metric"><span class="metric-label">Maximum land cost</span><strong id="maximumLand" class="metric-value">$32.70/GSF</strong><span class="metric-note">Residual land value per building GSF</span></div>
+          <div class="metric"><span class="metric-label">Maximum total land price</span><strong id="maximumLandTotal" class="metric-value">$1,424,412</strong><span id="buildingSizeNote" class="metric-note">43,560 building GSF at 1.00× FAR</span></div>
+        </div>
+
+        <div class="inverse-grid">
+          <article class="inverse-card rent">
+            <span class="eyebrow">Solve backward for rent</span>
+            <h3>Given current land cost</h3>
+            <strong id="rentInverse" class="inverse-output">$37.59/LSF</strong>
+            <p id="rentInverseNote">The market rent is $0.41 above the replacement rent.</p>
+          </article>
+          <article class="inverse-card land">
+            <span class="eyebrow">Residual land valuation</span>
+            <h3>Given current market rent</h3>
+            <strong id="landInverse" class="inverse-output">$32.70/GSF</strong>
+            <p id="landInverseNote">The current land cost is $2.70 below the maximum.</p>
+          </article>
+        </div>
+
+        <div class="workspace-grid" style="margin-top:18px">
+          <div class="visual-panel">
+            <div class="panel-header"><strong>Feasibility boundary</strong><span>Above the line is feasible</span></div>
+            <div class="chart-wrap"><svg id="boundaryChart" viewBox="0 0 1000 580" role="img" aria-labelledby="boundaryTitle boundaryDesc"></svg></div>
+            <p class="chart-note">The current project is the orange point. Its vertical projection gives replacement rent; its horizontal projection gives maximum land cost.</p>
+          </div>
+          <div class="model-panel">
+            <div class="panel-header"><strong>From market rent to yield on cost</strong><span>All unit values are per building GSF unless noted</span></div>
+            <div class="model-body">
+              <div class="model-row"><span>Market rent per leasable SF</span><strong id="flowMarketRent">$38.00</strong></div>
+              <div class="model-row"><span>Effective rent after vacancy per LSF</span><strong id="flowEffectiveRent">$36.10</strong></div>
+              <div class="model-row"><span>Rental revenue per building GSF</span><strong id="flowRevenue">$25.27</strong></div>
+              <div class="model-row"><span>Operating costs</span><strong id="flowOperating">($10.00)</strong></div>
+              <div class="model-row"><span>Stabilized NOI</span><strong id="flowNoi">$15.27</strong></div>
+              <div class="model-row"><span>Total development cost</span><strong id="flowTotalCost">$150.00</strong></div>
+              <div class="model-row"><span>Required NOI at target return</span><strong id="flowRequiredNoi">$15.00</strong></div>
+              <div class="yield-track" aria-hidden="true"><div id="yieldFill" class="yield-fill"></div><div id="yieldTarget" class="yield-target"></div></div>
+              <div class="yield-labels"><span id="yieldScaleZero">0%</span><span id="yieldScaleMax">15%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="decisionCallout" class="callout feasible"><strong>Feasible:</strong> The expected yield on cost exceeds the required return.</div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="auditTitle">
+      <div class="card-body">
+        <div class="section-heading"><div><h2 id="auditTitle">Model equations and course benchmarks</h2><p>The transparent calculation chain makes the inverse solutions directly auditable.</p></div></div>
+        <div class="table-panel">
+          <div class="panel-header"><strong>Current calculation</strong><span>Values update with every assumption</span></div>
+          <table>
+            <thead><tr><th>Calculation</th><th>Current value</th><th>Interpretation</th></tr></thead>
+            <tbody>
+              <tr><td>Effective rent per LSF</td><td id="tableEffectiveRent">$36.10</td><td>Market rent × occupancy</td></tr>
+              <tr><td>Rental revenue per GSF</td><td id="tableRevenue">$25.27</td><td>Effective rent × efficiency</td></tr>
+              <tr><td>Stabilized NOI per GSF</td><td id="tableNoi">$15.27</td><td>Revenue − operating costs</td></tr>
+              <tr><td>Yield on cost</td><td id="tableYield">10.18%</td><td>NOI ÷ total development cost</td></tr>
+              <tr><td>Replacement rent per GSF</td><td id="tableReplacementGsf">$25.00</td><td>Required return × cost + operating costs</td></tr>
+              <tr><td>Replacement rent per LSF</td><td id="tableReplacementLsf">$37.59</td><td>Replacement rent per GSF ÷ efficiency ÷ occupancy</td></tr>
+              <tr><td>Maximum land cost per GSF</td><td id="tableMaxLand">$32.70</td><td>NOI ÷ required return − soft costs − hard costs</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="equivalence">Replacement rent per LSF = [required return × (land + hard + soft) + operating costs] ÷ [efficiency × (1 − vacancy)]</div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="takeawayTitle">
+      <div class="card-body">
+        <div class="section-heading"><div><h2 id="takeawayTitle">What students should notice</h2><p>Feasibility is jointly determined by revenue, costs, building efficiency, and the required return.</p></div></div>
+        <div class="takeaways">
+          <article class="takeaway"><h3>Land and rent are linked</h3><p>A higher land price requires a higher replacement rent. A stronger market rent supports a higher residual land value.</p></article>
+          <article class="takeaway"><h3>Efficiency and vacancy matter twice</h3><p>Quoted rent is per leasable square foot, while development costs are per gross square foot. Space loss and vacancy reduce the revenue available to support cost.</p></article>
+          <article class="takeaway"><h3>Negative residual value is informative</h3><p>If maximum land cost is negative, the project cannot meet the required return even with free land; rent, design, or non-land costs must change.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <div class="disclaimer"><strong>Instructional-use notice.</strong> This tool was created for FIN 355 at California State University, Fullerton. It is a simplified feasibility screen and is intended for teaching only, not for financial, legal, tax, appraisal, or investment advice.</div>
+  </main>
+
+  <footer>Created by Desen Lin · FIN 355 · California State University, Fullerton · For instructional use only</footer>
+
+  <script>
+    (() => {
+      "use strict";
+      const $ = (id) => document.getElementById(id);
+      const NS = "http://www.w3.org/2000/svg";
+      const COLORS = { navy: "#00274c", muted: "#5c677d", grid: "#d8dee9", white: "#ffffff", orange: "#f58220", positive: "#16745b", negative: "#c44235" };
+      const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const currency0 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+      const percent2 = new Intl.NumberFormat("en-US", { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const number0 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+      const defaults = { marketRent: 38, landCost: 30, requiredReturn: 10, efficiency: 70, vacancy: 5, operatingCost: 10, softCost: 30, hardCost: 90, siteAcres: 1, far: 1 };
+      let animationFrame = null;
+      let animationStart = null;
+      let animationKind = null;
+
+      function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+      function value(id) {
+        const element = $(id);
+        const numeric = Number(element.value);
+        return clamp(Number.isFinite(numeric) ? numeric : Number(element.min), Number(element.min), Number(element.max));
+      }
+      function money(valueToFormat) { return currency.format(valueToFormat); }
+      function signedMoney(valueToFormat) { return `${valueToFormat < 0 ? "−" : "+"}${currency.format(Math.abs(valueToFormat))}`; }
+      function percent(valueToFormat) { return percent2.format(valueToFormat); }
+
+      function bindPair(id, format) {
+        const range = $(id);
+        const exact = $(`${id}Num`);
+        const output = $(`${id}Out`);
+        const sync = (source, target) => {
+          stopAnimation();
+          let next = Number(source.value);
+          if (!Number.isFinite(next)) next = Number(range.value);
+          next = clamp(next, Number(range.min), Number(range.max));
+          source.value = String(next);
+          target.value = String(next);
+          output.textContent = format(next);
+          render();
+        };
+        range.addEventListener("input", () => sync(range, exact));
+        exact.addEventListener("input", () => sync(exact, range));
+        output.textContent = format(Number(range.value));
+      }
+
+      function assumptions() {
+        return {
+          marketRent: value("marketRent"), landCost: value("landCost"), requiredReturn: value("requiredReturn") / 100,
+          efficiency: value("efficiency") / 100, vacancy: value("vacancy") / 100, operatingCost: value("operatingCost"),
+          softCost: value("softCost"), hardCost: value("hardCost"), siteAcres: value("siteAcres"), far: value("far")
+        };
+      }
+
+      function calculate(a) {
+        const occupancy = 1 - a.vacancy;
+        const occupiedEfficiency = a.efficiency * occupancy;
+        const effectiveRentLsf = a.marketRent * occupancy;
+        const revenueGsf = effectiveRentLsf * a.efficiency;
+        const noiGsf = revenueGsf - a.operatingCost;
+        const totalCostGsf = a.landCost + a.softCost + a.hardCost;
+        const yieldOnCost = totalCostGsf > 0 ? noiGsf / totalCostGsf : NaN;
+        const requiredNoi = a.requiredReturn * totalCostGsf;
+        const replacementRentGsf = requiredNoi + a.operatingCost;
+        const replacementRentLsf = occupiedEfficiency > 0 ? replacementRentGsf / occupiedEfficiency : NaN;
+        const maxLandGsf = a.requiredReturn > 0 ? noiGsf / a.requiredReturn - a.softCost - a.hardCost : NaN;
+        const buildingGsf = a.siteAcres * 43560 * a.far;
+        const maxLandTotal = maxLandGsf * buildingGsf;
+        const currentLandTotal = a.landCost * buildingGsf;
+        return { occupancy, occupiedEfficiency, effectiveRentLsf, revenueGsf, noiGsf, totalCostGsf, yieldOnCost, requiredNoi, replacementRentGsf, replacementRentLsf, maxLandGsf, buildingGsf, maxLandTotal, currentLandTotal };
+      }
+
+      function render() {
+        const a = assumptions();
+        const c = calculate(a);
+        const feasible = c.yieldOnCost >= a.requiredReturn - 1e-12;
+        const yieldGap = c.yieldOnCost - a.requiredReturn;
+        const rentGap = a.marketRent - c.replacementRentLsf;
+        const landGap = c.maxLandGsf - a.landCost;
+
+        $("yieldOnCost").textContent = percent(c.yieldOnCost);
+        $("yieldOnCost").className = `metric-value ${feasible ? "positive" : "negative"}`;
+        $("yieldNote").textContent = `${Math.abs(yieldGap * 100).toFixed(2)} percentage points ${yieldGap >= 0 ? "above" : "below"} required`;
+        $("replacementRent").textContent = `${money(c.replacementRentLsf)}/LSF`;
+        $("maximumLand").textContent = `${money(c.maxLandGsf)}/GSF`;
+        $("maximumLand").className = `metric-value ${c.maxLandGsf >= 0 ? "" : "negative"}`;
+        $("maximumLandTotal").textContent = currency0.format(c.maxLandTotal);
+        $("maximumLandTotal").className = `metric-value ${c.maxLandTotal >= 0 ? "" : "negative"}`;
+        $("buildingSizeNote").textContent = `${number0.format(c.buildingGsf)} building GSF at ${a.far.toFixed(2)}× FAR`;
+
+        $("rentInverse").textContent = `${money(c.replacementRentLsf)}/LSF`;
+        $("rentInverseNote").textContent = `The market rent is ${money(Math.abs(rentGap))} ${rentGap >= 0 ? "above" : "below"} the replacement rent.`;
+        $("landInverse").textContent = `${money(c.maxLandGsf)}/GSF`;
+        $("landInverseNote").textContent = c.maxLandGsf < 0
+          ? `The residual is negative: even free land would not make the current rent feasible.`
+          : `The current land cost is ${money(Math.abs(landGap))} ${landGap >= 0 ? "below" : "above"} the maximum.`;
+        $("setMaximumLand").disabled = c.maxLandGsf < 0;
+        $("setMaximumLand").textContent = c.maxLandGsf < 0 ? "No nonnegative land solution" : "Set land to maximum";
+
+        $("flowMarketRent").textContent = money(a.marketRent);
+        $("flowEffectiveRent").textContent = money(c.effectiveRentLsf);
+        $("flowRevenue").textContent = money(c.revenueGsf);
+        $("flowOperating").textContent = `(${money(a.operatingCost)})`;
+        $("flowNoi").textContent = money(c.noiGsf);
+        $("flowTotalCost").textContent = money(c.totalCostGsf);
+        $("flowRequiredNoi").textContent = money(c.requiredNoi);
+
+        $("tableEffectiveRent").textContent = money(c.effectiveRentLsf);
+        $("tableRevenue").textContent = money(c.revenueGsf);
+        $("tableNoi").textContent = money(c.noiGsf);
+        $("tableYield").textContent = percent(c.yieldOnCost);
+        $("tableReplacementGsf").textContent = money(c.replacementRentGsf);
+        $("tableReplacementLsf").textContent = money(c.replacementRentLsf);
+        $("tableMaxLand").textContent = money(c.maxLandGsf);
+
+        const scaleMax = Math.max(0.15, a.requiredReturn * 1.5, c.yieldOnCost * 1.25);
+        $("yieldFill").style.width = `${clamp(c.yieldOnCost / scaleMax * 100, 0, 100)}%`;
+        $("yieldFill").style.background = feasible ? COLORS.positive : COLORS.negative;
+        $("yieldTarget").style.left = `${clamp(a.requiredReturn / scaleMax * 100, 0, 100)}%`;
+        $("yieldScaleMax").textContent = percent(scaleMax);
+
+        const callout = $("decisionCallout");
+        callout.className = `callout ${feasible ? "feasible" : "infeasible"}`;
+        callout.innerHTML = feasible
+          ? `<strong>Feasible:</strong> Expected yield on cost is ${percent(c.yieldOnCost)}, above the ${percent(a.requiredReturn)} required return. The project has ${money(rentGap)} of rent cushion and ${money(landGap)} of land-cost cushion per GSF.`
+          : `<strong>Not feasible:</strong> Expected yield on cost is ${percent(c.yieldOnCost)}, below the ${percent(a.requiredReturn)} required return. Raise market rent to ${money(c.replacementRentLsf)}/LSF, reduce land cost to ${money(c.maxLandGsf)}/GSF, or change another model assumption.`;
+
+        renderBoundary(a, c);
+      }
+
+      function svgElement(name, attrs = {}) {
+        const element = document.createElementNS(NS, name);
+        Object.entries(attrs).forEach(([key, val]) => element.setAttribute(key, String(val)));
+        return element;
+      }
+      function addText(svg, text, x, y, attrs = {}) {
+        const element = svgElement("text", { x, y, ...attrs });
+        element.textContent = text;
+        svg.appendChild(element);
+        return element;
+      }
+      function resetSvg(svg, title, description) {
+        svg.innerHTML = "";
+        const titleNode = svgElement("title", { id: "boundaryTitle" });
+        titleNode.textContent = title;
+        const descNode = svgElement("desc", { id: "boundaryDesc" });
+        descNode.textContent = description;
+        svg.append(titleNode, descNode);
+      }
+
+      function renderBoundary(a, c) {
+        const svg = $("boundaryChart");
+        resetSvg(svg, "Development feasibility boundary", "A line separates feasible rent and land-cost combinations from infeasible combinations. The current project is marked in orange.");
+        const width = 1000;
+        const height = 580;
+        const margin = { top: 42, right: 45, bottom: 78, left: 92 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        const xMax = Math.max(80, a.landCost * 1.25, c.maxLandGsf > 0 ? c.maxLandGsf * 1.3 : 0);
+        const boundaryAt = (land) => (a.requiredReturn * (land + a.softCost + a.hardCost) + a.operatingCost) / (a.efficiency * (1 - a.vacancy));
+        const yMax = Math.max(60, a.marketRent * 1.3, boundaryAt(xMax) * 1.18);
+        const x = (val) => margin.left + val / xMax * innerWidth;
+        const y = (val) => margin.top + (yMax - val) / yMax * innerHeight;
+
+        for (let i = 0; i <= 4; i += 1) {
+          const xValue = xMax * i / 4;
+          const px = x(xValue);
+          svg.appendChild(svgElement("line", { x1: px, y1: margin.top, x2: px, y2: height - margin.bottom, stroke: COLORS.grid, "stroke-width": 1 }));
+          addText(svg, money(xValue), px, height - margin.bottom + 25, { "text-anchor": "middle", fill: COLORS.muted, "font-size": 12 });
+          const yValue = yMax * i / 4;
+          const py = y(yValue);
+          svg.appendChild(svgElement("line", { x1: margin.left, y1: py, x2: width - margin.right, y2: py, stroke: COLORS.grid, "stroke-width": 1 }));
+          addText(svg, money(yValue), margin.left - 12, py + 4, { "text-anchor": "end", fill: COLORS.muted, "font-size": 12 });
+        }
+
+        const boundary0 = boundaryAt(0);
+        const boundaryMax = boundaryAt(xMax);
+        svg.appendChild(svgElement("polygon", {
+          points: `${x(0)},${y(boundary0)} ${x(xMax)},${y(boundaryMax)} ${x(xMax)},${y(yMax)} ${x(0)},${y(yMax)}`,
+          fill: "rgba(22,116,91,0.12)"
+        }));
+        addText(svg, "Feasible combinations", x(xMax * 0.72), y(yMax * 0.83), { "text-anchor": "middle", fill: COLORS.positive, "font-size": 15, "font-weight": 850 });
+        addText(svg, "Infeasible combinations", x(xMax * 0.72), y(yMax * 0.18), { "text-anchor": "middle", fill: COLORS.negative, "font-size": 15, "font-weight": 850 });
+
+        svg.appendChild(svgElement("line", { x1: x(0), y1: y(boundary0), x2: x(xMax), y2: y(boundaryMax), stroke: COLORS.navy, "stroke-width": 4 }));
+        addText(svg, "Break-even boundary", x(xMax * 0.67), y(boundaryAt(xMax * 0.67)) - 13, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 14, "font-weight": 850 });
+
+        const pointX = x(clamp(a.landCost, 0, xMax));
+        const pointY = y(clamp(a.marketRent, 0, yMax));
+        const replacementY = y(clamp(c.replacementRentLsf, 0, yMax));
+        svg.appendChild(svgElement("line", { x1: pointX, y1: height - margin.bottom, x2: pointX, y2: replacementY, stroke: COLORS.orange, "stroke-width": 2, "stroke-dasharray": "7 5" }));
+        if (c.maxLandGsf >= 0 && c.maxLandGsf <= xMax) {
+          const maxLandX = x(c.maxLandGsf);
+          svg.appendChild(svgElement("line", { x1: margin.left, y1: pointY, x2: maxLandX, y2: pointY, stroke: COLORS.orange, "stroke-width": 2, "stroke-dasharray": "7 5" }));
+          svg.appendChild(svgElement("circle", { cx: maxLandX, cy: pointY, r: 6, fill: COLORS.white, stroke: COLORS.navy, "stroke-width": 3 }));
+          addText(svg, `Max land ${money(c.maxLandGsf)}`, maxLandX, pointY - 13, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 12, "font-weight": 800 });
+        }
+        svg.appendChild(svgElement("circle", { cx: pointX, cy: replacementY, r: 6, fill: COLORS.white, stroke: COLORS.navy, "stroke-width": 3 }));
+        addText(svg, `Replacement rent ${money(c.replacementRentLsf)}`, pointX, replacementY + 24, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 12, "font-weight": 800 });
+        svg.appendChild(svgElement("circle", { cx: pointX, cy: pointY, r: 9, fill: COLORS.orange, stroke: COLORS.white, "stroke-width": 3 }));
+        addText(svg, `Current: ${money(a.landCost)}, ${money(a.marketRent)}`, pointX, Math.max(22, pointY - 16), { "text-anchor": "middle", fill: COLORS.orange, "font-size": 13, "font-weight": 850 });
+
+        svg.appendChild(svgElement("line", { x1: margin.left, y1: height - margin.bottom, x2: width - margin.right, y2: height - margin.bottom, stroke: COLORS.navy, "stroke-width": 1.6 }));
+        svg.appendChild(svgElement("line", { x1: margin.left, y1: margin.top, x2: margin.left, y2: height - margin.bottom, stroke: COLORS.navy, "stroke-width": 1.6 }));
+        addText(svg, "Land cost per building GSF", margin.left + innerWidth / 2, height - 18, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 14, "font-weight": 800 });
+        const yLabel = addText(svg, "Market rent per leasable SF", 24, margin.top + innerHeight / 2, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 14, "font-weight": 800 });
+        yLabel.setAttribute("transform", `rotate(-90 24 ${margin.top + innerHeight / 2})`);
+      }
+
+      function stopAnimation() {
+        if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+        animationStart = null;
+        animationKind = null;
+        $("animateRent").textContent = "Animate market rent";
+        $("animateLand").textContent = "Animate land cost";
+      }
+      function runAnimation(timestamp) {
+        if (animationStart === null) animationStart = timestamp;
+        const progress = Math.min(1, (timestamp - animationStart) / 6500);
+        const id = animationKind === "rent" ? "marketRent" : "landCost";
+        const min = animationKind === "rent" ? 25 : 0;
+        const max = animationKind === "rent" ? 50 : 70;
+        const next = min + (max - min) * progress;
+        $(id).value = next.toFixed(2);
+        $(`${id}Num`).value = next.toFixed(2);
+        $(`${id}Out`).textContent = money(next);
+        render();
+        if (progress < 1) animationFrame = requestAnimationFrame(runAnimation);
+        else stopAnimation();
+      }
+      function startAnimation(kind) {
+        if (animationFrame !== null) { stopAnimation(); return; }
+        animationKind = kind;
+        $(kind === "rent" ? "animateRent" : "animateLand").textContent = "Pause animation";
+        animationFrame = requestAnimationFrame(runAnimation);
+      }
+
+      function setPair(id, next, format) {
+        const range = $(id);
+        const exact = $(`${id}Num`);
+        if (next < Number(range.min)) { range.min = String(Math.floor(next)); exact.min = String(Math.floor(next)); }
+        if (next > Number(range.max)) { range.max = String(Math.ceil(next)); exact.max = String(Math.ceil(next)); }
+        range.value = next.toFixed(3);
+        exact.value = next.toFixed(3);
+        $(`${id}Out`).textContent = format(next);
+      }
+
+      function reset() {
+        stopAnimation();
+        Object.entries(defaults).forEach(([id, val]) => {
+          $(id).value = String(val);
+          $(`${id}Num`).value = String(val);
+          $(id).dispatchEvent(new Event("input"));
+        });
+        render();
+      }
+
+      const moneyFormat = (val) => money(val);
+      const pctFormat = (val) => `${val.toFixed(1)}%`;
+      const acresFormat = (val) => `${val.toFixed(2)} ${Math.abs(val - 1) < 1e-9 ? "acre" : "acres"}`;
+      const farFormat = (val) => `${val.toFixed(2)}×`;
+      [["marketRent", moneyFormat], ["landCost", moneyFormat], ["requiredReturn", pctFormat], ["efficiency", pctFormat], ["vacancy", pctFormat], ["operatingCost", moneyFormat], ["softCost", moneyFormat], ["hardCost", moneyFormat], ["siteAcres", acresFormat], ["far", farFormat]].forEach(([id, format]) => bindPair(id, format));
+
+      $("resetAll").addEventListener("click", reset);
+      $("animateRent").addEventListener("click", () => startAnimation("rent"));
+      $("animateLand").addEventListener("click", () => startAnimation("land"));
+      $("courseRentPreset").addEventListener("click", () => { stopAnimation(); setPair("marketRent", 30, moneyFormat); render(); });
+      $("setReplacement").addEventListener("click", () => { stopAnimation(); const c = calculate(assumptions()); setPair("marketRent", c.replacementRentLsf, moneyFormat); render(); });
+      $("setMaximumLand").addEventListener("click", () => { stopAnimation(); const c = calculate(assumptions()); setPair("landCost", c.maxLandGsf, moneyFormat); render(); });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
