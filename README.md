@@ -38,11 +38,17 @@ The collection is designed to grow over time. New interactive tools and course p
       <td>Builds a six-tranche CMBS capital stack, connects investor yields to pool pricing, and allocates collateral losses from the first-loss bond upward through attachment and detachment points.</td>
       <td><a href="https://desenlin.github.io/FIN355/cmbs-tranching.html">Launch the tool</a></td>
     </tr>
+    <tr>
+      <td><strong>Net Effective Rent and Lease NPV</strong></td>
+      <td>Shows how free rent, tenant improvements, and leasing commissions reduce annual net effective rent, then compares a constant-growth lease with a delayed rent bump using multi-year landlord NPV.</td>
+      <td><a href="https://desenlin.github.io/FIN355/net-effective-rent.html">Launch the tool</a></td>
+    </tr>
   </tbody>
 </table>
 <!--  · [View source](./amortization.html) --> 
 <!--  · [View source](./irr.html) -->
 <!--  · [View source](./cmbs-tranching.html) -->
+<!--  · [View source](./net-effective-rent.html) -->
 
 > Additional FIN 355 tools and pages will be listed here as they are developed.
 
