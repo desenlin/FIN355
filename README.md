@@ -43,12 +43,18 @@ The collection is designed to grow over time. New interactive tools and course p
       <td>Shows how free rent, tenant improvements, and leasing commissions reduce annual net effective rent, then compares a constant-growth lease with a delayed rent bump using multi-year landlord NPV.</td>
       <td><a href="https://desenlin.github.io/FIN355/net-effective-rent.html">Launch the tool</a></td>
     </tr>
+    <tr>
+      <td><strong>Development Feasibility: Replacement Rent and Land Value</strong></td>
+      <td>Uses one development model to solve either for the minimum replacement rent or the maximum supportable land cost, with a live feasibility boundary linking rent, land, NOI, and yield on cost.</td>
+      <td><a href="https://desenlin.github.io/FIN355/development-feasibility.html">Launch the tool</a></td>
+    </tr>
   </tbody>
 </table>
 <!--  · [View source](./amortization.html) --> 
 <!--  · [View source](./irr.html) -->
 <!--  · [View source](./cmbs-tranching.html) -->
 <!--  · [View source](./net-effective-rent.html) -->
+<!--  · [View source](./development-feasibility.html) -->
 
 > Additional FIN 355 tools and pages will be listed here as they are developed.
 
