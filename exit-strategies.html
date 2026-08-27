@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 tool comparing sale, cash-out refinancing, and a Section 1031 like-kind exchange for a real estate investment.">
+  <title>Real Estate Exit Strategies | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --green: #16745b;
+      --red: #b84235;
+      --gold: #d89a20;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    input:focus-visible, summary:focus-visible { outline: 3px solid rgba(245, 130, 32, 0.45); outline-offset: 2px; }
+    .topbar { height: 8px; background: var(--orange); }
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+    .hero-inner, main, footer { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .hero-inner { padding: 42px 0 46px; }
+    .course-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 940px; margin-bottom: 12px; font-size: clamp(2rem, 4.6vw, 3.45rem); line-height: 1.08; letter-spacing: -0.035em; }
+    .hero p { max-width: 910px; margin-bottom: 8px; color: #e4edf6; font-size: clamp(1rem, 2vw, 1.18rem); }
+    .creator { color: #f8c99f !important; font-size: 0.9rem !important; font-weight: 700; }
+    main { display: grid; gap: 22px; padding: 28px 0 46px; }
+    .card { overflow: hidden; background: var(--white); border: 1px solid rgba(0, 39, 76, 0.10); border-radius: 16px; box-shadow: var(--shadow); }
+    .card-body { padding: 24px; }
+    .section-heading { margin-bottom: 20px; }
+    .section-heading h2 { margin-bottom: 4px; color: var(--navy); font-size: 1.42rem; line-height: 1.25; }
+    .section-heading p { margin-bottom: 0; color: var(--muted); font-size: 0.94rem; }
+    .strategy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .strategy-intro { padding: 18px; background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; }
+    .strategy-intro h3 { margin-bottom: 6px; color: var(--navy); font-size: 1rem; }
+    .strategy-intro p { margin-bottom: 0; color: var(--muted); font-size: 0.87rem; }
+    .strategy-intro strong { color: var(--ink); }
+    .decision-line { margin-top: 16px; padding: 15px 18px; color: var(--white); background: var(--navy); border-radius: 10px; text-align: center; font-size: 0.94rem; }
+    .decision-line strong { color: #ffd2aa; }
+    .controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .control-group { min-width: 0; padding: 15px; background: #f8fafc; border: 1px solid var(--line); border-top: 4px solid var(--navy); border-radius: 10px; }
+    .control-group.strategy-terms { border-top-color: var(--orange); }
+    .control-group h3 { margin-bottom: 3px; color: var(--navy); font-size: 1rem; }
+    .group-note { margin-bottom: 13px; color: var(--muted); font-size: 0.78rem; }
+    .control { margin-top: 13px; }
+    .control label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; color: var(--navy); font-size: 0.82rem; font-weight: 780; }
+    .control output { color: var(--orange-dark); white-space: nowrap; }
+    .control-row { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 9px; align-items: center; }
+    input[type="range"] { width: 100%; accent-color: var(--orange); cursor: pointer; }
+    input[type="number"] { width: 100%; min-height: 36px; padding: 6px 8px; color: var(--ink); background: var(--white); border: 1px solid #aeb9c8; border-radius: 7px; text-align: right; font-size: 0.84rem; font-weight: 650; }
+    .unit-note { margin: 5px 0 0; color: var(--muted); font-size: 0.72rem; }
+    details { margin-top: 14px; background: #fbfcfe; border: 1px solid var(--line); border-radius: 9px; }
+    summary { padding: 11px 12px; color: var(--navy); cursor: pointer; font-size: 0.82rem; font-weight: 800; }
+    details .control { margin: 0; padding: 0 12px 12px; }
+    .objective-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .objective { min-width: 0; padding: 17px 18px; border-right: 1px solid var(--line); }
+    .objective:last-child { border-right: 0; }
+    .objective-label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 0.75rem; font-weight: 750; text-transform: uppercase; letter-spacing: 0.04em; }
+    .objective-value { display: block; color: var(--navy); font-size: clamp(1.05rem, 2.3vw, 1.5rem); font-weight: 850; line-height: 1.2; overflow-wrap: anywhere; }
+    .objective-context { display: block; margin-top: 4px; color: var(--muted); font-size: 0.76rem; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr); gap: 22px; align-items: start; }
+    .chart-title { margin-bottom: 3px; color: var(--navy); font-size: 1.06rem; }
+    .chart-subtitle { margin-bottom: 16px; color: var(--muted); font-size: 0.84rem; }
+    .bars { display: grid; gap: 19px; }
+    .bar-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-size: 0.84rem; }
+    .bar-label { color: var(--navy); font-weight: 800; }
+    .bar-value { color: var(--ink); font-weight: 800; white-space: nowrap; }
+    .bar-track { display: flex; height: 30px; overflow: hidden; background: #e8edf3; border-radius: 7px; }
+    .bar-cash, .bar-equity { width: 0; height: 100%; transition: width 180ms ease; }
+    .bar-cash { background: var(--orange); }
+    .bar-equity { background: var(--navy-2); }
+    .bar-caption { margin: 6px 0 0; color: var(--muted); font-size: 0.76rem; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 11px 0 0; color: var(--muted); font-size: 0.76rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 12px; height: 12px; border-radius: 3px; }
+    .swatch.cash { background: var(--orange); }
+    .swatch.equity { background: var(--navy-2); }
+    .exchange-alert { margin: 18px 0 0; padding: 14px 16px; color: var(--navy); background: #fff7ef; border-left: 5px solid var(--orange); border-radius: 8px; font-size: 0.88rem; font-weight: 650; }
+    .exchange-alert.full { color: #0c4d3c; background: #edf8f4; border-left-color: var(--green); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+    th, td { padding: 9px 7px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+    th { color: var(--navy); font-size: 0.72rem; letter-spacing: 0.03em; text-transform: uppercase; }
+    td:not(:first-child), th:not(:first-child) { text-align: right; }
+    .positive { color: var(--green); font-weight: 800; }
+    .negative { color: var(--red); font-weight: 800; }
+    .neutral { color: var(--navy); font-weight: 800; }
+    .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 20px; background: var(--line); border: 1px solid var(--line); }
+    .timeline-step { padding: 14px; background: #f8fafc; }
+    .timeline-step strong { display: block; margin-bottom: 3px; color: var(--navy); font-size: 0.83rem; }
+    .timeline-step span { color: var(--muted); font-size: 0.76rem; }
+    .tax-note { margin: 17px 0 0; padding: 14px 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); font-size: 0.79rem; }
+    .tax-note strong { color: var(--navy); }
+    .tax-note a { color: var(--navy); font-weight: 800; }
+    footer { padding: 0 0 38px; color: var(--muted); text-align: center; font-size: 0.8rem; }
+    footer strong { color: var(--navy); }
+    @media (max-width: 940px) {
+      .strategy-grid, .controls { grid-template-columns: 1fr; }
+      .workspace { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .hero-inner { padding: 34px 0 38px; }
+      .card-body { padding: 18px; }
+      .objective-grid, .timeline { grid-template-columns: 1fr; }
+      .objective { border-right: 0; border-bottom: 1px solid var(--line); }
+      .objective:last-child { border-bottom: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .bar-cash, .bar-equity { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="course-tag">FIN 355 · Real estate owner exit strategies</span>
+      <h1>Sale, Refinancing, or Like-Kind Exchange?</h1>
+      <p>Compare how three exit strategies convert property equity into liquidity, preserve ownership, change debt, and trigger or defer taxes.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="choices-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="choices-title">Three strategies, three different economic outcomes</h2>
+          <p>The Jessica Crest example begins with a $100 million acquisition, $60 million of interest-only debt, and a current value of $140 million after three years.</p>
+        </div>
+        <div class="strategy-grid">
+          <article class="strategy-intro">
+            <h3>Sale</h3>
+            <p><strong>Maximum liquidity and a complete exit.</strong> Repay debt and pay disposition costs and current taxes; no property equity or debt remains.</p>
+          </article>
+          <article class="strategy-intro">
+            <h3>Cash-out refinancing</h3>
+            <p><strong>Liquidity without selling.</strong> Replace the old loan with a larger loan, retain the property, and generally avoid a current taxable disposition.</p>
+          </article>
+          <article class="strategy-intro">
+            <h3>Section 1031 exchange</h3>
+            <p><strong>Continue the real estate investment.</strong> Move into qualifying replacement real property; cash retained as boot may create current taxable gain.</p>
+          </article>
+        </div>
+        <div class="decision-line">The best strategy depends on the investor's objective: <strong>liquidity, retained control, leverage, or tax deferral.</strong></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="model-title">Change the assumptions</h2>
+          <p>Move a slider or enter a value. All cash, equity, debt, tax, and funding comparisons update immediately.</p>
+        </div>
+
+        <div class="controls">
+          <section class="control-group" aria-labelledby="property-inputs">
+            <h3 id="property-inputs">Current investment</h3>
+            <p class="group-note">Acquisition basis, current value, debt, and holding period.</p>
+            <div class="control">
+              <label for="purchase-range">Original purchase price <output id="purchase-output">$100.00M</output></label>
+              <div class="control-row"><input id="purchase-range" type="range" min="20" max="250" step="5" value="100" aria-label="Original purchase price in millions"><input id="purchase-number" type="number" min="20" max="250" step="5" value="100" aria-label="Original purchase price in millions"></div>
+            </div>
+            <div class="control">
+              <label for="value-range">Current property value <output id="value-output">$140.00M</output></label>
+              <div class="control-row"><input id="value-range" type="range" min="20" max="300" step="5" value="140" aria-label="Current property value in millions"><input id="value-number" type="number" min="20" max="300" step="5" value="140" aria-label="Current property value in millions"></div>
+            </div>
+            <div class="control">
+              <label for="debt-range">Current loan balance <output id="debt-output">$60.00M</output></label>
+              <div class="control-row"><input id="debt-range" type="range" min="0" max="200" step="5" value="60" aria-label="Current loan balance in millions"><input id="debt-number" type="number" min="0" max="200" step="5" value="60" aria-label="Current loan balance in millions"></div>
+            </div>
+            <div class="control">
+              <label for="years-range">Years held <output id="years-output">3 years</output></label>
+              <div class="control-row"><input id="years-range" type="range" min="1" max="20" step="1" value="3" aria-label="Number of years property has been held"><input id="years-number" type="number" min="1" max="20" step="1" value="3" aria-label="Number of years property has been held"></div>
+            </div>
+          </section>
+
+          <section class="control-group" aria-labelledby="tax-inputs">
+            <h3 id="tax-inputs">Disposition and tax</h3>
+            <p class="group-note">A simplified classroom estimate using the chapter's tax structure.</p>
+            <div class="control">
+              <label for="sale-cost-range">Sale costs <output id="sale-cost-output">$3.00M</output></label>
+              <div class="control-row"><input id="sale-cost-range" type="range" min="0" max="10" step="0.25" value="3" aria-label="Sale costs in millions"><input id="sale-cost-number" type="number" min="0" max="10" step="0.25" value="3" aria-label="Sale costs in millions"></div>
+            </div>
+            <div class="control">
+              <label for="target-range">Equity needed for next project <output id="target-output">$40.00M</output></label>
+              <div class="control-row"><input id="target-range" type="range" min="10" max="100" step="5" value="40" aria-label="Equity needed for the next project in millions"><input id="target-number" type="number" min="10" max="100" step="5" value="40" aria-label="Equity needed for the next project in millions"></div>
+            </div>
+            <details>
+              <summary>Tax and depreciation assumptions</summary>
+              <div class="control">
+                <label for="structure-range">Structure allocation <output id="structure-output">75.0%</output></label>
+                <div class="control-row"><input id="structure-range" type="range" min="40" max="90" step="1" value="75" aria-label="Share of purchase price allocated to depreciable structure"><input id="structure-number" type="number" min="40" max="90" step="1" value="75" aria-label="Share of purchase price allocated to depreciable structure"></div>
+              </div>
+              <div class="control">
+                <label for="gain-tax-range">Capital gain tax rate <output id="gain-tax-output">15.0%</output></label>
+                <div class="control-row"><input id="gain-tax-range" type="range" min="0" max="30" step="0.5" value="15" aria-label="Capital gain tax rate"><input id="gain-tax-number" type="number" min="0" max="30" step="0.5" value="15" aria-label="Capital gain tax rate"></div>
+              </div>
+              <div class="control">
+                <label for="recapture-tax-range">Depreciation tax rate <output id="recapture-tax-output">25.0%</output></label>
+                <div class="control-row"><input id="recapture-tax-range" type="range" min="0" max="35" step="0.5" value="25" aria-label="Depreciation recapture tax rate"><input id="recapture-tax-number" type="number" min="0" max="35" step="0.5" value="25" aria-label="Depreciation recapture tax rate"></div>
+              </div>
+            </details>
+          </section>
+
+          <section class="control-group strategy-terms" aria-labelledby="strategy-inputs">
+            <h3 id="strategy-inputs">Refinancing and exchange terms</h3>
+            <p class="group-note">Loan proceeds create liquidity but also leave debt outstanding.</p>
+            <div class="control">
+              <label for="refi-ltv-range">New refinancing LTV <output id="refi-ltv-output">65.0%</output></label>
+              <div class="control-row"><input id="refi-ltv-range" type="range" min="40" max="85" step="1" value="65" aria-label="New refinancing loan-to-value ratio"><input id="refi-ltv-number" type="number" min="40" max="85" step="1" value="65" aria-label="New refinancing loan-to-value ratio"></div>
+            </div>
+            <div class="control">
+              <label for="refi-cost-range">Refinancing costs <output id="refi-cost-output">$1.00M</output></label>
+              <div class="control-row"><input id="refi-cost-range" type="range" min="0" max="5" step="0.25" value="1" aria-label="Refinancing costs in millions"><input id="refi-cost-number" type="number" min="0" max="5" step="0.25" value="1" aria-label="Refinancing costs in millions"></div>
+            </div>
+            <div class="control">
+              <label for="replacement-range">Replacement property value <output id="replacement-output">$140.00M</output></label>
+              <div class="control-row"><input id="replacement-range" type="range" min="50" max="300" step="5" value="140" aria-label="Replacement property value in millions"><input id="replacement-number" type="number" min="50" max="300" step="5" value="140" aria-label="Replacement property value in millions"></div>
+            </div>
+            <div class="control">
+              <label for="exchange-ltv-range">Replacement property LTV <output id="exchange-ltv-output">75.0%</output></label>
+              <div class="control-row"><input id="exchange-ltv-range" type="range" min="30" max="85" step="1" value="75" aria-label="Replacement property loan-to-value ratio"><input id="exchange-ltv-number" type="number" min="30" max="85" step="1" value="75" aria-label="Replacement property loan-to-value ratio"></div>
+              <p class="unit-note">Higher LTV reduces required replacement equity but can increase cash boot.</p>
+            </div>
+            <div class="control">
+              <label for="exchange-cost-range">Exchange and acquisition costs <output id="exchange-cost-output">$1.00M</output></label>
+              <div class="control-row"><input id="exchange-cost-range" type="range" min="0" max="5" step="0.25" value="1" aria-label="Exchange and acquisition costs in millions"><input id="exchange-cost-number" type="number" min="0" max="5" step="0.25" value="1" aria-label="Exchange and acquisition costs in millions"></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="objective-grid" aria-live="polite">
+          <div class="objective"><span class="objective-label">Most cash today</span><strong class="objective-value" id="most-cash">Sale</strong><span class="objective-context" id="most-cash-value">$69.56M available</span></div>
+          <div class="objective"><span class="objective-label">Highest net wealth</span><strong class="objective-value" id="highest-wealth">Refinancing</strong><span class="objective-context" id="highest-wealth-value">$79.00M after costs and current tax</span></div>
+          <div class="objective"><span class="objective-label">Lowest current tax</span><strong class="objective-value" id="lowest-tax">Refinancing</strong><span class="objective-context" id="lowest-tax-value">$0.00M estimated tax today</span></div>
+        </div>
+
+        <div class="workspace">
+          <div>
+            <h3 class="chart-title">Where the investor's net wealth sits after each strategy</h3>
+            <p class="chart-subtitle">Orange is spendable cash; navy is equity still invested in real estate. Bar length is total net wealth after modeled costs and current taxes.</p>
+            <div class="bars" id="wealth-bars" role="img" aria-label="Comparison of cash and retained real estate equity after sale, refinancing, and like-kind exchange">
+              <div class="bar-row" id="row-sale">
+                <div class="bar-head"><span class="bar-label">Sale</span><span class="bar-value" id="wealth-sale">$69.56M total</span></div>
+                <div class="bar-track"><div class="bar-cash" id="cash-bar-sale"></div><div class="bar-equity" id="equity-bar-sale"></div></div>
+                <p class="bar-caption" id="caption-sale">$69.56M cash · $0 retained property equity</p>
+              </div>
+              <div class="bar-row" id="row-refi">
+                <div class="bar-head"><span class="bar-label">Refinancing</span><span class="bar-value" id="wealth-refi">$79.00M total</span></div>
+                <div class="bar-track"><div class="bar-cash" id="cash-bar-refi"></div><div class="bar-equity" id="equity-bar-refi"></div></div>
+                <p class="bar-caption" id="caption-refi">$30.00M cash · $49.00M retained property equity</p>
+              </div>
+              <div class="bar-row" id="row-exchange">
+                <div class="bar-head"><span class="bar-label">Like-kind exchange</span><span class="bar-value" id="wealth-exchange">$69.27M total</span></div>
+                <div class="bar-track"><div class="bar-cash" id="cash-bar-exchange"></div><div class="bar-equity" id="equity-bar-exchange"></div></div>
+                <p class="bar-caption" id="caption-exchange">$34.27M after-tax cash boot · $35.00M replacement equity</p>
+              </div>
+            </div>
+            <div class="legend"><span><i class="swatch cash" aria-hidden="true"></i>Cash available</span><span><i class="swatch equity" aria-hidden="true"></i>Retained real estate equity</span></div>
+            <p class="exchange-alert" id="exchange-alert">The exchange produces $41.00M of cash boot. Tax deferral is therefore partial, not complete.</p>
+          </div>
+
+          <div>
+            <h3 class="chart-title">Side-by-side comparison</h3>
+            <p class="chart-subtitle">A strategy can release cash without producing the highest total wealth or the lowest leverage.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Outcome</th><th>Sale</th><th>Refinance</th><th>1031 exchange</th></tr></thead>
+                <tbody>
+                  <tr><td>Cash today</td><td id="cash-sale">$69.56M</td><td id="cash-refi">$30.00M</td><td id="cash-exchange">$34.27M</td></tr>
+                  <tr><td>Real estate equity retained</td><td id="equity-sale">$0.00M</td><td id="equity-refi">$49.00M</td><td id="equity-exchange">$35.00M</td></tr>
+                  <tr><td>Estimated tax today</td><td id="tax-sale">$7.44M</td><td id="tax-refi">$0.00M</td><td id="tax-exchange">$6.73M</td></tr>
+                  <tr><td>Debt after strategy</td><td id="debt-sale">$0.00M</td><td id="debt-refi">$91.00M</td><td id="debt-exchange">$105.00M</td></tr>
+                  <tr><td>Net wealth</td><td id="net-sale">$69.56M</td><td id="net-refi">$79.00M</td><td id="net-exchange">$69.27M</td></tr>
+                  <tr><td>Next-project funding</td><td id="funding-sale" class="positive">+$29.56M</td><td id="funding-refi" class="negative">-$10.00M</td><td id="funding-exchange" class="negative">-$5.73M</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline" aria-label="Basic deferred exchange timeline">
+          <div class="timeline-step"><strong>1 · Transfer relinquished property</strong><span>Exchange proceeds are held by a qualified intermediary rather than received by the investor.</span></div>
+          <div class="timeline-step"><strong>2 · Identify within 45 days</strong><span>Identify qualifying replacement real property within the statutory identification period.</span></div>
+          <div class="timeline-step"><strong>3 · Receive within 180 days</strong><span>Complete the replacement acquisition within 180 days or the earlier applicable tax-return deadline.</span></div>
+        </div>
+
+        <p class="tax-note"><strong>Important tax-law distinction:</strong> A like-kind exchange defers gain only to the extent the transaction qualifies. Under the IRS instructions, cash or non-like-kind property received can create currently recognized gain. The tool therefore treats excess cash retained after funding the replacement acquisition as taxable boot; it does not assume that $41 million can be withdrawn tax-free. Partnership interests generally are not qualifying real property. See the <a href="https://www.irs.gov/pub/irs-pdf/i8824.pdf" target="_blank" rel="noopener">IRS Instructions for Form 8824</a>. Calculations are simplified and do not model state taxes, passive-loss rules, debt-relief details, or every Section 1031 requirement.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Created by Desen Lin</strong> for instructional use in FIN 355 at California State University, Fullerton.</p>
+    <p>This educational illustration is not legal, tax, or financial advice. Actual transactions require qualified tax and legal professionals.</p>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+      const definitions = {
+        purchase: { min: 20, max: 250, output: "purchase-output", format: money },
+        value: { min: 20, max: 300, output: "value-output", format: money },
+        debt: { min: 0, max: 200, output: "debt-output", format: money },
+        years: { min: 1, max: 20, output: "years-output", format: value => Math.round(value) + (Math.round(value) === 1 ? " year" : " years") },
+        "sale-cost": { min: 0, max: 10, output: "sale-cost-output", format: money },
+        target: { min: 10, max: 100, output: "target-output", format: money },
+        structure: { min: 40, max: 90, output: "structure-output", format: percent1 },
+        "gain-tax": { min: 0, max: 30, output: "gain-tax-output", format: percent1 },
+        "recapture-tax": { min: 0, max: 35, output: "recapture-tax-output", format: percent1 },
+        "refi-ltv": { min: 40, max: 85, output: "refi-ltv-output", format: percent1 },
+        "refi-cost": { min: 0, max: 5, output: "refi-cost-output", format: money },
+        replacement: { min: 50, max: 300, output: "replacement-output", format: money },
+        "exchange-ltv": { min: 30, max: 85, output: "exchange-ltv-output", format: percent1 },
+        "exchange-cost": { min: 0, max: 5, output: "exchange-cost-output", format: money }
+      };
+      const strategyNames = { sale: "Sale", refi: "Refinancing", exchange: "Like-kind exchange" };
+
+      function money(value) {
+        if (!Number.isFinite(value)) return "-";
+        const sign = value < 0 ? "-" : "";
+        return sign + "$" + Math.abs(value).toFixed(2) + "M";
+      }
+      function percent1(value) { return value.toFixed(1) + "%"; }
+      function read(key) { return Number(document.getElementById(key + "-range").value); }
+      function argMax(results, metric) { return Object.keys(results).reduce((best, key) => results[key][metric] > results[best][metric] ? key : best); }
+      function argMin(results, metric) { return Object.keys(results).reduce((best, key) => results[key][metric] < results[best][metric] ? key : best); }
+
+      function bindControls() {
+        Object.entries(definitions).forEach(([key, definition]) => {
+          const range = document.getElementById(key + "-range");
+          const number = document.getElementById(key + "-number");
+          const output = document.getElementById(definition.output);
+          const fromRange = () => { number.value = range.value; output.textContent = definition.format(Number(range.value)); render(); };
+          const fromNumber = () => {
+            const parsed = Number(number.value);
+            if (!Number.isFinite(parsed)) return;
+            const clamped = Math.min(definition.max, Math.max(definition.min, parsed));
+            range.value = String(clamped); output.textContent = definition.format(clamped); render();
+          };
+          const clampNumber = () => {
+            const parsed = Number(number.value);
+            const clamped = Number.isFinite(parsed) ? Math.min(definition.max, Math.max(definition.min, parsed)) : Number(range.value);
+            number.value = String(clamped); range.value = String(clamped); output.textContent = definition.format(clamped); render();
+          };
+          range.addEventListener("input", fromRange);
+          number.addEventListener("input", fromNumber);
+          number.addEventListener("change", clampNumber);
+        });
+      }
+
+      function calculate() {
+        const purchase = read("purchase");
+        const value = read("value");
+        const oldDebt = read("debt");
+        const years = read("years");
+        const saleCost = read("sale-cost");
+        const structureShare = read("structure") / 100;
+        const capitalTaxRate = read("gain-tax") / 100;
+        const recaptureTaxRate = read("recapture-tax") / 100;
+        const refiLtv = read("refi-ltv") / 100;
+        const refiCost = read("refi-cost");
+        const replacementValue = read("replacement");
+        const exchangeLtv = read("exchange-ltv") / 100;
+        const exchangeCost = read("exchange-cost");
+
+        const depreciableBasis = purchase * structureShare;
+        const accumulatedDepreciation = Math.min(depreciableBasis, depreciableBasis / 39 * years);
+        const adjustedBasis = purchase - accumulatedDepreciation;
+        const realizedGain = Math.max(0, value - adjustedBasis);
+        const depreciationGain = Math.min(accumulatedDepreciation, realizedGain);
+        const appreciationGain = Math.max(0, realizedGain - depreciationGain);
+        const saleTax = depreciationGain * recaptureTaxRate + appreciationGain * capitalTaxRate;
+        const saleCash = value - oldDebt - saleCost - saleTax;
+
+        const newRefiDebt = value * refiLtv;
+        const refiCash = newRefiDebt - oldDebt - refiCost;
+        const refiEquity = value - newRefiDebt;
+
+        const exchangeProceeds = value - oldDebt - saleCost;
+        const replacementDebt = replacementValue * exchangeLtv;
+        const replacementEquity = replacementValue - replacementDebt;
+        const grossBoot = exchangeProceeds - replacementEquity - exchangeCost;
+        const recognizedGain = Math.min(Math.max(grossBoot, 0), realizedGain);
+        const recognizedDepreciation = Math.min(depreciationGain, recognizedGain);
+        const recognizedAppreciation = Math.max(0, recognizedGain - recognizedDepreciation);
+        const exchangeTax = recognizedDepreciation * recaptureTaxRate + recognizedAppreciation * capitalTaxRate;
+        const exchangeCash = grossBoot - exchangeTax;
+
+        return {
+          sale: { cash: saleCash, equity: 0, tax: saleTax, debt: 0, wealth: saleCash },
+          refi: { cash: refiCash, equity: refiEquity, tax: 0, debt: newRefiDebt, wealth: refiCash + refiEquity },
+          exchange: { cash: exchangeCash, equity: replacementEquity, tax: exchangeTax, debt: replacementDebt, wealth: exchangeCash + replacementEquity },
+          detail: { accumulatedDepreciation, adjustedBasis, realizedGain, exchangeProceeds, grossBoot, recognizedGain, deferredGain: Math.max(0, realizedGain - recognizedGain) }
+        };
+      }
+
+      function render() {
+        const calc = calculate();
+        const results = { sale: calc.sale, refi: calc.refi, exchange: calc.exchange };
+        const target = read("target");
+        const cashWinner = argMax(results, "cash");
+        const wealthWinner = argMax(results, "wealth");
+        const taxWinner = argMin(results, "tax");
+        document.getElementById("most-cash").textContent = strategyNames[cashWinner];
+        document.getElementById("most-cash-value").textContent = money(results[cashWinner].cash) + " available";
+        document.getElementById("highest-wealth").textContent = strategyNames[wealthWinner];
+        document.getElementById("highest-wealth-value").textContent = money(results[wealthWinner].wealth) + " after costs and current tax";
+        document.getElementById("lowest-tax").textContent = strategyNames[taxWinner];
+        document.getElementById("lowest-tax-value").textContent = money(results[taxWinner].tax) + " estimated tax today";
+
+        const chartMax = Math.max(1, ...Object.values(results).map(result => Math.max(0, result.cash) + Math.max(0, result.equity))) * 1.05;
+        Object.entries(results).forEach(([key, result]) => {
+          document.getElementById("wealth-" + key).textContent = money(result.wealth) + " total";
+          document.getElementById("cash-bar-" + key).style.width = (Math.max(0, result.cash) / chartMax * 100).toFixed(2) + "%";
+          document.getElementById("equity-bar-" + key).style.width = (Math.max(0, result.equity) / chartMax * 100).toFixed(2) + "%";
+          document.getElementById("cash-" + key).textContent = money(result.cash);
+          document.getElementById("equity-" + key).textContent = money(result.equity);
+          document.getElementById("tax-" + key).textContent = money(result.tax);
+          document.getElementById("debt-" + key).textContent = money(result.debt);
+          document.getElementById("net-" + key).textContent = money(result.wealth);
+          const funding = result.cash - target;
+          const fundingCell = document.getElementById("funding-" + key);
+          fundingCell.textContent = (funding >= 0 ? "+" : "") + money(funding);
+          fundingCell.className = funding >= 0 ? "positive" : "negative";
+        });
+
+        document.getElementById("caption-sale").textContent = money(calc.sale.cash) + " cash · $0.00M retained property equity";
+        document.getElementById("caption-refi").textContent = money(calc.refi.cash) + (calc.refi.cash < 0 ? " cash required" : " cash") + " · " + money(calc.refi.equity) + " retained property equity";
+        document.getElementById("caption-exchange").textContent = money(calc.exchange.cash) + (calc.detail.grossBoot > 0 ? " after-tax cash boot" : " net cash") + " · " + money(calc.exchange.equity) + " replacement equity";
+
+        const alert = document.getElementById("exchange-alert");
+        if (calc.detail.grossBoot > 0.0001) {
+          alert.classList.remove("full");
+          alert.textContent = "The exchange produces " + money(calc.detail.grossBoot) + " of cash boot. Estimated current tax is " + money(calc.exchange.tax) + ", leaving " + money(calc.detail.deferredGain) + " of gain deferred under this simplified model.";
+        } else {
+          alert.classList.add("full");
+          const need = Math.abs(Math.min(0, calc.detail.grossBoot));
+          alert.textContent = "No cash boot is received under these assumptions, so the modeled realized gain is fully deferred." + (need > 0.0001 ? " The replacement acquisition requires " + money(need) + " of additional cash." : "");
+        }
+
+        document.getElementById("wealth-bars").setAttribute("aria-label",
+          "Sale produces " + money(calc.sale.cash) + " cash and " + money(calc.sale.wealth) + " net wealth. Refinancing produces " + money(calc.refi.cash) + " cash, " + money(calc.refi.equity) + " retained equity, and " + money(calc.refi.wealth) + " net wealth. Like-kind exchange produces " + money(calc.exchange.cash) + " cash, " + money(calc.exchange.equity) + " replacement equity, and " + money(calc.exchange.wealth) + " net wealth."
+        );
+      }
+
+      bindControls();
+      render();
+    })();
+  </script>
+</body>
+</html>
