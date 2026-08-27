@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 tool for straight-line net effective rent and multi-year landlord lease NPV analysis.">
+  <title>Net Effective Rent and Lease NPV | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --positive: #16745b;
+      --negative: #c44235;
+      --scenario-a: #146c94;
+      --scenario-b: #f58220;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+
+    button:focus-visible,
+    input:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid rgba(245, 130, 32, 0.45);
+      outline-offset: 2px;
+    }
+
+    .topbar { height: 8px; background: var(--orange); }
+
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+
+    .hero-inner,
+    main,
+    footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero-inner { padding: 42px 0 46px; }
+
+    .course-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 900px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4.6vw, 3.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+
+    .hero p {
+      max-width: 860px;
+      margin-bottom: 8px;
+      color: #e4edf6;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    .creator {
+      color: #f8c99f !important;
+      font-size: 0.9rem !important;
+      font-weight: 700;
+    }
+
+    main {
+      display: grid;
+      gap: 22px;
+      padding: 28px 0 46px;
+    }
+
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(0, 39, 76, 0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-body { padding: 24px; }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 4px;
+      color: var(--navy);
+      font-size: 1.42rem;
+      line-height: 1.25;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .intro-grid,
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .concept-panel {
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
+    .concept-panel:first-child {
+      color: var(--white);
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .concept-panel:last-child { background: #fff7ef; border-color: #f2c79f; }
+    .concept-panel h3 { margin-bottom: 8px; font-size: 1.08rem; }
+    .concept-panel:first-child h3 { color: var(--white); }
+    .concept-panel:last-child h3 { color: var(--navy); }
+    .concept-panel p { margin-bottom: 0; font-size: 0.9rem; }
+    .concept-panel:first-child p { color: #dce9f5; }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--orange-dark);
+      font-size: 0.75rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .concept-panel:first-child .eyebrow { color: #f7b77e; }
+
+    .formula-box {
+      margin-top: 14px;
+      padding: 14px 16px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: 10px;
+    }
+
+    .formula {
+      margin-bottom: 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(0.98rem, 2vw, 1.22rem);
+      text-align: center;
+    }
+
+    .formula-box p { margin-bottom: 0; color: #dce9f5; font-size: 0.82rem; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+      margin-bottom: 18px;
+    }
+
+    .control {
+      min-width: 0;
+      padding: 13px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .control label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 0.84rem;
+      font-weight: 780;
+    }
+
+    .control output { color: var(--orange-dark); white-space: nowrap; }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 84px;
+      gap: 9px;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--orange);
+      cursor: pointer;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      min-height: 36px;
+      padding: 6px 8px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 7px;
+      text-align: right;
+      font-size: 0.84rem;
+      font-weight: 650;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .action-button {
+      min-height: 38px;
+      padding: 8px 13px;
+      color: var(--navy);
+      background: var(--soft);
+      border: 1px solid #c9d2df;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 780;
+    }
+
+    .action-button:hover { background: #e6edf5; }
+    .action-button.primary { color: var(--white); background: var(--navy); border-color: var(--navy); }
+    .action-button.primary:hover { background: var(--navy-2); }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 18px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 17px 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+    .metric-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 0.73rem;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      font-size: clamp(1.14rem, 2.2vw, 1.58rem);
+      font-weight: 850;
+      line-height: 1.2;
+    }
+    .metric-note { display: block; margin-top: 4px; color: var(--muted); font-size: 0.76rem; }
+    .positive { color: var(--positive) !important; }
+    .negative { color: var(--negative) !important; }
+
+    .visual-panel,
+    .table-panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--white);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .panel-header strong { font-size: 0.92rem; }
+    .panel-header span { color: #dce9f5; font-size: 0.78rem; }
+    .chart-wrap { width: 100%; min-width: 0; overflow-x: auto; }
+    svg { display: block; width: 100%; height: auto; }
+    .chart-note { margin: 10px 14px 14px; color: var(--muted); font-size: 0.8rem; }
+
+    details {
+      margin: 0 0 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfcfe;
+    }
+
+    summary {
+      padding: 12px 14px;
+      color: var(--navy);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    details .controls { margin: 0; padding: 4px 14px 14px; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin: 12px 14px 0;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 0.81rem;
+      font-weight: 700;
+    }
+
+    .swatch { width: 18px; height: 4px; border-radius: 999px; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+      font-size: 0.84rem;
+    }
+    th {
+      color: var(--navy);
+      background: #edf2f7;
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    tbody tr:nth-child(even) { background: #fafbfd; }
+    tbody tr:last-child td { border-bottom: 0; }
+
+    .callout {
+      margin-top: 18px;
+      padding: 16px 18px;
+      color: #5b4300;
+      background: #fff8df;
+      border: 1px solid #e8cf78;
+      border-radius: 10px;
+      font-size: 0.88rem;
+    }
+
+    .takeaways {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .takeaway {
+      padding: 17px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--orange);
+      border-radius: 10px;
+    }
+
+    .takeaway h3 { margin-bottom: 7px; color: var(--navy); font-size: 1rem; }
+    .takeaway p { margin-bottom: 0; color: var(--muted); font-size: 0.87rem; }
+
+    .disclaimer {
+      padding: 18px 20px;
+      color: #5b4300;
+      background: #fff8df;
+      border: 1px solid #e8cf78;
+      border-radius: 11px;
+      font-size: 0.86rem;
+    }
+
+    footer { padding: 0 0 34px; color: var(--muted); text-align: center; font-size: 0.82rem; }
+
+    @media (max-width: 920px) {
+      .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+      .analysis-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .hero-inner { padding: 34px 0 38px; }
+      .card-body { padding: 18px; }
+      .intro-grid, .controls, .takeaways { grid-template-columns: 1fr; }
+      .section-heading { display: block; }
+      .section-heading .action-button { margin-top: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-inner, main, footer { width: min(100% - 20px, 1180px); }
+      .metrics { grid-template-columns: 1fr; }
+      .metric, .metric:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    @media print {
+      body { background: var(--white); }
+      .hero { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .card { break-inside: avoid; box-shadow: none; }
+      .actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="course-tag">FIN 355 · Real Estate Investment Analysis</div>
+      <h1>Net Effective Rent and Lease NPV</h1>
+      <p>
+        Move the lease assumptions continuously to see how concessions change annual
+        net effective rent and how rent timing changes a landlord's present value.
+      </p>
+      <p class="creator">Created by Desen Lin for instructional use at Cal State Fullerton</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="conceptTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="conceptTitle">Two useful views of the same lease</h2>
+            <p>One summarizes annual economics; the other preserves the timing of every cash flow.</p>
+          </div>
+        </div>
+        <div class="intro-grid">
+          <article class="concept-panel">
+            <span class="eyebrow">Single-year equivalent</span>
+            <h3>Straight-line net effective rent</h3>
+            <p>Spread one-time concessions over the lease term, then subtract their annualized cost from rent and recoveries.</p>
+          </article>
+          <article class="concept-panel">
+            <span class="eyebrow">Multiple-year analysis</span>
+            <h3>Landlord lease NPV</h3>
+            <p>Place concessions in the year they are paid, project future rents and expenses, and discount each year's net cash flow.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="singleTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="singleTitle">Example 1 · Annual net effective rent</h2>
+            <p>Start from the Chapter 4 course example, then move any slider to see the bridge update immediately.</p>
+          </div>
+          <button id="resetSingle" class="action-button" type="button">Reset course example</button>
+        </div>
+
+        <div class="controls" id="singleControls">
+          <div class="control">
+            <label for="sRent">Gross rent <output id="sRentOut">$30.00</output></label>
+            <div class="control-row"><input id="sRent" type="range" min="10" max="80" step="0.5" value="30"><input id="sRentNum" type="number" min="10" max="80" step="0.5" value="30" aria-label="Gross rent exact value"></div>
+          </div>
+          <div class="control">
+            <label for="sRecovery">Cost recoveries <output id="sRecoveryOut">$5.00</output></label>
+            <div class="control-row"><input id="sRecovery" type="range" min="0" max="20" step="0.25" value="5"><input id="sRecoveryNum" type="number" min="0" max="20" step="0.25" value="5" aria-label="Cost recoveries exact value"></div>
+          </div>
+          <div class="control">
+            <label for="sOperating">Operating costs <output id="sOperatingOut">$10.00</output></label>
+            <div class="control-row"><input id="sOperating" type="range" min="0" max="30" step="0.25" value="10"><input id="sOperatingNum" type="number" min="0" max="30" step="0.25" value="10" aria-label="Operating costs exact value"></div>
+          </div>
+          <div class="control">
+            <label for="sTerm">Lease term <output id="sTermOut">10 years</output></label>
+            <div class="control-row"><input id="sTerm" type="range" min="1" max="20" step="1" value="10"><input id="sTermNum" type="number" min="1" max="20" step="1" value="10" aria-label="Lease term exact value"></div>
+          </div>
+          <div class="control">
+            <label for="sFreeMonths">Free rent <output id="sFreeMonthsOut">12 months</output></label>
+            <div class="control-row"><input id="sFreeMonths" type="range" min="0" max="24" step="1" value="12"><input id="sFreeMonthsNum" type="number" min="0" max="24" step="1" value="12" aria-label="Free rent months exact value"></div>
+          </div>
+          <div class="control">
+            <label for="sTI">TI allowance <output id="sTIOut">$40.00</output></label>
+            <div class="control-row"><input id="sTI" type="range" min="0" max="100" step="1" value="40"><input id="sTINum" type="number" min="0" max="100" step="1" value="40" aria-label="Tenant improvement allowance exact value"></div>
+          </div>
+          <div class="control">
+            <label for="sCommission">Leasing commission <output id="sCommissionOut">2.0%</output></label>
+            <div class="control-row"><input id="sCommission" type="range" min="0" max="10" step="0.1" value="2"><input id="sCommissionNum" type="number" min="0" max="10" step="0.1" value="2" aria-label="Leasing commission percentage exact value"></div>
+          </div>
+        </div>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><span class="metric-label">Annual net effective rent</span><strong id="sNet" class="metric-value">$17.40 PSF</strong><span class="metric-note">Course benchmark: $17.40</span></div>
+          <div class="metric"><span class="metric-label">Annualized concessions</span><strong id="sConcessions" class="metric-value">$7.60 PSF</strong><span class="metric-note">Free rent + TI + commission</span></div>
+          <div class="metric"><span class="metric-label">Operating margin</span><strong id="sMargin" class="metric-value">58.0%</strong><span class="metric-note">Net effective rent ÷ gross rent</span></div>
+          <div class="metric"><span class="metric-label">Total up-front concessions</span><strong id="sUpfront" class="metric-value">$76.00 PSF</strong><span class="metric-note">Before straight-line amortization</span></div>
+        </div>
+
+        <div class="visual-panel">
+          <div class="panel-header"><strong>Net effective rent bridge</strong><span>All values are annual $/PSF</span></div>
+          <div class="chart-wrap"><svg id="waterfall" viewBox="0 0 1000 440" role="img" aria-labelledby="waterfallTitle waterfallDesc"></svg></div>
+          <p class="chart-note">Positive items raise the running total; operating costs and annualized concessions reduce it.</p>
+        </div>
+
+        <div class="formula-box">
+          <div class="formula">Net effective rent = rent + recoveries − operating costs − annualized concessions</div>
+          <p>Following the course example, free rent, tenant improvements, and leasing commissions are spread evenly over the lease term.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="multiTitle">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <h2 id="multiTitle">Example 2 · Multi-year landlord lease NPV</h2>
+            <p>Compare a constant percentage growth path with a discrete rent bump. Timing matters because earlier cash flow receives less discounting.</p>
+          </div>
+          <button id="resetMulti" class="action-button" type="button">Reset course example</button>
+        </div>
+
+        <div class="controls">
+          <div class="control">
+            <label for="mRent">Starting gross rent <output id="mRentOut">$30.00</output></label>
+            <div class="control-row"><input id="mRent" type="range" min="10" max="80" step="0.5" value="30"><input id="mRentNum" type="number" min="10" max="80" step="0.5" value="30" aria-label="Starting gross rent exact value"></div>
+          </div>
+          <div class="control">
+            <label for="mDiscount">Discount rate <output id="mDiscountOut">10.0%</output></label>
+            <div class="control-row"><input id="mDiscount" type="range" min="0" max="25" step="0.1" value="10"><input id="mDiscountNum" type="number" min="0" max="25" step="0.1" value="10" aria-label="Discount rate exact value"></div>
+          </div>
+          <div class="control">
+            <label for="mGrowthA">Scenario A annual growth <output id="mGrowthAOut">2.0%</output></label>
+            <div class="control-row"><input id="mGrowthA" type="range" min="-2" max="8" step="0.1" value="2"><input id="mGrowthANum" type="number" min="-2" max="8" step="0.1" value="2" aria-label="Scenario A annual rent growth exact value"></div>
+          </div>
+          <div class="control">
+            <label for="mBump">Scenario B rent bump <output id="mBumpOut">$4.00</output></label>
+            <div class="control-row"><input id="mBump" type="range" min="0" max="15" step="0.25" value="4"><input id="mBumpNum" type="number" min="0" max="15" step="0.25" value="4" aria-label="Scenario B rent bump exact value"></div>
+          </div>
+          <div class="control">
+            <label for="mBumpYear">Bump begins in <output id="mBumpYearOut">Year 6</output></label>
+            <div class="control-row"><input id="mBumpYear" type="range" min="2" max="10" step="1" value="6"><input id="mBumpYearNum" type="number" min="2" max="10" step="1" value="6" aria-label="Rent bump year exact value"></div>
+          </div>
+          <div class="control">
+            <label for="mTerm">Lease term <output id="mTermOut">10 years</output></label>
+            <div class="control-row"><input id="mTerm" type="range" min="5" max="20" step="1" value="10"><input id="mTermNum" type="number" min="5" max="20" step="1" value="10" aria-label="Multi-year lease term exact value"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="animateDiscount" class="action-button primary" type="button">Animate discount rate</button>
+          <button id="matchBump" class="action-button" type="button">Find equal-NPV bump</button>
+        </div>
+
+        <details>
+          <summary>Additional cash-flow assumptions</summary>
+          <div class="controls">
+            <div class="control">
+              <label for="mRecovery">Year 1 cost recoveries <output id="mRecoveryOut">$5.00</output></label>
+              <div class="control-row"><input id="mRecovery" type="range" min="0" max="20" step="0.25" value="5"><input id="mRecoveryNum" type="number" min="0" max="20" step="0.25" value="5" aria-label="Year 1 recoveries exact value"></div>
+            </div>
+            <div class="control">
+              <label for="mRecoveryGrowth">Recovery growth <output id="mRecoveryGrowthOut">2.25%</output></label>
+              <div class="control-row"><input id="mRecoveryGrowth" type="range" min="-2" max="8" step="0.25" value="2.25"><input id="mRecoveryGrowthNum" type="number" min="-2" max="8" step="0.25" value="2.25" aria-label="Recovery growth exact value"></div>
+            </div>
+            <div class="control">
+              <label for="mOperating">Year 1 operating costs <output id="mOperatingOut">$10.00</output></label>
+              <div class="control-row"><input id="mOperating" type="range" min="0" max="30" step="0.25" value="10"><input id="mOperatingNum" type="number" min="0" max="30" step="0.25" value="10" aria-label="Year 1 operating costs exact value"></div>
+            </div>
+            <div class="control">
+              <label for="mOperatingGrowth">Operating-cost growth <output id="mOperatingGrowthOut">2.25%</output></label>
+              <div class="control-row"><input id="mOperatingGrowth" type="range" min="-2" max="8" step="0.25" value="2.25"><input id="mOperatingGrowthNum" type="number" min="-2" max="8" step="0.25" value="2.25" aria-label="Operating cost growth exact value"></div>
+            </div>
+            <div class="control">
+              <label for="mFree">Year 1 free rent <output id="mFreeOut">$30.00</output></label>
+              <div class="control-row"><input id="mFree" type="range" min="0" max="80" step="1" value="30"><input id="mFreeNum" type="number" min="0" max="80" step="1" value="30" aria-label="Year 1 free rent exact value"></div>
+            </div>
+            <div class="control">
+              <label for="mTI">Year 1 TI allowance <output id="mTIOut">$40.00</output></label>
+              <div class="control-row"><input id="mTI" type="range" min="0" max="100" step="1" value="40"><input id="mTINum" type="number" min="0" max="100" step="1" value="40" aria-label="Year 1 tenant improvements exact value"></div>
+            </div>
+            <div class="control">
+              <label for="mLC">Year 1 leasing commissions <output id="mLCOut">$6.00</output></label>
+              <div class="control-row"><input id="mLC" type="range" min="0" max="20" step="0.25" value="6"><input id="mLCNum" type="number" min="0" max="20" step="0.25" value="6" aria-label="Year 1 leasing commissions exact value"></div>
+            </div>
+          </div>
+        </details>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><span class="metric-label">Scenario A NPV</span><strong id="npvA" class="metric-value">$96.22 PSF</strong><span class="metric-note">Course benchmark at reset</span></div>
+          <div class="metric"><span class="metric-label">Scenario B NPV</span><strong id="npvB" class="metric-value">$91.22 PSF</strong><span class="metric-note">Course benchmark at reset</span></div>
+          <div class="metric"><span class="metric-label">NPV advantage</span><strong id="npvDifference" class="metric-value positive">$5.01 PSF</strong><span id="npvDifferenceNote" class="metric-note">Scenario A is preferred</span></div>
+          <div class="metric"><span class="metric-label">Equal-NPV bump</span><strong id="equalBump" class="metric-value">$6.13 PSF</strong><span class="metric-note">Bump that makes the landlord indifferent</span></div>
+        </div>
+
+        <div class="analysis-grid">
+          <div class="visual-panel">
+            <div class="panel-header"><strong>Annual landlord net cash flow</strong><span>Timing of rent and concessions</span></div>
+            <div class="legend"><span class="legend-item"><span class="swatch" style="background:var(--scenario-a)"></span>Scenario A · annual growth</span><span class="legend-item"><span class="swatch" style="background:var(--scenario-b)"></span>Scenario B · discrete bump</span></div>
+            <div class="chart-wrap"><svg id="cashFlowChart" viewBox="0 0 1000 500" role="img" aria-labelledby="cashFlowTitle cashFlowDesc"></svg></div>
+            <p class="chart-note">The Year 1 cash flow includes free rent, tenant improvements, and leasing commissions.</p>
+          </div>
+          <div class="visual-panel">
+            <div class="panel-header"><strong>NPV sensitivity to the discount rate</strong><span>Current rate is marked</span></div>
+            <div class="legend"><span class="legend-item"><span class="swatch" style="background:var(--scenario-a)"></span>Scenario A NPV</span><span class="legend-item"><span class="swatch" style="background:var(--scenario-b)"></span>Scenario B NPV</span></div>
+            <div class="chart-wrap"><svg id="npvChart" viewBox="0 0 1000 500" role="img" aria-labelledby="npvChartTitle npvChartDesc"></svg></div>
+            <p class="chart-note">Drag or animate the discount-rate control to see how later cash flows lose present value more quickly.</p>
+          </div>
+        </div>
+
+        <div class="table-panel" style="margin-top:18px">
+          <div class="panel-header"><strong>Lease cash-flow schedule</strong><span>All values are annual $/PSF</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Year</th><th>Rent A</th><th>Rent B</th><th>Recoveries</th><th>Operating costs</th><th>Cash flow A</th><th>Cash flow B</th><th>PV A</th><th>PV B</th></tr></thead>
+              <tbody id="scheduleBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="formula-box">
+          <div class="formula">NPV = Σ<sub>t=1</sub><sup>T</sup> Cash Flow<sub>t</sub> ÷ (1 + discount rate)<sup>t</sup></div>
+          <p>The workbook follows Excel's NPV convention: even the first listed annual cash flow is discounted one period.</p>
+        </div>
+
+        <div id="decisionCallout" class="callout"><strong>Landlord decision:</strong> Under the reset assumptions, Scenario A has the higher NPV because its earlier rent growth more than offsets Scenario B's later bump.</div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="takeawayTitle">
+      <div class="card-body">
+        <div class="section-heading"><div><h2 id="takeawayTitle">What students should notice</h2><p>The two methods answer related but different questions.</p></div></div>
+        <div class="takeaways">
+          <article class="takeaway"><h3>Concessions reduce effective rent</h3><p>More free rent, a larger TI allowance, or a higher commission lowers the annualized economic rent even when the quoted rent is unchanged.</p></article>
+          <article class="takeaway"><h3>Timing changes value</h3><p>A dollar received sooner is worth more. The discount-rate animation makes the penalty on later rent bumps visible.</p></article>
+          <article class="takeaway"><h3>Compare leases consistently</h3><p>Straight-line rent is useful for a quick annual comparison; NPV is the stronger tool when rent patterns and concession timing differ.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      <strong>Instructional-use notice.</strong> This tool was created for FIN 355 at California State University, Fullerton. It simplifies lease terms and is intended for teaching only, not for financial, legal, tax, or investment advice.
+    </div>
+  </main>
+
+  <footer>Created by Desen Lin · FIN 355 · California State University, Fullerton · For instructional use only</footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+      const NS = "http://www.w3.org/2000/svg";
+      const COLORS = {
+        navy: "#00274c", muted: "#5c677d", grid: "#d8dee9", white: "#ffffff",
+        orange: "#f58220", positive: "#16745b", negative: "#c44235",
+        a: "#146c94", b: "#f58220"
+      };
+      const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const percent1 = new Intl.NumberFormat("en-US", { style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+      const singleDefaults = { sRent: 30, sRecovery: 5, sOperating: 10, sTerm: 10, sFreeMonths: 12, sTI: 40, sCommission: 2 };
+      const multiDefaults = {
+        mRent: 30, mDiscount: 10, mGrowthA: 2, mBump: 4, mBumpYear: 6, mTerm: 10,
+        mRecovery: 5, mRecoveryGrowth: 2.25, mOperating: 10, mOperatingGrowth: 2.25,
+        mFree: 30, mTI: 40, mLC: 6
+      };
+
+      let animationFrame = null;
+      let animationStarted = null;
+
+      function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+      function number(id) {
+        const element = $(id);
+        const value = Number(element.value);
+        const min = Number(element.min);
+        const max = Number(element.max);
+        return clamp(Number.isFinite(value) ? value : 0, Number.isFinite(min) ? min : -Infinity, Number.isFinite(max) ? max : Infinity);
+      }
+      function currency(value) { return money.format(value); }
+      function signedCurrency(value) { return `${value < 0 ? "−" : "+"}${money.format(Math.abs(value))}`; }
+
+      function bindPair(id, format, update) {
+        const range = $(id);
+        const exact = $(`${id}Num`);
+        const output = $(`${id}Out`);
+        const sync = (source, target) => {
+          let value = Number(source.value);
+          if (!Number.isFinite(value)) value = Number(range.value);
+          value = clamp(value, Number(range.min), Number(range.max));
+          source.value = String(value);
+          target.value = String(value);
+          output.textContent = format(value);
+          update();
+        };
+        range.addEventListener("input", () => sync(range, exact));
+        exact.addEventListener("input", () => sync(exact, range));
+        output.textContent = format(Number(range.value));
+      }
+
+      function svgElement(name, attrs = {}) {
+        const element = document.createElementNS(NS, name);
+        Object.entries(attrs).forEach(([key, value]) => element.setAttribute(key, String(value)));
+        return element;
+      }
+
+      function addText(svg, text, x, y, attrs = {}) {
+        const element = svgElement("text", { x, y, ...attrs });
+        element.textContent = text;
+        svg.appendChild(element);
+        return element;
+      }
+
+      function resetSvg(svg, title, description, titleId, descId) {
+        svg.innerHTML = "";
+        const titleNode = svgElement("title", { id: titleId });
+        titleNode.textContent = title;
+        const descNode = svgElement("desc", { id: descId });
+        descNode.textContent = description;
+        svg.append(titleNode, descNode);
+      }
+
+      function singleState() {
+        const rent = number("sRent");
+        const recovery = number("sRecovery");
+        const operating = number("sOperating");
+        const term = number("sTerm");
+        const freeMonths = number("sFreeMonths");
+        const ti = number("sTI");
+        const commissionRate = number("sCommission") / 100;
+        const freeTotal = rent * freeMonths / 12;
+        const commissionTotal = rent * term * commissionRate;
+        const annualFree = freeTotal / term;
+        const annualTI = ti / term;
+        const annualCommission = commissionTotal / term;
+        const annualConcessions = annualFree + annualTI + annualCommission;
+        const net = rent + recovery - operating - annualConcessions;
+        return { rent, recovery, operating, term, freeMonths, ti, commissionRate, freeTotal, commissionTotal, annualFree, annualTI, annualCommission, annualConcessions, net };
+      }
+
+      function renderSingle() {
+        const s = singleState();
+        $("sNet").textContent = `${currency(s.net)} PSF`;
+        $("sNet").className = `metric-value ${s.net >= 0 ? "positive" : "negative"}`;
+        $("sConcessions").textContent = `${currency(s.annualConcessions)} PSF`;
+        $("sMargin").textContent = percent1.format(s.rent ? s.net / s.rent : 0);
+        $("sUpfront").textContent = `${currency(s.freeTotal + s.ti + s.commissionTotal)} PSF`;
+        renderWaterfall(s);
+      }
+
+      function renderWaterfall(s) {
+        const svg = $("waterfall");
+        resetSvg(svg, "Net effective rent bridge", "A waterfall from gross rent through recoveries, operating costs, and annualized concessions to net effective rent.", "waterfallTitle", "waterfallDesc");
+        const width = 1000;
+        const height = 440;
+        const margin = { top: 34, right: 28, bottom: 88, left: 70 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        const contributions = [
+          { label: "Gross rent", value: s.rent },
+          { label: "Recoveries", value: s.recovery },
+          { label: "Operating", value: -s.operating },
+          { label: "Free rent", value: -s.annualFree },
+          { label: "TI", value: -s.annualTI },
+          { label: "Commission", value: -s.annualCommission }
+        ];
+        let running = 0;
+        const items = contributions.map((item) => {
+          const start = running;
+          running += item.value;
+          return { ...item, start, end: running };
+        });
+        items.push({ label: "Net effective", value: running, start: 0, end: running, total: true });
+        const values = items.flatMap((item) => [item.start, item.end]);
+        const minValue = Math.min(0, ...values);
+        const maxValue = Math.max(1, ...values);
+        const pad = Math.max(2, (maxValue - minValue) * 0.12);
+        const domainMin = minValue - (minValue < 0 ? pad : 0);
+        const domainMax = maxValue + pad;
+        const y = (value) => margin.top + (domainMax - value) / (domainMax - domainMin) * innerHeight;
+        const slot = innerWidth / items.length;
+        const barWidth = slot * 0.62;
+
+        for (let i = 0; i <= 4; i += 1) {
+          const value = domainMin + (domainMax - domainMin) * i / 4;
+          const py = y(value);
+          svg.appendChild(svgElement("line", { x1: margin.left, y1: py, x2: width - margin.right, y2: py, stroke: COLORS.grid, "stroke-width": 1 }));
+          addText(svg, currency(value), margin.left - 10, py + 4, { "text-anchor": "end", fill: COLORS.muted, "font-size": 12 });
+        }
+
+        items.forEach((item, index) => {
+          const x = margin.left + index * slot + (slot - barWidth) / 2;
+          const topValue = Math.max(item.start, item.end);
+          const bottomValue = Math.min(item.start, item.end);
+          const fill = item.total ? COLORS.navy : item.value >= 0 ? COLORS.positive : COLORS.negative;
+          const rect = svgElement("rect", { x, y: y(topValue), width: barWidth, height: Math.max(2, y(bottomValue) - y(topValue)), rx: 4, fill });
+          const tip = svgElement("title");
+          tip.textContent = `${item.label}: ${signedCurrency(item.value)} per year`;
+          rect.appendChild(tip);
+          svg.appendChild(rect);
+          addText(svg, item.total ? currency(item.value) : signedCurrency(item.value), x + barWidth / 2, Math.max(20, y(topValue) - 8), { "text-anchor": "middle", fill, "font-size": 13, "font-weight": 800 });
+          addText(svg, item.label, x + barWidth / 2, height - 50, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 12, "font-weight": 760 });
+          if (!item.total && index < contributions.length - 1) {
+            const nextX = margin.left + (index + 1) * slot + (slot - barWidth) / 2;
+            svg.appendChild(svgElement("line", { x1: x + barWidth, y1: y(item.end), x2: nextX, y2: y(item.end), stroke: COLORS.muted, "stroke-width": 1.2, "stroke-dasharray": "4 4" }));
+          }
+        });
+        svg.appendChild(svgElement("line", { x1: margin.left, y1: y(0), x2: width - margin.right, y2: y(0), stroke: COLORS.navy, "stroke-width": 1.6 }));
+      }
+
+      function multiAssumptions() {
+        return {
+          rent: number("mRent"), discount: number("mDiscount") / 100,
+          growthA: number("mGrowthA") / 100, bump: number("mBump"),
+          bumpYear: Math.round(number("mBumpYear")), term: Math.round(number("mTerm")),
+          recovery: number("mRecovery"), recoveryGrowth: number("mRecoveryGrowth") / 100,
+          operating: number("mOperating"), operatingGrowth: number("mOperatingGrowth") / 100,
+          free: number("mFree"), ti: number("mTI"), lc: number("mLC")
+        };
+      }
+
+      function buildSchedule(a, discount = a.discount, bumpOverride = a.bump) {
+        const rows = [];
+        for (let year = 1; year <= a.term; year += 1) {
+          const rentA = a.rent * Math.pow(1 + a.growthA, year - 1);
+          const rentB = a.rent + (year >= a.bumpYear ? bumpOverride : 0);
+          const recovery = a.recovery * Math.pow(1 + a.recoveryGrowth, year - 1);
+          const operating = a.operating * Math.pow(1 + a.operatingGrowth, year - 1);
+          const concessions = year === 1 ? a.free + a.ti + a.lc : 0;
+          const cashA = rentA + recovery - operating - concessions;
+          const cashB = rentB + recovery - operating - concessions;
+          const factor = Math.pow(1 + discount, year);
+          rows.push({ year, rentA, rentB, recovery, operating, cashA, cashB, pvA: cashA / factor, pvB: cashB / factor });
+        }
+        return rows;
+      }
+
+      function sum(rows, key) { return rows.reduce((total, row) => total + row[key], 0); }
+
+      function equalNpvBump(a) {
+        const baseRows = buildSchedule(a, a.discount, 0);
+        const target = sum(buildSchedule(a), "pvA");
+        const baseNpv = sum(baseRows, "pvB");
+        let annuity = 0;
+        for (let year = a.bumpYear; year <= a.term; year += 1) annuity += 1 / Math.pow(1 + a.discount, year);
+        return annuity > 0 ? (target - baseNpv) / annuity : NaN;
+      }
+
+      function renderMulti() {
+        const a = multiAssumptions();
+        const rows = buildSchedule(a);
+        const aNpv = sum(rows, "pvA");
+        const bNpv = sum(rows, "pvB");
+        const difference = aNpv - bNpv;
+        const equalBump = equalNpvBump(a);
+        $("npvA").textContent = `${currency(aNpv)} PSF`;
+        $("npvB").textContent = `${currency(bNpv)} PSF`;
+        $("npvDifference").textContent = `${currency(Math.abs(difference))} PSF`;
+        $("npvDifference").className = `metric-value ${Math.abs(difference) < 0.005 ? "" : "positive"}`;
+        $("npvDifferenceNote").textContent = Math.abs(difference) < 0.005 ? "The scenarios are approximately equal" : `Scenario ${difference > 0 ? "A" : "B"} is preferred`;
+        $("equalBump").textContent = Number.isFinite(equalBump) ? `${currency(equalBump)} PSF` : "Not available";
+        const decision = Math.abs(difference) < 0.005
+          ? "The two rent structures have approximately the same NPV under the current assumptions."
+          : `Scenario ${difference > 0 ? "A" : "B"} has the higher NPV by ${currency(Math.abs(difference))} per square foot. ${difference > 0 ? "Earlier compounding rent growth is more valuable at the current bump and discount rate." : "The discrete bump is large or early enough to outweigh Scenario A's growth path."}`;
+        $("decisionCallout").innerHTML = `<strong>Landlord decision:</strong> ${decision}`;
+        renderSchedule(rows);
+        renderCashFlowChart(rows, a);
+        renderNpvChart(a);
+      }
+
+      function renderSchedule(rows) {
+        const body = $("scheduleBody");
+        body.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        rows.forEach((row) => {
+          const tr = document.createElement("tr");
+          const values = [row.year, row.rentA, row.rentB, row.recovery, -row.operating, row.cashA, row.cashB, row.pvA, row.pvB];
+          values.forEach((value, index) => {
+            const td = document.createElement("td");
+            td.textContent = index === 0 ? String(value) : currency(value);
+            if (index > 0 && value < 0) td.className = "negative";
+            tr.appendChild(td);
+          });
+          fragment.appendChild(tr);
+        });
+        body.appendChild(fragment);
+      }
+
+      function drawLineChart(svg, series, options) {
+        resetSvg(svg, options.title, options.description, options.titleId, options.descId);
+        const width = 1000;
+        const height = 500;
+        const margin = { top: 28, right: 30, bottom: 62, left: 78 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        const allValues = series.flatMap((item) => item.values.map((point) => point.y));
+        let minY = Math.min(0, ...allValues);
+        let maxY = Math.max(0, ...allValues);
+        const pad = Math.max(1, (maxY - minY) * 0.12);
+        minY -= pad;
+        maxY += pad;
+        const minX = options.minX;
+        const maxX = options.maxX;
+        const x = (value) => margin.left + (value - minX) / Math.max(1e-9, maxX - minX) * innerWidth;
+        const y = (value) => margin.top + (maxY - value) / Math.max(1e-9, maxY - minY) * innerHeight;
+
+        for (let i = 0; i <= 4; i += 1) {
+          const value = minY + (maxY - minY) * i / 4;
+          const py = y(value);
+          svg.appendChild(svgElement("line", { x1: margin.left, y1: py, x2: width - margin.right, y2: py, stroke: COLORS.grid, "stroke-width": 1 }));
+          addText(svg, currency(value), margin.left - 10, py + 4, { "text-anchor": "end", fill: COLORS.muted, "font-size": 12 });
+        }
+        const ticks = options.xTicks;
+        ticks.forEach((value) => {
+          const px = x(value);
+          svg.appendChild(svgElement("line", { x1: px, y1: margin.top, x2: px, y2: height - margin.bottom, stroke: COLORS.grid, "stroke-width": 1 }));
+          addText(svg, options.formatX(value), px, height - margin.bottom + 24, { "text-anchor": "middle", fill: COLORS.muted, "font-size": 12 });
+        });
+        svg.appendChild(svgElement("line", { x1: margin.left, y1: y(0), x2: width - margin.right, y2: y(0), stroke: COLORS.navy, "stroke-width": 1.4 }));
+        series.forEach((item) => {
+          const d = item.values.map((point, index) => `${index === 0 ? "M" : "L"}${x(point.x).toFixed(2)},${y(point.y).toFixed(2)}`).join(" ");
+          svg.appendChild(svgElement("path", { d, fill: "none", stroke: item.color, "stroke-width": 3.5, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+          if (options.showPoints) item.values.forEach((point) => svg.appendChild(svgElement("circle", { cx: x(point.x), cy: y(point.y), r: 4.2, fill: item.color, stroke: COLORS.white, "stroke-width": 1.5 })));
+        });
+        if (Number.isFinite(options.markerX)) {
+          const px = x(options.markerX);
+          svg.appendChild(svgElement("line", { x1: px, y1: margin.top, x2: px, y2: height - margin.bottom, stroke: COLORS.negative, "stroke-width": 2, "stroke-dasharray": "6 5" }));
+          addText(svg, options.markerLabel, px, margin.top + 15, { "text-anchor": "middle", fill: COLORS.negative, "font-size": 12, "font-weight": 800 });
+        }
+        addText(svg, options.xLabel, margin.left + innerWidth / 2, height - 12, { "text-anchor": "middle", fill: COLORS.navy, "font-size": 14, "font-weight": 800 });
+      }
+
+      function renderCashFlowChart(rows, a) {
+        const series = [
+          { color: COLORS.a, values: rows.map((row) => ({ x: row.year, y: row.cashA })) },
+          { color: COLORS.b, values: rows.map((row) => ({ x: row.year, y: row.cashB })) }
+        ];
+        const ticks = Array.from({ length: a.term }, (_, index) => index + 1).filter((year) => a.term <= 12 || year === 1 || year === a.term || year % 2 === 0);
+        drawLineChart($("cashFlowChart"), series, {
+          title: "Annual landlord net cash flow", description: "Two lines compare annual net cash flow under percentage rent growth and a discrete rent bump.",
+          titleId: "cashFlowTitle", descId: "cashFlowDesc", minX: 1, maxX: a.term,
+          xTicks: ticks, formatX: (value) => `Yr ${value}`, xLabel: "Lease year", showPoints: true, markerX: NaN, markerLabel: ""
+        });
+      }
+
+      function renderNpvChart(a) {
+        const rates = Array.from({ length: 51 }, (_, index) => index * 0.005);
+        const aValues = [];
+        const bValues = [];
+        rates.forEach((rate) => {
+          const rows = buildSchedule(a, rate);
+          aValues.push({ x: rate, y: sum(rows, "pvA") });
+          bValues.push({ x: rate, y: sum(rows, "pvB") });
+        });
+        drawLineChart($("npvChart"), [
+          { color: COLORS.a, values: aValues },
+          { color: COLORS.b, values: bValues }
+        ], {
+          title: "NPV sensitivity to the discount rate", description: "Two NPV profiles show how present value changes as the discount rate moves from zero to twenty-five percent.",
+          titleId: "npvChartTitle", descId: "npvChartDesc", minX: 0, maxX: 0.25,
+          xTicks: [0, 0.05, 0.10, 0.15, 0.20, 0.25], formatX: (value) => percent1.format(value),
+          xLabel: "Annual discount rate", showPoints: false, markerX: a.discount, markerLabel: percent1.format(a.discount)
+        });
+      }
+
+      function stopAnimation() {
+        if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+        animationStarted = null;
+        $("animateDiscount").textContent = "Animate discount rate";
+      }
+
+      function animateDiscount(timestamp) {
+        if (animationStarted === null) animationStarted = timestamp;
+        const progress = Math.min(1, (timestamp - animationStarted) / 6500);
+        const value = 2 + 18 * progress;
+        $("mDiscount").value = value.toFixed(1);
+        $("mDiscountNum").value = value.toFixed(1);
+        $("mDiscountOut").textContent = `${value.toFixed(1)}%`;
+        renderMulti();
+        if (progress < 1) animationFrame = requestAnimationFrame(animateDiscount);
+        else stopAnimation();
+      }
+
+      function toggleAnimation() {
+        if (animationFrame !== null) { stopAnimation(); return; }
+        $("animateDiscount").textContent = "Pause animation";
+        animationFrame = requestAnimationFrame(animateDiscount);
+      }
+
+      function resetValues(defaults, render) {
+        Object.entries(defaults).forEach(([id, value]) => {
+          $(id).value = String(value);
+          $(`${id}Num`).value = String(value);
+          $(id).dispatchEvent(new Event("input"));
+        });
+        render();
+      }
+
+      const moneyFormat = (value) => currency(value);
+      const percentFormat = (value) => `${value.toFixed(value % 1 === 0 ? 1 : 2)}%`;
+      const yearsFormat = (value) => `${Math.round(value)} ${Math.round(value) === 1 ? "year" : "years"}`;
+      const monthsFormat = (value) => `${Math.round(value)} ${Math.round(value) === 1 ? "month" : "months"}`;
+
+      [
+        ["sRent", moneyFormat], ["sRecovery", moneyFormat], ["sOperating", moneyFormat],
+        ["sTerm", yearsFormat], ["sFreeMonths", monthsFormat], ["sTI", moneyFormat],
+        ["sCommission", percentFormat]
+      ].forEach(([id, format]) => bindPair(id, format, renderSingle));
+
+      [
+        ["mRent", moneyFormat], ["mDiscount", percentFormat], ["mGrowthA", percentFormat],
+        ["mBump", moneyFormat], ["mBumpYear", (value) => `Year ${Math.round(value)}`], ["mTerm", yearsFormat],
+        ["mRecovery", moneyFormat], ["mRecoveryGrowth", percentFormat], ["mOperating", moneyFormat],
+        ["mOperatingGrowth", percentFormat], ["mFree", moneyFormat], ["mTI", moneyFormat], ["mLC", moneyFormat]
+      ].forEach(([id, format]) => bindPair(id, format, () => {
+        if (id === "mDiscount") stopAnimation();
+        if (id === "mTerm") {
+          const term = Math.round(number("mTerm"));
+          [$("mBumpYear"), $("mBumpYearNum")].forEach((element) => element.max = String(term));
+          if (number("mBumpYear") > term) {
+            $("mBumpYear").value = String(term);
+            $("mBumpYearNum").value = String(term);
+            $("mBumpYearOut").textContent = `Year ${term}`;
+          }
+        }
+        renderMulti();
+      }));
+
+      $("resetSingle").addEventListener("click", () => resetValues(singleDefaults, renderSingle));
+      $("resetMulti").addEventListener("click", () => { stopAnimation(); resetValues(multiDefaults, renderMulti); });
+      $("animateDiscount").addEventListener("click", toggleAnimation);
+      $("matchBump").addEventListener("click", () => {
+        stopAnimation();
+        const value = equalNpvBump(multiAssumptions());
+        if (!Number.isFinite(value)) return;
+        if (value < Number($("mBump").min)) {
+          $("mBump").min = String(Math.floor(value));
+          $("mBumpNum").min = String(Math.floor(value));
+        }
+        if (value > Number($("mBump").max)) {
+          $("mBump").max = String(Math.ceil(value));
+          $("mBumpNum").max = String(Math.ceil(value));
+        }
+        $("mBump").value = value.toFixed(3);
+        $("mBumpNum").value = value.toFixed(3);
+        $("mBumpOut").textContent = currency(value);
+        renderMulti();
+      });
+
+      renderSingle();
+      renderMulti();
+    })();
+  </script>
+</body>
+</html>
