@@ -17,8 +17,8 @@ The collection is designed to grow over time. New interactive tools and course p
 | Resource | What It Demonstrates | Links |
 | --- | --- | --- |
 | **How Amortization Changes a Loan Payment** | Shows how a fixed monthly payment is divided between principal and interest, why the principal share rises over time, and how the annual amortization schedule changes with the loan amount, interest rate, and term. | [Launch the tool](https://desenlin.github.io/FIN355/amortization.html) |
-<!--  · [View source](./amortization.html) --> 
 | **Internal Rate of Return as a Zero-NPV Solution** | Visualizes IRR as an x-intercept of the NPV profile, lets students edit annual cash flows, and demonstrates why nonconventional cash flows can produce multiple IRRs or no real IRR. | [Launch the tool](https://desenlin.github.io/FIN355/irr.html) |
+<!--  · [View source](./amortization.html) --> 
 <!--  · [View source](./irr.html) -->
 
 > Additional FIN 355 tools and pages will be listed here as they are developed.
