@@ -26,42 +26,42 @@ The collection is designed to grow over time. New interactive tools and course p
     <tr>
       <td><strong>How Amortization Changes a Loan Payment</strong></td>
       <td>Shows how a fixed monthly payment is divided between principal and interest, why the principal share rises over time, and how the annual amortization schedule changes with the loan amount, interest rate, and term.</td>
-      <td><a href="https://desenlin.github.io/FIN355/amortization.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/amortization.html">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>Commercial Mortgage Loan Sizing</strong></td>
       <td>Compares the maximum loan supported by LTV, DSCR, and debt-yield underwriting tests, identifies the binding constraint, and shows how property, loan-term, and lender-threshold assumptions change each ceiling.</td>
-      <td><a href="https://desenlin.github.io/FIN355/loan-sizing.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/loan-sizing.html">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>Internal Rate of Return as a Zero-NPV Solution</strong></td>
       <td>Visualizes IRR as an x-intercept of the NPV profile, lets students edit annual cash flows, and demonstrates why nonconventional cash flows can produce multiple IRRs or no real IRR.</td>
-      <td><a href="https://desenlin.github.io/FIN355/irr.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/irr.html">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>CMBS Tranching and the First-Loss Waterfall</strong></td>
       <td>Builds a six-tranche CMBS capital stack, connects investor yields to pool pricing, and allocates collateral losses from the first-loss bond upward through attachment and detachment points.</td>
-      <td><a href="https://desenlin.github.io/FIN355/cmbs-tranching.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/cmbs-tranching.html">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>Net Effective Rent and Lease NPV</strong></td>
       <td>Shows how free rent, tenant improvements, and leasing commissions reduce annual net effective rent, then compares a constant-growth lease with a delayed rent bump using multi-year landlord NPV.</td>
-      <td><a href="https://desenlin.github.io/FIN355/net-effective-rent.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/net-effective-rent.html">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>Development Feasibility: Replacement Rent and Land Value</strong></td>
       <td>Uses one development model to solve either for the minimum replacement rent or the maximum supportable land cost, with a live feasibility boundary linking rent, land, NOI, and yield on cost.</td>
-      <td><a href="https://desenlin.github.io/FIN355/development-feasibility.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/development-feasibility.html">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>Three Real Estate Company Valuation Approaches</strong></td>
       <td>Compares discounted cash flow, direct capitalization, and net asset value, showing how operating forecasts, required returns, cap rates, debt, and other balance-sheet assumptions change the implied equity value.</td>
-      <td><a href="https://desenlin.github.io/FIN355/valuation-approaches.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/valuation-approaches.html">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>Real Estate Exit Strategies: Sale, Refinancing, and Like-Kind Exchange</strong></td>
       <td>Compares immediate cash, retained real estate equity, debt, transaction costs, and current taxes across a sale, cash-out refinancing, and Section 1031 exchange, including the taxable-boot boundary for partial versus full deferral.</td>
-      <td><a href="https://desenlin.github.io/FIN355/exit-strategies.html">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/FIN355/exit-strategies.html">Launch the tool</a></td>
     </tr>
   </tbody>
 </table>
