@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use or adapt these interactive learning resources, please cite this repository."
+title: "FIN 355: Real Estate Investment Analysis Interactive Learning Resources"
+type: software
+authors:
+  - family-names: "Lin"
+    given-names: "Desen"
+    affiliation: "California State University, Fullerton"
+repository-code: "https://github.com/desenlin/FIN355"
+url: "https://github.com/desenlin/FIN355"
+date-released: 2026-08-30
+keywords:
+  - "real estate education"
+  - "interactive learning"
+  - "real estate finance"
