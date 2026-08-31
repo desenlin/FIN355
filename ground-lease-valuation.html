@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 comparison of four building valuation models for property subject to a ground lease.">
+  <title>Four Ground-Lease Valuation Models | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d8dee9;
+      --soft: #f3f6fa;
+      --white: #ffffff;
+      --green: #16745b;
+      --teal: #247b87;
+      --red: #b84235;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    button:focus-visible, input:focus-visible, summary:focus-visible {
+      outline: 3px solid rgba(245, 130, 32, 0.45);
+      outline-offset: 2px;
+    }
+    .topbar { height: 8px; background: var(--orange); }
+    .hero {
+      color: var(--white);
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+    .hero-inner, main, footer { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .hero-inner { padding: 42px 0 46px; }
+    .course-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 980px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4.6vw, 3.45rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+    .hero p { max-width: 900px; margin-bottom: 8px; color: #e4edf6; font-size: clamp(1rem, 2vw, 1.18rem); }
+    .creator { color: #f8c99f !important; font-size: 0.9rem !important; font-weight: 700; }
+    main { display: grid; gap: 22px; padding: 28px 0 46px; }
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(0, 39, 76, 0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card-body { padding: 24px; }
+    .section-heading { margin-bottom: 20px; }
+    .section-heading h2 { margin-bottom: 4px; color: var(--navy); font-size: 1.42rem; line-height: 1.25; }
+    .section-heading p { max-width: 920px; margin-bottom: 0; color: var(--muted); font-size: 0.94rem; }
+    .method-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+    .method {
+      padding: 17px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--navy);
+      border-radius: 11px;
+    }
+    .method:nth-child(2) { border-top-color: var(--orange); }
+    .method:nth-child(3) { border-top-color: var(--green); }
+    .method:nth-child(4) { border-top-color: var(--teal); }
+    .model-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      margin-bottom: 9px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: 50%;
+      font-size: 0.76rem;
+      font-weight: 850;
+    }
+    .method:nth-child(2) .model-number { background: var(--orange-dark); }
+    .method:nth-child(3) .model-number { background: var(--green); }
+    .method:nth-child(4) .model-number { background: var(--teal); }
+    .method h3 { min-height: 2.6em; margin-bottom: 6px; color: var(--navy); font-size: 0.96rem; line-height: 1.3; }
+    .method p { margin-bottom: 8px; color: var(--muted); font-size: 0.82rem; }
+    .formula { margin: 0 !important; color: var(--ink) !important; font-weight: 760; }
+    .risk-order {
+      margin: 18px 0 0;
+      padding: 14px 17px;
+      color: var(--navy);
+      background: #fff7ef;
+      border-left: 5px solid var(--orange);
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 680;
+    }
+    .control-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .control-group {
+      min-width: 0;
+      padding: 15px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--navy);
+      border-radius: 10px;
+    }
+    .control-group.land { border-top-color: var(--orange); }
+    .control-group.building { border-top-color: var(--green); }
+    .control-group h3 { margin-bottom: 3px; color: var(--navy); font-size: 1rem; }
+    .group-note { margin-bottom: 13px; color: var(--muted); font-size: 0.78rem; }
+    .control { margin-top: 13px; }
+    .control label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: var(--navy);
+      font-size: 0.81rem;
+      font-weight: 780;
+    }
+    .control output { color: var(--orange-dark); white-space: nowrap; }
+    .control-row { display: grid; grid-template-columns: minmax(0, 1fr) 91px; gap: 9px; align-items: center; }
+    input[type="range"] { width: 100%; accent-color: var(--orange); cursor: pointer; }
+    input[type="number"] {
+      width: 100%;
+      min-height: 36px;
+      padding: 6px 8px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #aeb9c8;
+      border-radius: 7px;
+      text-align: right;
+      font-size: 0.82rem;
+      font-weight: 650;
+    }
+    .unit-note { margin: 5px 0 0; color: var(--muted); font-size: 0.71rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .action-button {
+      min-height: 38px;
+      padding: 8px 13px;
+      color: var(--navy);
+      background: var(--soft);
+      border: 1px solid #c9d2df;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.84rem;
+      font-weight: 780;
+    }
+    .action-button:hover { background: #e6edf5; }
+    .action-button.primary { color: var(--white); background: var(--navy); border-color: var(--navy); }
+    .action-button.primary:hover { background: var(--navy-2); }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 20px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .metric { min-width: 0; padding: 17px 16px; border-right: 1px solid var(--line); }
+    .metric:last-child { border-right: 0; }
+    .metric-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 850;
+      letter-spacing: 0.035em;
+      text-transform: uppercase;
+    }
+    .metric-value { display: block; color: var(--navy); font-size: clamp(1.12rem, 2vw, 1.48rem); font-weight: 850; line-height: 1.2; }
+    .metric-note { display: block; margin-top: 4px; color: var(--muted); font-size: 0.74rem; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 0.82fr); gap: 24px; align-items: start; }
+    .chart-title { margin-bottom: 3px; color: var(--navy); font-size: 1.06rem; }
+    .chart-subtitle { margin-bottom: 15px; color: var(--muted); font-size: 0.82rem; }
+    .bars { display: grid; gap: 15px; }
+    .bar-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 5px; font-size: 0.81rem; }
+    .bar-label { color: var(--navy); font-weight: 800; }
+    .bar-value { color: var(--ink); font-weight: 800; white-space: nowrap; }
+    .bar-track { height: 28px; overflow: hidden; background: #e8edf3; border-radius: 7px; }
+    .bar-fill { width: 0; height: 100%; min-width: 2px; transition: width 180ms ease; }
+    .bar-fill.m1 { background: var(--navy-2); }
+    .bar-fill.m2 { background: var(--orange); }
+    .bar-fill.m3 { background: var(--green); }
+    .bar-fill.m4 { background: var(--teal); }
+    .bar-caption { margin: 5px 0 0; color: var(--muted); font-size: 0.73rem; }
+    .comparison-note { margin: 16px 0 0; padding: 13px 15px; color: var(--navy); background: #fff7ef; border-left: 5px solid var(--orange); border-radius: 8px; font-size: 0.83rem; font-weight: 650; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    th, td { padding: 9px 7px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--navy); font-size: 0.69rem; letter-spacing: 0.03em; text-transform: uppercase; }
+    td:not(:first-child), th:not(:first-child) { text-align: right; }
+    .total td { color: var(--navy); font-weight: 850; }
+    .cashflow-panel { margin-top: 24px; overflow: hidden; border: 1px solid var(--line); border-radius: 11px; }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; color: var(--white); background: var(--navy); }
+    .panel-header strong { font-size: 0.92rem; }
+    .panel-header span { color: #dce9f5; font-size: 0.76rem; }
+    .chart-wrap { padding: 8px 10px 0; overflow-x: auto; }
+    svg { display: block; width: 100%; min-width: 620px; height: auto; }
+    .chart-note { margin: 7px 14px 14px; color: var(--muted); font-size: 0.77rem; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; padding: 12px 14px 0; color: var(--muted); font-size: 0.76rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 18px; height: 3px; border-radius: 999px; }
+    .lesson-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .lesson { padding: 16px 18px; background: #f8fafc; border-left: 4px solid var(--navy); border-radius: 8px; }
+    .lesson:nth-child(2) { border-left-color: var(--orange); }
+    .lesson:nth-child(3) { border-left-color: var(--green); }
+    .lesson strong { display: block; margin-bottom: 4px; color: var(--navy); font-size: 0.87rem; }
+    .lesson span { color: var(--muted); font-size: 0.79rem; }
+    .teaching-note { margin: 18px 0 0; padding: 14px 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); font-size: 0.78rem; }
+    .teaching-note strong { color: var(--navy); }
+    .warning-note { color: var(--red) !important; }
+    footer { padding: 0 0 38px; color: var(--muted); text-align: center; font-size: 0.8rem; }
+    footer strong { color: var(--navy); }
+    @media (max-width: 1020px) {
+      .method-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .control-groups, .lesson-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 860px) { .workspace { grid-template-columns: 1fr; } }
+    @media (max-width: 680px) {
+      .hero-inner { padding: 34px 0 38px; }
+      .card-body { padding: 18px; }
+      .method-grid, .metrics { grid-template-columns: 1fr; }
+      .method h3 { min-height: 0; }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      th, td { padding: 8px 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .bar-fill { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="course-tag">FIN 355 · Real Estate Investment Analysis</span>
+      <h1>Four Models for Valuing a Building Subject to a Ground Lease</h1>
+      <p>Change the property, lease, and required-return assumptions to see when four reasonable valuation models converge—and why they sometimes do not.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="models-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="models-title">One leasehold interest, four valuation paths</h2>
+          <p>The first two models value the land interest and deduct it from fee-simple property value. The other two value the residual building NOI directly.</p>
+        </div>
+        <div class="method-grid">
+          <article class="method">
+            <span class="model-number">1</span>
+            <h3>Ground lease DCF-based</h3>
+            <p>Discount the contractual ground-rent stream and its terminal value, then deduct land value from fee-simple property value.</p>
+            <p class="formula">Property value − PV(ground rent)</p>
+          </article>
+          <article class="method">
+            <span class="model-number">2</span>
+            <h3>Ground lease cap rate-based</h3>
+            <p>Capitalize Year 1 ground rent at a land-interest cap rate and deduct the result from fee-simple property value.</p>
+            <p class="formula">Property value − ground rent ÷ land cap rate</p>
+          </article>
+          <article class="method">
+            <span class="model-number">3</span>
+            <h3>Building NOI DCF-based</h3>
+            <p>Forecast property NOI less ground rent, then discount the riskier residual stream and its terminal value.</p>
+            <p class="formula">PV(property NOI − ground rent)</p>
+          </article>
+          <article class="method">
+            <span class="model-number">4</span>
+            <h3>Building NOI cap rate-based</h3>
+            <p>Capitalize Year 1 building NOI directly using a cap rate that reflects the residual building interest.</p>
+            <p class="formula">(Property NOI − ground rent) ÷ building cap rate</p>
+          </article>
+        </div>
+        <p class="risk-order">Required returns should generally reflect the risk order: ground-lease NOI &lt; fee-simple property NOI &lt; residual building NOI.</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="inputs-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="inputs-title">Change the assumptions</h2>
+          <p>Move a slider or enter a value. The four valuations, component bridge, comparison bars, and cash-flow paths update immediately.</p>
+        </div>
+        <div class="control-groups">
+          <section class="control-group" aria-labelledby="property-inputs">
+            <h3 id="property-inputs">Property and lease</h3>
+            <p class="group-note">Common inputs establish fee-simple value and the contractual rent schedule.</p>
+            <div class="control">
+              <label for="property-noi-range">Year 1 property NOI <output id="property-noi-output">$8.00M</output></label>
+              <div class="control-row"><input id="property-noi-range" type="range" min="3" max="20" step="0.1" value="8"><input id="property-noi-number" type="number" min="3" max="20" step="0.1" value="8" aria-label="Year 1 property NOI in millions"></div>
+            </div>
+            <div class="control">
+              <label for="property-cap-range">Acquisition cap rate <output id="property-cap-output">8.00%</output></label>
+              <div class="control-row"><input id="property-cap-range" type="range" min="4" max="12" step="0.05" value="8"><input id="property-cap-number" type="number" min="4" max="12" step="0.05" value="8" aria-label="Acquisition capitalization rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="ground-rent-range">Year 1 ground rent <output id="ground-rent-output">$3.00M</output></label>
+              <div class="control-row"><input id="ground-rent-range" type="range" min="0.5" max="8" step="0.05" value="3"><input id="ground-rent-number" type="number" min="0.5" max="8" step="0.05" value="3" aria-label="Year 1 ground rent in millions"></div>
+            </div>
+            <div class="control">
+              <label for="step-up-range">Rent increase per step <output id="step-up-output">3.0%</output></label>
+              <div class="control-row"><input id="step-up-range" type="range" min="0" max="20" step="0.25" value="3"><input id="step-up-number" type="number" min="0" max="20" step="0.25" value="3" aria-label="Ground rent increase per step percent"></div>
+            </div>
+            <div class="control">
+              <label for="step-years-range">Years between increases <output id="step-years-output">10 years</output></label>
+              <div class="control-row"><input id="step-years-range" type="range" min="1" max="15" step="1" value="10"><input id="step-years-number" type="number" min="1" max="15" step="1" value="10" aria-label="Years between ground rent increases"></div>
+            </div>
+            <div class="control">
+              <label for="hold-range">DCF projection period <output id="hold-output">30 years</output></label>
+              <div class="control-row"><input id="hold-range" type="range" min="10" max="50" step="1" value="30"><input id="hold-number" type="number" min="10" max="50" step="1" value="30" aria-label="DCF projection period in years"></div>
+            </div>
+          </section>
+
+          <section class="control-group land" aria-labelledby="land-inputs">
+            <h3 id="land-inputs">Land-interest pricing</h3>
+            <p class="group-note">Models 1 and 2 price the comparatively secure ground-rent stream.</p>
+            <div class="control">
+              <label for="land-discount-range">Ground lease discount rate <output id="land-discount-output">7.30%</output></label>
+              <div class="control-row"><input id="land-discount-range" type="range" min="3" max="12" step="0.05" value="7.3"><input id="land-discount-number" type="number" min="3" max="12" step="0.05" value="7.3" aria-label="Ground lease discount rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="land-exit-cap-range">Ground lease exit cap rate <output id="land-exit-cap-output">7.00%</output></label>
+              <div class="control-row"><input id="land-exit-cap-range" type="range" min="3" max="12" step="0.05" value="7"><input id="land-exit-cap-number" type="number" min="3" max="12" step="0.05" value="7" aria-label="Ground lease exit capitalization rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="land-cap-range">Direct ground lease cap rate <output id="land-cap-output">7.00%</output></label>
+              <div class="control-row"><input id="land-cap-range" type="range" min="3" max="12" step="0.05" value="7"><input id="land-cap-number" type="number" min="3" max="12" step="0.05" value="7" aria-label="Direct ground lease capitalization rate percent"></div>
+              <p class="unit-note" id="land-cap-hint">DCF-implied guide: 6.97% = 7.30% − 0.33% equivalent annual rent growth.</p>
+            </div>
+          </section>
+
+          <section class="control-group building" aria-labelledby="building-inputs">
+            <h3 id="building-inputs">Building-interest pricing</h3>
+            <p class="group-note">Models 3 and 4 price the residual building NOI after rent is paid.</p>
+            <div class="control">
+              <label for="noi-growth-range">Property NOI annual growth <output id="noi-growth-output">1.50%</output></label>
+              <div class="control-row"><input id="noi-growth-range" type="range" min="-2" max="5" step="0.05" value="1.5"><input id="noi-growth-number" type="number" min="-2" max="5" step="0.05" value="1.5" aria-label="Property NOI annual growth percent"></div>
+            </div>
+            <div class="control">
+              <label for="building-discount-range">Building NOI discount rate <output id="building-discount-output">10.75%</output></label>
+              <div class="control-row"><input id="building-discount-range" type="range" min="5" max="18" step="0.05" value="10.75"><input id="building-discount-number" type="number" min="5" max="18" step="0.05" value="10.75" aria-label="Building NOI discount rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="building-exit-cap-range">Building NOI exit cap rate <output id="building-exit-cap-output">9.25%</output></label>
+              <div class="control-row"><input id="building-exit-cap-range" type="range" min="4" max="16" step="0.05" value="9.25"><input id="building-exit-cap-number" type="number" min="4" max="16" step="0.05" value="9.25" aria-label="Building NOI exit capitalization rate percent"></div>
+            </div>
+            <div class="control">
+              <label for="building-cap-range">Direct building cap rate <output id="building-cap-output">8.75%</output></label>
+              <div class="control-row"><input id="building-cap-range" type="range" min="4" max="16" step="0.05" value="8.75"><input id="building-cap-number" type="number" min="4" max="16" step="0.05" value="8.75" aria-label="Direct building capitalization rate percent"></div>
+            </div>
+          </section>
+        </div>
+        <div class="actions">
+          <button class="action-button primary" id="reset-button" type="button">Reset to Chapter 17 example</button>
+          <button class="action-button" id="align-button" type="button">Align direct cap rates with DCF</button>
+        </div>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><span class="metric-label">1 · Ground lease DCF</span><strong class="metric-value" id="m1-result">$57.52M</strong><span class="metric-note" id="m1-note">$42.48M land value deducted</span></div>
+          <div class="metric"><span class="metric-label">2 · Ground lease cap rate</span><strong class="metric-value" id="m2-result">$57.14M</strong><span class="metric-note" id="m2-note">$42.86M land value deducted</span></div>
+          <div class="metric"><span class="metric-label">3 · Building NOI DCF</span><strong class="metric-value" id="m3-result">$57.75M</strong><span class="metric-note" id="m3-note">PV of residual building cash flows</span></div>
+          <div class="metric"><span class="metric-label">4 · Building NOI cap rate</span><strong class="metric-value" id="m4-result">$57.14M</strong><span class="metric-note" id="m4-note">$5.00M Year 1 building NOI</span></div>
+        </div>
+
+        <div class="workspace">
+          <div>
+            <h3 class="chart-title">Building value comparison</h3>
+            <p class="chart-subtitle">The longest bar is the highest current estimate. Comparable estimates require internally consistent risk and growth assumptions.</p>
+            <div class="bars" role="img" aria-label="Comparison of four building valuation estimates">
+              <div><div class="bar-head"><span class="bar-label">1 · Ground lease DCF</span><span class="bar-value" id="bar-value-m1">$57.52M</span></div><div class="bar-track"><div class="bar-fill m1" id="bar-m1"></div></div><p class="bar-caption">Residual from fee-simple value after DCF land value</p></div>
+              <div><div class="bar-head"><span class="bar-label">2 · Ground lease cap rate</span><span class="bar-value" id="bar-value-m2">$57.14M</span></div><div class="bar-track"><div class="bar-fill m2" id="bar-m2"></div></div><p class="bar-caption">Residual from fee-simple value after capitalized land value</p></div>
+              <div><div class="bar-head"><span class="bar-label">3 · Building NOI DCF</span><span class="bar-value" id="bar-value-m3">$57.75M</span></div><div class="bar-track"><div class="bar-fill m3" id="bar-m3"></div></div><p class="bar-caption">Present value of residual building NOI and terminal value</p></div>
+              <div><div class="bar-head"><span class="bar-label">4 · Building NOI cap rate</span><span class="bar-value" id="bar-value-m4">$57.14M</span></div><div class="bar-track"><div class="bar-fill m4" id="bar-m4"></div></div><p class="bar-caption">Year 1 residual building NOI capitalized directly</p></div>
+            </div>
+            <p class="comparison-note" id="comparison-note">The four estimates span $0.61M, or 1.1% of their average. They are tightly clustered in the Chapter 17 example.</p>
+          </div>
+          <div>
+            <h3 class="chart-title">Calculation bridge</h3>
+            <p class="chart-subtitle">All amounts are in millions of dollars. Parentheses indicate a deduction from fee-simple value.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Calculation</th><th>Model 1</th><th>Model 2</th><th>Model 3</th><th>Model 4</th></tr></thead>
+                <tbody>
+                  <tr><td>Fee-simple property value</td><td id="bridge-fs-1">$100.00</td><td id="bridge-fs-2">$100.00</td><td>—</td><td>—</td></tr>
+                  <tr><td>Land value deduction</td><td id="bridge-land-1">($42.48)</td><td id="bridge-land-2">($42.86)</td><td>—</td><td>—</td></tr>
+                  <tr><td>PV / capitalized building NOI</td><td>—</td><td>—</td><td id="bridge-building-3">$57.75</td><td id="bridge-building-4">$57.14</td></tr>
+                  <tr class="total"><td>Building value</td><td id="bridge-value-1">$57.52</td><td id="bridge-value-2">$57.14</td><td id="bridge-value-3">$57.75</td><td id="bridge-value-4">$57.14</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="cashflow-panel">
+          <div class="panel-header"><strong>Property, ground-lease, and residual building NOI</strong><span id="chart-period">Years 1–30</span></div>
+          <div class="legend"><span><i class="swatch" style="background:#0b3a67"></i>Property NOI</span><span><i class="swatch" style="background:#f58220"></i>Ground rent</span><span><i class="swatch" style="background:#16745b"></i>Building NOI</span></div>
+          <div class="chart-wrap"><svg id="cashflow-chart" viewBox="0 0 920 350" role="img" aria-labelledby="chart-title-svg chart-desc-svg"><title id="chart-title-svg">Annual property NOI, ground rent, and building NOI</title><desc id="chart-desc-svg">A line chart that updates with the current assumptions.</desc></svg></div>
+          <p class="chart-note" id="chart-note">The ground rent steps up every 10 years while property NOI grows annually; building NOI is the residual after the rent payment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="lessons-title">
+      <div class="card-body">
+        <div class="section-heading">
+          <h2 id="lessons-title">How to interpret divergence</h2>
+          <p>The models are cross-checks, not four independent facts. Large gaps usually reveal inconsistent assumptions about growth, risk, or terminal pricing.</p>
+        </div>
+        <div class="lesson-grid">
+          <div class="lesson"><strong>Separate the interests</strong><span>Fee-simple value combines land and building. A ground lease divides the cash flows and risk between landowner and building owner.</span></div>
+          <div class="lesson"><strong>Match risk to cash flow</strong><span>The secure contractual rent normally supports a lower required return than the residual building NOI, which absorbs operating volatility after rent is paid.</span></div>
+          <div class="lesson"><strong>Reconcile DCF and cap rates</strong><span>A direct cap rate should be consistent with the discount rate and sustainable growth embedded in the corresponding DCF.</span></div>
+        </div>
+        <p class="teaching-note"><strong>Classroom simplification.</strong> The starting inputs reproduce the Chapter 17 Seaview Apartments spreadsheet calculations, subject to display rounding. Rent increases occur in Years 10, 20, and 30, as in the workbook. The model assumes annual end-of-year cash flows and terminal values based on final projected-year cash flow; it omits taxes, transaction costs, financing, lease reversion, default, renewal options, and other legal provisions. This is an instructional illustration, not an appraisal.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>Created by Desen Lin</strong> for instructional purposes in FIN 355 at California State University, Fullerton.<br>
+    This educational illustration is not financial, investment, tax, legal, or appraisal advice.
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const defaults = {
+        propertyNoi: 8, propertyCap: 8, groundRent: 3, stepUp: 3, stepYears: 10, hold: 30,
+        landDiscount: 7.3, landExitCap: 7, landCap: 7,
+        noiGrowth: 1.5, buildingDiscount: 10.75, buildingExitCap: 9.25, buildingCap: 8.75
+      };
+
+      const definitions = [
+        ["propertyNoi", "money"], ["propertyCap", "percent2"], ["groundRent", "money"],
+        ["stepUp", "percent1"], ["stepYears", "years"], ["hold", "years"],
+        ["landDiscount", "percent2"], ["landExitCap", "percent2"], ["landCap", "percent2"],
+        ["noiGrowth", "percent2"], ["buildingDiscount", "percent2"],
+        ["buildingExitCap", "percent2"], ["buildingCap", "percent2"]
+      ];
+
+      const slug = key => key.replace(/[A-Z]/g, letter => "-" + letter.toLowerCase());
+      const state = { ...defaults };
+
+      function formatControl(value, type) {
+        if (type === "money") return `$${value.toFixed(2)}M`;
+        if (type === "percent1") return `${value.toFixed(1)}%`;
+        if (type === "percent2") return `${value.toFixed(2)}%`;
+        if (type === "years") return `${Math.round(value)} ${Math.round(value) === 1 ? "year" : "years"}`;
+        return String(value);
+      }
+
+      function formatMoney(value, digits = 2) {
+        if (!Number.isFinite(value)) return "—";
+        const sign = value < 0 ? "−" : "";
+        return `${sign}$${Math.abs(value).toFixed(digits)}M`;
+      }
+
+      function formatCell(value, deduction = false) {
+        if (!Number.isFinite(value)) return "—";
+        return deduction ? `($${Math.abs(value).toFixed(2)})` : `$${value.toFixed(2)}`;
+      }
+
+      function clampToInput(input, value) {
+        const min = Number(input.min), max = Number(input.max);
+        return Math.min(max, Math.max(min, value));
+      }
+
+      definitions.forEach(([key, type]) => {
+        const id = slug(key);
+        const range = document.getElementById(`${id}-range`);
+        const number = document.getElementById(`${id}-number`);
+        const output = document.getElementById(`${id}-output`);
+        const sync = (source, target) => {
+          let value = Number(source.value);
+          if (!Number.isFinite(value)) {
+            if (source === number && document.activeElement === number) return;
+            value = defaults[key];
+          }
+          value = clampToInput(source, value);
+          if (type === "years") value = Math.round(value);
+          source.value = value;
+          target.value = value;
+          state[key] = value;
+          output.value = formatControl(value, type);
+          update();
+        };
+        range.addEventListener("input", () => sync(range, number));
+        number.addEventListener("input", () => sync(number, range));
+        number.addEventListener("blur", () => sync(number, range));
+      });
+
+      function calculate() {
+        const propertyCap = state.propertyCap / 100;
+        const stepUp = state.stepUp / 100;
+        const landDiscount = state.landDiscount / 100;
+        const landExitCap = state.landExitCap / 100;
+        const landCap = state.landCap / 100;
+        const noiGrowth = state.noiGrowth / 100;
+        const buildingDiscount = state.buildingDiscount / 100;
+        const buildingExitCap = state.buildingExitCap / 100;
+        const buildingCap = state.buildingCap / 100;
+        const hold = Math.round(state.hold);
+        const years = Array.from({ length: hold }, (_, i) => i + 1);
+        const rents = years.map(year => state.groundRent * Math.pow(1 + stepUp, Math.floor(year / state.stepYears)));
+        const propertyNois = years.map(year => state.propertyNoi * Math.pow(1 + noiGrowth, year - 1));
+        const buildingNois = propertyNois.map((noi, i) => noi - rents[i]);
+        const feeSimple = state.propertyNoi / propertyCap;
+        const landTerminal = rents[hold - 1] / landExitCap;
+        const landPv = rents.reduce((sum, rent, i) => sum + rent / Math.pow(1 + landDiscount, i + 1), 0)
+          + landTerminal / Math.pow(1 + landDiscount, hold);
+        const landCapValue = state.groundRent / landCap;
+        const buildingTerminal = buildingNois[hold - 1] / buildingExitCap;
+        const buildingPv = buildingNois.reduce((sum, noi, i) => sum + noi / Math.pow(1 + buildingDiscount, i + 1), 0)
+          + buildingTerminal / Math.pow(1 + buildingDiscount, hold);
+        const directBuilding = buildingNois[0] / buildingCap;
+        const equivalentGrowth = Math.pow(1 + stepUp, 1 / state.stepYears) - 1;
+        return {
+          years, rents, propertyNois, buildingNois, feeSimple, landPv, landCapValue, buildingPv,
+          directBuilding, equivalentGrowth,
+          values: [feeSimple - landPv, feeSimple - landCapValue, buildingPv, directBuilding]
+        };
+      }
+
+      function update() {
+        const c = calculate();
+        const [m1, m2, m3, m4] = c.values;
+        document.getElementById("m1-result").textContent = formatMoney(m1);
+        document.getElementById("m2-result").textContent = formatMoney(m2);
+        document.getElementById("m3-result").textContent = formatMoney(m3);
+        document.getElementById("m4-result").textContent = formatMoney(m4);
+        document.getElementById("m1-note").textContent = `${formatMoney(c.landPv)} land value deducted`;
+        document.getElementById("m2-note").textContent = `${formatMoney(c.landCapValue)} land value deducted`;
+        document.getElementById("m3-note").textContent = "PV of residual building cash flows";
+        document.getElementById("m4-note").textContent = `${formatMoney(c.buildingNois[0])} Year 1 building NOI`;
+
+        [m1, m2, m3, m4].forEach((value, i) => {
+          document.getElementById(`bar-value-m${i + 1}`).textContent = formatMoney(value);
+        });
+        const finite = c.values.filter(Number.isFinite);
+        const maxAbs = Math.max(1, ...finite.map(value => Math.abs(value)));
+        c.values.forEach((value, i) => {
+          const width = Number.isFinite(value) ? Math.max(0.5, Math.abs(value) / maxAbs * 100) : 0;
+          document.getElementById(`bar-m${i + 1}`).style.width = `${width}%`;
+          document.getElementById(`bar-m${i + 1}`).style.opacity = value < 0 ? "0.42" : "1";
+        });
+
+        const avg = finite.reduce((a, b) => a + b, 0) / finite.length;
+        const spread = Math.max(...finite) - Math.min(...finite);
+        const spreadPct = Math.abs(avg) > 1e-9 ? spread / Math.abs(avg) * 100 : 0;
+        const comparison = document.getElementById("comparison-note");
+        comparison.textContent = `The four estimates span ${formatMoney(spread)}, or ${spreadPct.toFixed(1)}% of their average. `
+          + (spreadPct <= 5 ? "They are tightly clustered under the current assumptions." : spreadPct <= 15 ? "The assumptions produce a moderate valuation gap worth reconciling." : "The wide gap signals materially inconsistent growth, risk, or terminal-value assumptions.");
+        comparison.classList.toggle("warning-note", spreadPct > 15 || c.buildingNois.some(value => value < 0));
+
+        document.getElementById("bridge-fs-1").textContent = formatCell(c.feeSimple);
+        document.getElementById("bridge-fs-2").textContent = formatCell(c.feeSimple);
+        document.getElementById("bridge-land-1").textContent = formatCell(c.landPv, true);
+        document.getElementById("bridge-land-2").textContent = formatCell(c.landCapValue, true);
+        document.getElementById("bridge-building-3").textContent = formatCell(m3);
+        document.getElementById("bridge-building-4").textContent = formatCell(m4);
+        c.values.forEach((value, i) => { document.getElementById(`bridge-value-${i + 1}`).textContent = formatCell(value); });
+
+        const impliedLandCap = state.landDiscount / 100 - c.equivalentGrowth;
+        const hint = document.getElementById("land-cap-hint");
+        hint.textContent = impliedLandCap > 0
+          ? `DCF-implied guide: ${(impliedLandCap * 100).toFixed(2)}% = ${state.landDiscount.toFixed(2)}% − ${(c.equivalentGrowth * 100).toFixed(2)}% equivalent annual rent growth.`
+          : "The equivalent rent growth is at least as high as the land discount rate, so the Gordon-growth cap rate is not positive.";
+        hint.classList.toggle("warning-note", impliedLandCap <= 0);
+        document.getElementById("chart-period").textContent = `Years 1–${state.hold}`;
+        document.getElementById("chart-note").textContent = `The ground rent steps up every ${state.stepYears} years while property NOI grows at ${state.noiGrowth.toFixed(2)}% annually; building NOI is the residual after the rent payment.`;
+        drawChart(c);
+      }
+
+      function drawChart(c) {
+        const svg = document.getElementById("cashflow-chart");
+        const width = 920, height = 350, left = 68, right = 24, top = 22, bottom = 50;
+        const plotW = width - left - right, plotH = height - top - bottom;
+        const all = [...c.propertyNois, ...c.rents, ...c.buildingNois, 0];
+        let yMin = Math.min(...all), yMax = Math.max(...all);
+        if (Math.abs(yMax - yMin) < 1e-8) yMax = yMin + 1;
+        const pad = (yMax - yMin) * 0.08;
+        yMin = Math.min(0, yMin - pad); yMax += pad;
+        const x = i => left + (c.years.length === 1 ? 0 : i / (c.years.length - 1) * plotW);
+        const y = value => top + (yMax - value) / (yMax - yMin) * plotH;
+        const linePath = values => values.map((value, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(value).toFixed(1)}`).join(" ");
+        const ticks = 5;
+        let markup = `<title id="chart-title-svg">Annual property NOI, ground rent, and building NOI</title><desc id="chart-desc-svg">The current projection covers ${c.years.length} years.</desc>`;
+        for (let i = 0; i <= ticks; i++) {
+          const value = yMin + (yMax - yMin) * i / ticks;
+          const yy = y(value);
+          markup += `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="#d8dee9" stroke-width="1"/>`;
+          markup += `<text x="${left - 10}" y="${yy + 4}" text-anchor="end" fill="#5c677d" font-size="11">${value.toFixed(1)}</text>`;
+        }
+        const xTicks = Math.min(6, c.years.length - 1);
+        for (let i = 0; i <= xTicks; i++) {
+          const index = Math.round(i * (c.years.length - 1) / xTicks);
+          const xx = x(index);
+          markup += `<line x1="${xx}" y1="${top + plotH}" x2="${xx}" y2="${top + plotH + 5}" stroke="#738096"/>`;
+          markup += `<text x="${xx}" y="${height - 20}" text-anchor="middle" fill="#5c677d" font-size="11">${c.years[index]}</text>`;
+        }
+        markup += `<line x1="${left}" y1="${top + plotH}" x2="${width - right}" y2="${top + plotH}" stroke="#738096"/>`;
+        markup += `<text x="${left - 48}" y="${top - 7}" fill="#5c677d" font-size="11">$M</text><text x="${width - right}" y="${height - 6}" text-anchor="end" fill="#5c677d" font-size="11">Year</text>`;
+        markup += `<path d="${linePath(c.propertyNois)}" fill="none" stroke="#0b3a67" stroke-width="3" stroke-linejoin="round"/>`;
+        markup += `<path d="${linePath(c.rents)}" fill="none" stroke="#f58220" stroke-width="3" stroke-linejoin="round"/>`;
+        markup += `<path d="${linePath(c.buildingNois)}" fill="none" stroke="#16745b" stroke-width="3" stroke-linejoin="round"/>`;
+        svg.innerHTML = markup;
+      }
+
+      function setControl(key, value) {
+        const id = slug(key);
+        document.getElementById(`${id}-range`).value = value;
+        document.getElementById(`${id}-number`).value = value;
+        state[key] = value;
+        const type = definitions.find(item => item[0] === key)[1];
+        document.getElementById(`${id}-output`).value = formatControl(value, type);
+      }
+
+      document.getElementById("reset-button").addEventListener("click", () => {
+        Object.entries(defaults).forEach(([key, value]) => setControl(key, value));
+        update();
+      });
+
+      document.getElementById("align-button").addEventListener("click", () => {
+        const c = calculate();
+        const impliedLandCap = Math.max(3, Math.min(12, state.landDiscount - c.equivalentGrowth * 100));
+        const initialBuildingNoi = c.buildingNois[0];
+        const impliedBuildingCap = c.buildingPv > 0 ? initialBuildingNoi / c.buildingPv * 100 : state.buildingCap;
+        setControl("landCap", Math.round(impliedLandCap * 20) / 20);
+        setControl("buildingCap", Math.max(4, Math.min(16, Math.round(impliedBuildingCap * 20) / 20)));
+        update();
+      });
+
+      definitions.forEach(([key, type]) => {
+        document.getElementById(`${slug(key)}-output`).value = formatControl(state[key], type);
+      });
+      update();
+    })();
+  </script>
+</body>
+</html>
