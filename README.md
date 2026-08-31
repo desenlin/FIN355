@@ -24,6 +24,11 @@ The collection is designed to grow over time. New interactive tools and course p
   </thead>
   <tbody>
     <tr>
+      <td><strong>Site Feasibility Sandbox</strong></td>
+      <td>Connects editable parcel and building geometry with site area, setbacks, lot coverage, gross floor area, FAR, development capacity, and binding-constraint analysis.</td>
+      <td><a href="https://desenlin.github.io/site-feasibility-sandbox/">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>How Amortization Changes a Loan Payment</strong></td>
       <td>Shows how a fixed monthly payment is divided between principal and interest, why the principal share rises over time, and how the annual amortization schedule changes with the loan amount, interest rate, and term.</td>
       <td><a href="https://desenlin.com/FIN355/amortization.html">Launch the tool</a></td>
@@ -116,3 +121,6 @@ The licenses apply only to material for which Desen Lin holds the necessary righ
 
 <p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
 <p align="center"><em>These materials are provided for educational use and should not be interpreted as financial advice.</em></p>
+
+
+<!--  · [View source](https://github.com/desenlin/site-feasibility-sandbox) -->
