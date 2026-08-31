@@ -26,7 +26,7 @@ The collection is designed to grow over time. New interactive tools and course p
     <tr>
       <td><strong>Site Feasibility Sandbox</strong></td>
       <td>Connects editable parcel and building geometry with site area, setbacks, lot coverage, gross floor area, FAR, development capacity, and binding-constraint analysis.</td>
-      <td><a href="https://desenlin.github.io/site-feasibility-sandbox/">Launch the tool</a></td>
+      <td><a href="https://desenlin.com/site-feasibility-sandbox/">Launch the tool</a></td>
     </tr>
     <tr>
       <td><strong>How Amortization Changes a Loan Payment</strong></td>
