@@ -64,6 +64,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/FIN355/valuation-approaches.html">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Four Models for Ground-Lease Valuation</strong></td>
+      <td>Compares two residual land-value approaches with two direct building-NOI approaches, showing how ground-rent steps, NOI growth, discount rates, and cap rates determine whether the four building-value estimates converge.</td>
+      <td><a href="https://desenlin.com/FIN355/ground-lease-valuation.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>Real Estate Exit Strategies: Sale, Refinancing, and Like-Kind Exchange</strong></td>
       <td>Compares immediate cash, retained real estate equity, debt, transaction costs, and current taxes across a sale, cash-out refinancing, and Section 1031 exchange, including the taxable-boot boundary for partial versus full deferral.</td>
       <td><a href="https://desenlin.com/FIN355/exit-strategies.html">Launch the tool</a></td>
@@ -76,6 +81,7 @@ The collection is designed to grow over time. New interactive tools and course p
 <!--  · [View source](./cmbs-tranching.html) -->
 <!--  · [View source](./net-effective-rent.html) -->
 <!--  · [View source](./development-feasibility.html) -->
+<!--  · [View source](./ground-lease-valuation.html) -->
 <!--  · [View source](./exit-strategies.html) -->
 <!--  · [View source](./valuation-approaches.html) -->
 
