@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MDGMSFPEH2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MDGMSFPEH2', { 'anonymize_ip': true });
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive FIN 355 activity for identifying market research factors relevant to real estate investment decisions.">
+  <title>Market Research Explorer | FIN 355</title>
+  <style>
+    :root {
+      --navy: #00274c;
+      --navy-2: #0b3a67;
+      --orange: #f58220;
+      --orange-dark: #c85f05;
+      --orange-soft: #fff2e5;
+      --ink: #17212b;
+      --muted: #5e6b78;
+      --line: #d8e0e8;
+      --surface: #ffffff;
+      --canvas: #eef2f7;
+      --blue-soft: #eaf2f9;
+      --focus: #0066cc;
+      --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    button { font: inherit; }
+
+    button:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid rgba(0, 102, 204, 0.35);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      height: 8px;
+      background: var(--orange);
+    }
+
+    .hero {
+      color: white;
+      background:
+        radial-gradient(circle at 91% 12%, rgba(245, 130, 32, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--navy), var(--navy-2));
+    }
+
+    .hero-inner {
+      padding: 42px 0 46px;
+    }
+
+    .course-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 6px 11px;
+      color: var(--navy);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 940px;
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4.6vw, 3.45rem);
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+    }
+
+    .hero p {
+      max-width: 900px;
+      margin: 0 0 8px;
+      color: #e4edf6;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    .creator {
+      color: #f8c99f !important;
+      font-size: 0.9rem !important;
+      font-weight: 700;
+    }
+
+    .step-nav {
+      margin: 24px auto;
+      padding: 7px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      background: #e5ebf1;
+      border-radius: 14px;
+    }
+
+    .step-tab {
+      min-height: 48px;
+      padding: 10px 14px;
+      color: #435260;
+      background: transparent;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 750;
+      transition: 150ms ease;
+    }
+
+    .step-tab:hover { background: rgba(255, 255, 255, 0.65); }
+
+    .step-tab.active {
+      color: var(--navy);
+      background: white;
+      box-shadow: 0 3px 12px rgba(0, 39, 76, 0.08);
+    }
+
+    .step-tab .num {
+      display: inline-grid;
+      width: 25px;
+      height: 25px;
+      margin-right: 7px;
+      place-items: center;
+      color: white;
+      background: var(--navy);
+      border-radius: 999px;
+      font-size: 0.78rem;
+    }
+
+    .activity-section { display: none; }
+    .activity-section.active { display: block; animation: enter 220ms ease-out; }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-heading {
+      margin: 0 0 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: end;
+    }
+
+    .kicker {
+      margin: 0 0 4px;
+      color: var(--orange);
+      font-size: 0.8rem;
+      font-weight: 850;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(1.55rem, 3vw, 2.1rem);
+      line-height: 1.18;
+    }
+
+    .section-heading p:last-child,
+    .section-intro {
+      max-width: 760px;
+      margin: 7px 0 0;
+      color: var(--muted);
+    }
+
+    .evidence-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.65fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .evidence-card { overflow: hidden; }
+
+    .card-topline {
+      padding: 16px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      background: #f8fafc;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      width: min(220px, 42%);
+      height: 7px;
+      overflow: hidden;
+      background: #dfe6ed;
+      border-radius: 999px;
+    }
+
+    .progress-fill {
+      width: 10%;
+      height: 100%;
+      background: var(--orange);
+      border-radius: inherit;
+      transition: width 250ms ease;
+    }
+
+    .evidence-body { padding: clamp(22px, 4vw, 36px); }
+
+    .observation-label {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .observation {
+      margin: 0 0 28px;
+      color: var(--navy);
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      line-height: 1.28;
+    }
+
+    .question-block + .question-block { margin-top: 25px; }
+
+    .question-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .choice-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .choice-btn,
+    .lens-btn,
+    .compare-choice,
+    .preference-btn {
+      padding: 10px 14px;
+      color: var(--navy);
+      background: white;
+      border: 1px solid #b9c6d2;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 750;
+      transition: 140ms ease;
+    }
+
+    .choice-btn:hover,
+    .lens-btn:hover,
+    .compare-choice:hover,
+    .preference-btn:hover {
+      border-color: var(--navy-2);
+      transform: translateY(-1px);
+    }
+
+    .choice-btn.selected,
+    .compare-choice.selected,
+    .preference-btn.selected {
+      color: white;
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .action-row {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      min-height: 44px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .primary-btn {
+      color: white;
+      background: var(--navy);
+      border: 1px solid var(--navy);
+    }
+
+    .primary-btn:hover { background: var(--navy-2); }
+
+    .primary-btn:disabled {
+      color: #778594;
+      background: #e1e6eb;
+      border-color: #e1e6eb;
+      cursor: not-allowed;
+    }
+
+    .secondary-btn {
+      color: var(--navy);
+      background: white;
+      border: 1px solid #aebdca;
+    }
+
+    .feedback {
+      margin-top: 22px;
+      padding: 17px 18px;
+      color: #233240;
+      background: var(--blue-soft);
+      border-left: 5px solid var(--navy-2);
+      border-radius: 8px;
+    }
+
+    .feedback[hidden] { display: none; }
+
+    .feedback strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--navy);
+    }
+
+    .side-panel { padding: 22px; }
+
+    .side-panel h3,
+    .framework-card h3,
+    .investment h3,
+    .takeaway h3 {
+      margin: 0 0 9px;
+      color: var(--navy);
+      font-size: 1.05rem;
+    }
+
+    .side-panel p { margin: 0; color: var(--muted); }
+
+    .thinking-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .thinking-list li {
+      padding: 12px 0 12px 30px;
+      position: relative;
+      border-top: 1px solid var(--line);
+      color: #354554;
+    }
+
+    .thinking-list li::before {
+      content: "?";
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      top: 14px;
+      left: 0;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--orange);
+      border-radius: 50%;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .mini-note {
+      margin-top: 18px;
+      padding: 14px;
+      color: #5c421f;
+      background: var(--orange-soft);
+      border: 1px solid #ffd0a3;
+      border-radius: 10px;
+      font-size: 0.92rem;
+    }
+
+    .section-footer-nav {
+      margin: 22px 0 40px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .framework-layout {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .lens-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .lens-btn {
+      width: 100%;
+      padding: 15px 16px;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+    }
+
+    .lens-btn.active {
+      color: white;
+      background: var(--navy);
+      border-color: var(--navy);
+      box-shadow: 0 8px 20px rgba(0, 39, 76, 0.15);
+    }
+
+    .lens-letter {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      color: var(--navy);
+      background: var(--orange-soft);
+      border-radius: 9px;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .framework-card {
+      min-height: 310px;
+      padding: clamp(22px, 4vw, 34px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .framework-card::after {
+      content: attr(data-letter);
+      position: absolute;
+      right: 18px;
+      bottom: -60px;
+      color: rgba(0, 39, 76, 0.045);
+      font-size: 13rem;
+      font-weight: 900;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .framework-card h3 { font-size: 1.45rem; }
+
+    .framework-card > p {
+      max-width: 650px;
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .key-questions {
+      margin: 0;
+      padding-left: 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .key-questions li { margin: 9px 0; }
+
+    .connection-strip {
+      margin-top: 22px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .connection-item {
+      min-height: 96px;
+      padding: 15px;
+      position: relative;
+      display: grid;
+      align-content: center;
+      text-align: center;
+      color: var(--navy);
+      background: #f7f9fb;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-weight: 800;
+    }
+
+    .connection-item:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      z-index: 2;
+      transform: translateY(-50%);
+      color: var(--orange);
+      font-size: 1.45rem;
+      font-weight: 900;
+    }
+
+    .compare-grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .investment {
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .investment::before {
+      content: "";
+      width: 8px;
+      position: absolute;
+      inset: 0 auto 0 0;
+      background: var(--navy);
+    }
+
+    .investment.riskier::before { background: var(--orange); }
+
+    .investment-head {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .investment h3 { margin: 0; font-size: 1.25rem; }
+
+    .irr-chip {
+      padding: 5px 10px;
+      color: var(--navy);
+      background: var(--orange-soft);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .factor-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .factor-list li {
+      padding: 10px 0 10px 25px;
+      position: relative;
+      border-top: 1px solid var(--line);
+    }
+
+    .factor-list li::before {
+      content: "•";
+      position: absolute;
+      left: 5px;
+      color: var(--orange);
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .decision-panel {
+      margin-top: 22px;
+      padding: clamp(22px, 4vw, 32px);
+    }
+
+    .decision-panel h3 { margin: 0 0 7px; color: var(--navy); }
+    .decision-panel > p { margin: 0 0 18px; color: var(--muted); }
+
+    .preference-area {
+      margin-top: 26px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .preference-area h4 { margin: 0 0 5px; color: var(--navy); }
+    .preference-area p { margin: 0 0 12px; color: var(--muted); }
+
+    .preference-note {
+      margin-top: 12px;
+      padding: 13px 15px;
+      color: #334353;
+      background: #f5f8fb;
+      border-radius: 9px;
+    }
+
+    .takeaway {
+      margin: 22px 0 40px;
+      padding: clamp(22px, 4vw, 30px);
+      color: white;
+      background: var(--navy);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .takeaway h3 { color: white; font-size: 1.35rem; }
+    .takeaway p { margin: 0; color: #dbe7f2; }
+
+    .takeaway strong { color: #ffd0a3; }
+
+    footer {
+      padding: 0 0 38px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    footer strong { color: var(--navy); }
+
+    .sr-only {
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      position: absolute;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 820px) {
+      .section-heading,
+      .evidence-layout,
+      .framework-layout,
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel { order: -1; }
+      .connection-strip { grid-template-columns: 1fr 1fr; }
+
+      .connection-item:not(:last-child)::after { display: none; }
+    }
+
+    @media (max-width: 580px) {
+      .shell { width: min(100% - 20px, 1180px); }
+      .hero-inner { padding: 34px 0 38px; }
+      .step-nav { grid-template-columns: 1fr; }
+      .step-tab { text-align: left; }
+      .card-topline { align-items: flex-start; flex-direction: column; }
+      .progress-track { width: 100%; }
+      .choice-btn, .compare-choice, .preference-btn { width: 100%; }
+      .action-row > button { width: 100%; }
+      .connection-strip { grid-template-columns: 1fr; }
+      .investment-head { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="shell hero-inner">
+      <span class="course-tag">FIN 355 · Real Estate Investment Analysis</span>
+      <h1>Market Research Explorer</h1>
+      <p>A seller projects a 15% return. Before deciding whether that return is believable, explore what an investor should investigate about the market, property, and local context.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+
+  <nav class="shell step-nav" aria-label="Activity steps">
+    <button class="step-tab active" type="button" data-target="explore" aria-current="step"><span class="num">1</span>Explore evidence</button>
+    <button class="step-tab" type="button" data-target="framework"><span class="num">2</span>Organize factors</button>
+    <button class="step-tab" type="button" data-target="decision"><span class="num">3</span>Compare investments</button>
+  </nav>
+
+  <main class="shell">
+    <section class="activity-section active" id="explore" aria-labelledby="explore-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Step 1</p>
+          <h2 id="explore-title">What does this observation tell you?</h2>
+          <p>Classify each observation by its primary lens and consider its likely effect. Some answers depend on context.</p>
+        </div>
+      </div>
+
+      <div class="evidence-layout">
+        <article class="panel evidence-card">
+          <div class="card-topline">
+            <span id="evidence-count">Evidence 1 of 10</span>
+            <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="evidence-progress"></div></div>
+          </div>
+
+          <div class="evidence-body">
+            <p class="observation-label">Market observation</p>
+            <p class="observation" id="observation-text"></p>
+
+            <div class="question-block">
+              <span class="question-label">Which lens is most directly relevant?</span>
+              <div class="choice-row" id="category-choices" role="group" aria-label="Choose a market research lens"></div>
+            </div>
+
+            <div class="question-block">
+              <span class="question-label">What is the likely effect on this investment?</span>
+              <div class="choice-row" id="effect-choices" role="group" aria-label="Choose the likely investment effect"></div>
+            </div>
+
+            <div class="feedback" id="evidence-feedback" aria-live="polite" hidden></div>
+
+            <div class="action-row">
+              <button class="primary-btn" id="check-evidence" type="button" disabled>Check the reasoning</button>
+              <button class="secondary-btn" id="next-evidence" type="button" hidden>Next observation</button>
+              <button class="secondary-btn" id="reset-evidence" type="button">Start over</button>
+            </div>
+          </div>
+        </article>
+
+        <aside class="panel side-panel">
+          <h3>Keep three questions in mind</h3>
+          <p>Market research is not a collection of disconnected facts. Each fact matters because it may change future cash flows or confidence in them.</p>
+          <ul class="thinking-list">
+            <li>What could change the income?</li>
+            <li>What could increase competition?</li>
+            <li>What information is still missing?</li>
+          </ul>
+          <div class="mini-note"><strong>Important:</strong> “Uncertain” can be the strongest answer when the direction depends on timing, location, or investor expertise.</div>
+        </aside>
+      </div>
+
+      <div class="section-footer-nav">
+        <button class="primary-btn" type="button" data-go="framework">Continue to the framework →</button>
+      </div>
+    </section>
+
+    <section class="activity-section" id="framework" aria-labelledby="framework-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Step 2</p>
+          <h2 id="framework-title">Organize the evidence into four lenses</h2>
+          <p>Use these lenses as a repeatable checklist. Select a lens to see the questions it helps an investor ask.</p>
+        </div>
+      </div>
+
+      <div class="framework-layout">
+        <div class="lens-list" role="tablist" aria-label="Market research lenses">
+          <button class="lens-btn active" type="button" role="tab" aria-selected="true" data-lens="supply"><span class="lens-letter">S</span><span>Supply</span></button>
+          <button class="lens-btn" type="button" role="tab" aria-selected="false" data-lens="demand"><span class="lens-letter">D</span><span>Demand</span></button>
+          <button class="lens-btn" type="button" role="tab" aria-selected="false" data-lens="property"><span class="lens-letter">P</span><span>Property &amp; leases</span></button>
+          <button class="lens-btn" type="button" role="tab" aria-selected="false" data-lens="local"><span class="lens-letter">L</span><span>Local context</span></button>
+        </div>
+
+        <article class="panel framework-card" id="framework-card" data-letter="S" role="tabpanel" aria-live="polite">
+          <h3 id="framework-name"></h3>
+          <p id="framework-summary"></p>
+          <ul class="key-questions" id="framework-questions"></ul>
+        </article>
+      </div>
+
+      <div class="panel connection-strip" aria-label="How market research connects to an investment decision">
+        <div class="connection-item">Market evidence</div>
+        <div class="connection-item">Expected cash flows</div>
+        <div class="connection-item">Confidence and risk</div>
+        <div class="connection-item">Investment decision</div>
+      </div>
+
+      <div class="section-footer-nav">
+        <button class="primary-btn" type="button" data-go="decision">Compare two investments →</button>
+      </div>
+    </section>
+
+    <section class="activity-section" id="decision" aria-labelledby="decision-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Step 3</p>
+          <h2 id="decision-title">Same projected return. Same investment?</h2>
+          <p>Both sellers project a 15% return. Consider how the market and property information changes your confidence in that projection.</p>
+        </div>
+      </div>
+
+      <div class="compare-grid">
+        <article class="panel investment">
+          <div class="investment-head">
+            <h3>Property A</h3>
+            <span class="irr-chip">15% projected return</span>
+          </div>
+          <ul class="factor-list">
+            <li>Several tenants from different industries</li>
+            <li>Lease expirations spread over multiple years</li>
+            <li>Limited competing construction nearby</li>
+            <li>Stable major employers in the market</li>
+          </ul>
+        </article>
+
+        <article class="panel investment riskier">
+          <div class="investment-head">
+            <h3>Property B</h3>
+            <span class="irr-chip">15% projected return</span>
+          </div>
+          <ul class="factor-list">
+            <li>One tenant produces most of the income</li>
+            <li>The major lease expires next year</li>
+            <li>Several competing projects are underway</li>
+            <li>A major local employer may leave</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="panel decision-panel">
+        <h3>Which projected return appears more dependable?</h3>
+        <p>Base your answer only on the limited information shown. You are evaluating confidence in the projection—not calculating the return.</p>
+        <div class="choice-row" id="compare-choices" role="group" aria-label="Choose the more dependable projected return">
+          <button class="compare-choice" type="button" data-choice="a">Property A</button>
+          <button class="compare-choice" type="button" data-choice="b">Property B</button>
+          <button class="compare-choice" type="button" data-choice="more">Need more information</button>
+        </div>
+        <div class="feedback" id="compare-feedback" aria-live="polite" hidden></div>
+
+        <div class="preference-area">
+          <h4>Which investor characteristic could change the choice?</h4>
+          <p>Select one to see why the investment decision may still be personal.</p>
+          <div class="choice-row" id="preference-choices">
+            <button class="preference-btn" type="button" data-preference="income">Need for stable income</button>
+            <button class="preference-btn" type="button" data-preference="expertise">Leasing expertise</button>
+            <button class="preference-btn" type="button" data-preference="capacity">Capacity to absorb losses</button>
+          </div>
+          <div class="preference-note" id="preference-note" aria-live="polite">Investor goals, expertise, and financial capacity belong in the decision alongside market evidence.</div>
+        </div>
+      </div>
+
+      <aside class="takeaway">
+        <h3>The central idea</h3>
+        <p>Market research helps an investor judge whether projected cash flows are believable. <strong>A projected return is an estimate; the likelihood of achieving it depends on supply, demand, the property, leases, and local conditions.</strong></p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <strong>Created by Desen Lin</strong> for instructional purposes in FIN 355 at California State University, Fullerton.<br>
+    This educational illustration is not financial or investment advice.
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const categories = ["Supply", "Demand", "Property & leases", "Local context"];
+      const effects = ["Strengthens", "Weakens", "Uncertain"];
+
+      const evidence = [
+        {
+          statement: "Vacancy has been rising at nearby comparable properties.",
+          category: "Supply",
+          effect: "Weakens",
+          explanation: "Rising vacancy suggests that existing space is having difficulty attracting or retaining tenants. It may place pressure on rent, occupancy, or lease-up time.",
+          nuance: "The cause still matters: temporary renovations or one unusually weak building may not represent the entire market."
+        },
+        {
+          statement: "Two competing buildings are currently under construction.",
+          category: "Supply",
+          effect: "Weakens",
+          explanation: "New projects can add competing space and give tenants more choices, potentially limiting rent growth or increasing concessions.",
+          nuance: "The effect depends on completion timing, tenant segment, design, and whether demand is growing fast enough to absorb the new space."
+        },
+        {
+          statement: "Several older buildings nearby are undergoing major renovations.",
+          category: "Supply",
+          effect: "Weakens",
+          explanation: "Renovated properties may become more direct competitors even though they are not new construction.",
+          nuance: "Renovation may also improve the area’s reputation, so the final effect can vary by property position."
+        },
+        {
+          statement: "A major employer plans to expand its local workforce.",
+          category: "Demand",
+          effect: "Strengthens",
+          explanation: "Employment growth can increase the number of households or businesses seeking space and support future occupancy.",
+          nuance: "An investor should still ask when the expansion will occur and what type of space the new workers or firms will need."
+        },
+        {
+          statement: "Many local firms are reducing the amount of office space used per employee.",
+          category: "Demand",
+          effect: "Weakens",
+          explanation: "Even if employment is stable, lower space use per worker can reduce total tenant demand for office space.",
+          nuance: "The effect may differ across industries and building types."
+        },
+        {
+          statement: "The building’s largest tenant has a lease that expires next year.",
+          category: "Property & leases",
+          effect: "Uncertain",
+          explanation: "The approaching expiration creates renewal and re-leasing risk. The outcome depends on whether the tenant stays and on the terms of any new lease.",
+          nuance: "A lease expiration is not automatically bad; it may create an opportunity to raise rent in a strong market."
+        },
+        {
+          statement: "The current tenants have strong credit and a history of paying on time.",
+          category: "Property & leases",
+          effect: "Strengthens",
+          explanation: "Financially reliable tenants increase confidence that contractual rent payments will be received as expected.",
+          nuance: "Credit quality does not eliminate lease-expiration or market risk."
+        },
+        {
+          statement: "The building lacks amenities that tenants increasingly prefer.",
+          category: "Property & leases",
+          effect: "Weakens",
+          explanation: "A less competitive property may need lower rent, greater improvements, or additional concessions to attract tenants.",
+          nuance: "The investor should determine whether the amenities can be added economically."
+        },
+        {
+          statement: "A new transit station is planned near the property.",
+          category: "Local context",
+          effect: "Uncertain",
+          explanation: "Improved accessibility may strengthen the location, but the benefit depends on timing, station access, tenant preferences, and whether the project is actually completed.",
+          nuance: "Infrastructure announcements should not be treated as guaranteed benefits."
+        },
+        {
+          statement: "Local zoning makes additional competing development difficult.",
+          category: "Local context",
+          effect: "Strengthens",
+          explanation: "Restrictions on new development may limit future competitive supply and protect the position of existing properties.",
+          nuance: "The same restrictions could also limit renovation, expansion, or redevelopment of the subject property."
+        }
+      ];
+
+      const lenses = {
+        supply: {
+          letter: "S",
+          name: "Supply",
+          summary: "Evaluate both the properties competing today and the projects that may compete tomorrow.",
+          questions: [
+            "How are comparable properties priced, occupied, and positioned?",
+            "Are vacancy and concessions increasing or decreasing?",
+            "What is under construction, proposed, expanded, or being renovated?",
+            "Which properties are truly direct competitors?"
+          ]
+        },
+        demand: {
+          letter: "D",
+          name: "Demand",
+          summary: "Understand who may use the space and what economic or demographic forces affect their need for it.",
+          questions: [
+            "Are population, households, employment, or business activity growing?",
+            "Which employers and industries drive the local market?",
+            "What type and amount of space do tenants need?",
+            "Could a major tenant or employer enter or leave the area?"
+          ]
+        },
+        property: {
+          letter: "P",
+          name: "Property & leases",
+          summary: "Ask whether this particular property can compete and whether its contractual income is dependable.",
+          questions: [
+            "When do major leases expire, and are tenants likely to renew?",
+            "How strong is the tenants’ ability to pay?",
+            "How do design, amenities, capacity, and operating costs compare?",
+            "What improvements or concessions may be needed?"
+          ]
+        },
+        local: {
+          letter: "L",
+          name: "Local context",
+          summary: "Examine the physical, regulatory, and political environment around the property.",
+          questions: [
+            "What do aerial images and a site visit reveal about surrounding land uses?",
+            "How do zoning rules affect the subject property and future competitors?",
+            "Are infrastructure improvements, incentives, or policy changes planned?",
+            "What local conditions might not appear in a market report?"
+          ]
+        }
+      };
+
+      const preferenceMessages = {
+        income: "An investor who depends on predictable current income may place greater weight on diversified tenants, staggered leases, and stable demand.",
+        expertise: "An investor with strong leasing and repositioning expertise may be more willing to accept Property B’s challenges if the potential reward is sufficient.",
+        capacity: "An investor with substantial financial capacity may be able to tolerate vacancy, improvement costs, or delayed leasing that another investor cannot absorb."
+      };
+
+      let currentEvidence = 0;
+      let selectedCategory = "";
+      let selectedEffect = "";
+      let checked = false;
+
+      const observationText = document.getElementById("observation-text");
+      const evidenceCount = document.getElementById("evidence-count");
+      const evidenceProgress = document.getElementById("evidence-progress");
+      const categoryChoices = document.getElementById("category-choices");
+      const effectChoices = document.getElementById("effect-choices");
+      const checkEvidence = document.getElementById("check-evidence");
+      const nextEvidence = document.getElementById("next-evidence");
+      const resetEvidence = document.getElementById("reset-evidence");
+      const evidenceFeedback = document.getElementById("evidence-feedback");
+
+      function makeChoiceButton(label, group, selectedValue) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "choice-btn" + (selectedValue === label ? " selected" : "");
+        button.textContent = label;
+        button.setAttribute("aria-pressed", String(selectedValue === label));
+        button.addEventListener("click", () => {
+          if (checked) return;
+          if (group === "category") selectedCategory = label;
+          if (group === "effect") selectedEffect = label;
+          renderChoices();
+          checkEvidence.disabled = !(selectedCategory && selectedEffect);
+        });
+        return button;
+      }
+
+      function renderChoices() {
+        categoryChoices.replaceChildren(...categories.map(label => makeChoiceButton(label, "category", selectedCategory)));
+        effectChoices.replaceChildren(...effects.map(label => makeChoiceButton(label, "effect", selectedEffect)));
+      }
+
+      function renderEvidence() {
+        const item = evidence[currentEvidence];
+        selectedCategory = "";
+        selectedEffect = "";
+        checked = false;
+        observationText.textContent = item.statement;
+        evidenceCount.textContent = `Evidence ${currentEvidence + 1} of ${evidence.length}`;
+        evidenceProgress.style.width = `${((currentEvidence + 1) / evidence.length) * 100}%`;
+        evidenceFeedback.hidden = true;
+        evidenceFeedback.replaceChildren();
+        checkEvidence.hidden = false;
+        checkEvidence.disabled = true;
+        nextEvidence.hidden = true;
+        renderChoices();
+      }
+
+      checkEvidence.addEventListener("click", () => {
+        const item = evidence[currentEvidence];
+        checked = true;
+        const aligned = selectedCategory === item.category && selectedEffect === item.effect;
+        const heading = document.createElement("strong");
+        heading.textContent = aligned ? "Your interpretation aligns with the suggested reasoning." : "One useful interpretation";
+        const explanation = document.createElement("div");
+        explanation.innerHTML = `<b>Primary lens:</b> ${item.category} &nbsp;·&nbsp; <b>Likely effect:</b> ${item.effect}<br>${item.explanation}<br><em>${item.nuance}</em>`;
+        evidenceFeedback.replaceChildren(heading, explanation);
+        evidenceFeedback.hidden = false;
+        checkEvidence.hidden = true;
+        nextEvidence.hidden = false;
+        nextEvidence.textContent = currentEvidence === evidence.length - 1 ? "See the four-lens framework" : "Next observation";
+        renderChoices();
+      });
+
+      nextEvidence.addEventListener("click", () => {
+        if (currentEvidence < evidence.length - 1) {
+          currentEvidence += 1;
+          renderEvidence();
+          observationText.focus?.();
+        } else {
+          showSection("framework");
+        }
+      });
+
+      resetEvidence.addEventListener("click", () => {
+        currentEvidence = 0;
+        renderEvidence();
+      });
+
+      function renderLens(key) {
+        const lens = lenses[key];
+        const card = document.getElementById("framework-card");
+        document.getElementById("framework-name").textContent = lens.name;
+        document.getElementById("framework-summary").textContent = lens.summary;
+        document.getElementById("framework-questions").replaceChildren(...lens.questions.map(question => {
+          const li = document.createElement("li");
+          li.textContent = question;
+          return li;
+        }));
+        card.dataset.letter = lens.letter;
+        document.querySelectorAll(".lens-btn").forEach(button => {
+          const isActive = button.dataset.lens === key;
+          button.classList.toggle("active", isActive);
+          button.setAttribute("aria-selected", String(isActive));
+        });
+      }
+
+      document.querySelectorAll(".lens-btn").forEach(button => {
+        button.addEventListener("click", () => renderLens(button.dataset.lens));
+      });
+
+      document.querySelectorAll(".compare-choice").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".compare-choice").forEach(choice => {
+            const selected = choice === button;
+            choice.classList.toggle("selected", selected);
+            choice.setAttribute("aria-pressed", String(selected));
+          });
+
+          const feedback = document.getElementById("compare-feedback");
+          const heading = document.createElement("strong");
+          const body = document.createElement("div");
+
+          if (button.dataset.choice === "a") {
+            heading.textContent = "Property A’s projection appears better supported.";
+            body.textContent = "Diversified tenants, staggered leases, limited new construction, and stable demand reduce several visible threats to the projected cash flows. This does not make the return certain.";
+          } else if (button.dataset.choice === "b") {
+            heading.textContent = "Property B may still be attractive, but its projection is less dependable.";
+            body.textContent = "Tenant concentration, a near-term lease expiration, new competition, and employer uncertainty create several ways the projected cash flows could fall short.";
+          } else {
+            heading.textContent = "More information is always valuable—but the current evidence already matters.";
+            body.textContent = "A complete decision requires price, leases, property condition, financing, and other information. Based only on the evidence shown, Property A’s projected return faces fewer visible threats.";
+          }
+
+          feedback.replaceChildren(heading, body);
+          feedback.hidden = false;
+        });
+      });
+
+      document.querySelectorAll(".preference-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".preference-btn").forEach(choice => {
+            const selected = choice === button;
+            choice.classList.toggle("selected", selected);
+            choice.setAttribute("aria-pressed", String(selected));
+          });
+          document.getElementById("preference-note").textContent = preferenceMessages[button.dataset.preference];
+        });
+      });
+
+      function showSection(id) {
+        document.querySelectorAll(".activity-section").forEach(section => {
+          section.classList.toggle("active", section.id === id);
+        });
+        document.querySelectorAll(".step-tab").forEach(tab => {
+          const active = tab.dataset.target === id;
+          tab.classList.toggle("active", active);
+          if (active) tab.setAttribute("aria-current", "step");
+          else tab.removeAttribute("aria-current");
+        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        const heading = document.querySelector(`#${id} h2`);
+        if (heading) {
+          heading.setAttribute("tabindex", "-1");
+          heading.focus({ preventScroll: true });
+        }
+      }
+
+      document.querySelectorAll(".step-tab").forEach(tab => {
+        tab.addEventListener("click", () => showSection(tab.dataset.target));
+      });
+
+      document.querySelectorAll("[data-go]").forEach(button => {
+        button.addEventListener("click", () => showSection(button.dataset.go));
+      });
+
+      renderEvidence();
+      renderLens("supply");
+    })();
+  </script>
+</body>
+</html>
