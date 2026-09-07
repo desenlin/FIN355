@@ -29,6 +29,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/site-feasibility-sandbox/">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Market Research Explorer</strong></td>
+      <td>Introduces supply, demand, property-and-lease, and local-context factors, then shows why investments with the same projected return can carry different levels of uncertainty.</td>
+      <td><a href="https://desenlin.com/FIN355/market-research-explorer.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>How Amortization Changes a Loan Payment</strong></td>
       <td>Shows how a fixed monthly payment is divided between principal and interest, why the principal share rises over time, and how the annual amortization schedule changes with the loan amount, interest rate, and term.</td>
       <td><a href="https://desenlin.com/FIN355/amortization.html">Launch the tool</a></td>
@@ -75,6 +80,7 @@ The collection is designed to grow over time. New interactive tools and course p
     </tr>
   </tbody>
 </table>
+<!--  · [View source](./market-research-explorer.html) -->
 <!--  · [View source](./amortization.html) -->
 <!--  · [View source](./loan-sizing.html) --> 
 <!--  · [View source](./irr.html) -->
@@ -110,6 +116,15 @@ This structure keeps individual tools easy to update while providing one central
 ## Educational Scope
 
 The examples simplify some real-world details so that students can focus on the underlying concepts. Individual tools identify their specific assumptions and exclusions. Results should be interpreted as instructional illustrations rather than estimates for an actual transaction or financial decision.
+
+
+## Citation
+
+If you use or adapt this collection, please cite it as:
+
+> Lin, D. (2026). *FIN 355: Real Estate Investment Analysis Interactive Learning Resources* [Computer software]. GitHub. https://github.com/desenlin/FIN355
+
+GitHub also provides formatted citation options through **Cite this repository**, based on the repository's [CITATION.cff](CITATION.cff) metadata.
 
 
 ## Reuse, Attribution, and Licensing
