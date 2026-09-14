@@ -480,7 +480,7 @@
             </div>
             <div class="control core">
               <label for="constructionBudget">Development and construction <output id="constructionBudgetOut">$2.59m</output></label>
-              <div class="control-row"><input id="constructionBudget" type="range" min="500000" max="8000000" step="10000" value="2592000"><input id="constructionBudgetNum" type="number" min="500000" max="8000000" step="10000" value="2592000" aria-label="Development and construction budget exact value"></div>
+              <div class="control-row"><input id="constructionBudget" type="range" min="500000" max="8000000" step="1000" value="2592000"><input id="constructionBudgetNum" type="number" min="500000" max="8000000" step="1000" value="2592000" aria-label="Development and construction budget exact value"></div>
             </div>
             <div class="control core">
               <label for="duration">Construction duration <output id="durationOut">8 quarters</output></label>
@@ -1126,10 +1126,13 @@
           const w = step * 0.68;
           const principalRect = svgEl("rect", { x, y: dims.top + dims.height - principalH, width: w, height: Math.max(0, principalH), fill: COLORS.principal });
           const interestRect = svgEl("rect", { x, y: dims.top + dims.height - principalH - interestH, width: w, height: Math.max(0, interestH), fill: COLORS.interest });
-          [principalRect, interestRect].forEach((rect) => selectable(rect, row.index));
           principalRect.append(svgEl("title", {}, `${row.label}: cash advances ${formatMoney(row.endingPrincipal)}`));
           interestRect.append(svgEl("title", {}, `${row.label}: accrued interest ${formatMoney(row.endingAccrued)}`));
           svg.append(principalRect, interestRect);
+          const hitRect = svgEl("rect", { x, y: dims.top, width: w, height: dims.height, fill: "transparent", "pointer-events": "all" });
+          selectable(hitRect, row.index);
+          hitRect.setAttribute("aria-label", `Select ${row.label}, total loan balance ${formatMoney(row.endingLoan)}`);
+          svg.append(hitRect);
           if (row.index === state.selectedIndex) {
             svg.append(svgEl("rect", { x: x - 4, y: dims.top + dims.height - principalH - interestH - 4, width: w + 8, height: principalH + interestH + 8, fill: "none", stroke: COLORS.selected, "stroke-width": 4, rx: 3 }));
           }
