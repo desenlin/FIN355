@@ -537,7 +537,7 @@
         <div class="actions" aria-label="Scenario presets">
           <button id="coursePreset" class="action-button scenario active" type="button" aria-pressed="true">Course case</button>
           <button id="earlyPreset" class="action-button scenario" type="button" aria-pressed="false">Earlier construction spending</button>
-          <button id="delayPreset" class="action-button scenario" type="button" aria-pressed="false">Two-quarter closing delay</button>
+          <button id="pausePreset" class="action-button scenario" type="button" aria-pressed="false">Two-quarter construction pause</button>
           <span id="scenarioState" class="scenario-state">Selected: Course case</span>
         </div>
 
@@ -654,20 +654,20 @@
           <div class="visual-panel">
             <div class="panel-header"><strong>Construction spending by quarter</strong><span id="scheduleType">Current: course quarterly schedule</span></div>
             <div class="legend" aria-label="Construction spending comparison legend">
-              <span class="legend-item"><span class="swatch" style="background:var(--baseline)"></span>Fixed course-case baseline</span>
-              <span class="legend-item"><span class="swatch" style="background:var(--principal)"></span>Current assumptions</span>
+              <span class="legend-item"><span class="swatch" style="background:var(--baseline)"></span>Course-case baseline</span>
+              <span class="legend-item"><span class="swatch" style="background:var(--principal)"></span>Active case</span>
             </div>
-            <div class="chart-wrap"><svg id="spendChart" viewBox="0 0 1000 470" role="img" aria-labelledby="spendChartTitle spendChartDesc"><title id="spendChartTitle">Baseline and current construction spending by quarter</title><desc id="spendChartDesc">Grouped bars compare fixed course-case spending with spending under the current assumptions.</desc></svg></div>
+            <div class="chart-wrap"><svg id="spendChart" viewBox="0 0 1000 470" role="img" aria-labelledby="spendChartTitle spendChartDesc"><title id="spendChartTitle">Baseline and active-case construction spending by quarter</title><desc id="spendChartDesc">Grouped bars compare fixed course-case spending with spending under the active case.</desc></svg></div>
             <p class="chart-note">The gray baseline remains fixed. Duration, peak timing, spread, budget, and cost overruns change the current series.</p>
           </div>
           <div class="visual-panel">
             <div class="panel-header"><strong>Cumulative construction spending</strong><span>Share of selected construction budget</span></div>
             <div class="legend" aria-label="Cumulative spending comparison legend">
-              <span class="legend-item"><span class="swatch dashed"></span>Fixed course-case baseline</span>
-              <span class="legend-item"><span class="swatch line" style="background:var(--interest)"></span>Current assumptions</span>
+              <span class="legend-item"><span class="swatch dashed"></span>Course-case baseline</span>
+              <span class="legend-item"><span class="swatch line" style="background:var(--principal)"></span>Active case</span>
             </div>
-            <div class="chart-wrap"><svg id="cumulativeChart" viewBox="0 0 1000 470" role="img" aria-labelledby="cumulativeChartTitle cumulativeChartDesc"><title id="cumulativeChartTitle">Baseline and current cumulative construction spending</title><desc id="cumulativeChartDesc">Lines compare cumulative course-case spending with cumulative spending under the current assumptions.</desc></svg></div>
-            <p class="chart-note">A steeper middle section means that a larger share of the budget is spent over a shorter interval.</p>
+            <div class="chart-wrap"><svg id="cumulativeChart" viewBox="0 0 1000 470" role="img" aria-labelledby="cumulativeChartTitle cumulativeChartDesc"><title id="cumulativeChartTitle">Baseline and active-case cumulative construction spending</title><desc id="cumulativeChartDesc">Lines compare cumulative course-case spending with cumulative spending under the active case.</desc></svg></div>
+            <p class="chart-note">A steeper middle section means that a larger share of the budget is spent over a shorter interval. Sales-only assumptions do not change either construction curve.</p>
           </div>
         </div>
         <div id="curveComparison" class="status-callout info" aria-live="polite">—</div>
@@ -679,19 +679,31 @@
         <div class="section-heading">
           <div>
             <h2 id="loanTitle">Construction-loan account</h2>
-            <p>The orange portion is accrued interest inside the facility. It reduces the capacity available for cash advances to the project.</p>
+            <p>The total loan balance combines cash advances and accrued interest. The second panel isolates the accrued-interest balance that compounds inside the facility.</p>
           </div>
         </div>
-        <div class="visual-panel">
-          <div class="panel-header"><strong>Cash advances, accrued interest, and total balance</strong><span>Stacked balance at the end of each period</span></div>
-          <div class="legend" aria-label="Loan chart legend">
-            <span class="legend-item"><span class="swatch" style="background:var(--principal)"></span>Cash advances outstanding</span>
-            <span class="legend-item"><span class="swatch" style="background:var(--interest)"></span>Accrued interest</span>
-            <span class="legend-item"><span class="swatch line" style="background:var(--negative)"></span>Facility limit</span>
+        <div class="chart-grid">
+          <div class="visual-panel">
+            <div class="panel-header"><strong>Total construction-loan balance</strong><span>End-of-quarter balance</span></div>
+            <div class="legend" aria-label="Total loan balance comparison legend">
+              <span class="legend-item"><span class="swatch dashed"></span>Course-case baseline</span>
+              <span class="legend-item"><span class="swatch line" style="background:var(--principal)"></span>Active case</span>
+              <span class="legend-item"><span class="swatch line" style="background:var(--negative)"></span>Active-case facility limit</span>
+            </div>
+            <div class="chart-wrap"><svg id="loanChart" viewBox="0 0 1000 430" role="img" aria-labelledby="loanChartTitle loanChartDesc"><title id="loanChartTitle">Baseline and active construction-loan balances by quarter</title><desc id="loanChartDesc">Lines compare the total construction-loan balance for the fixed course-case baseline and the active case.</desc></svg></div>
+            <p class="chart-note">The vertical distance below the facility limit is remaining loan capacity. Select an active-case point to inspect that period.</p>
           </div>
-          <div class="chart-wrap"><svg id="loanChart" viewBox="0 0 1100 500" role="img" aria-labelledby="loanChartTitle loanChartDesc"><title id="loanChartTitle">Construction loan account by quarter</title><desc id="loanChartDesc">Stacked bars show cash advances and accrued interest within the total construction-loan facility.</desc></svg></div>
-          <p class="chart-note">Select a bar or use the period slider below. Sale proceeds pay accrued interest and cash advances before any distribution to equity.</p>
+          <div class="visual-panel">
+            <div class="panel-header"><strong>Accrued interest inside the loan account</strong><span>Negative amortization component</span></div>
+            <div class="legend" aria-label="Accrued interest comparison legend">
+              <span class="legend-item"><span class="swatch dashed"></span>Course-case baseline</span>
+              <span class="legend-item"><span class="swatch line" style="background:var(--principal)"></span>Active case</span>
+            </div>
+            <div class="chart-wrap"><svg id="loanInterestChart" viewBox="0 0 1000 430" role="img" aria-labelledby="loanInterestChartTitle loanInterestChartDesc"><title id="loanInterestChartTitle">Baseline and active accrued-interest balances by quarter</title><desc id="loanInterestChartDesc">Lines compare accrued interest accumulated inside the construction-loan account for the fixed course-case baseline and the active case.</desc></svg></div>
+            <p class="chart-note">This panel magnifies the interest component that was difficult to distinguish inside the former stacked balance bars.</p>
+          </div>
         </div>
+        <div id="loanComparison" class="status-callout info" aria-live="polite">—</div>
 
         <div class="explorer">
           <div class="period-control">
@@ -701,7 +713,7 @@
             <p id="periodNarrative" class="period-note">—</p>
           </div>
           <div class="bridge-panel">
-            <div class="panel-header"><strong>Selected-period loan and equity bridge</strong><span id="bridgePeriod">Time 0</span></div>
+            <div class="panel-header"><strong>Active-case selected-period loan and equity bridge</strong><span id="bridgePeriod">Time 0</span></div>
             <div class="bridge-body">
               <div class="bridge-row"><span>Beginning total loan balance</span><strong id="bridgeBeginning">—</strong></div>
               <div class="bridge-row"><span>Cash advance for project costs</span><strong id="bridgeAdvance">—</strong></div>
@@ -819,8 +831,10 @@
       };
       const COURSE_WEIGHTS = [100000, 200000, 200000, 300000, 1000000, 700000, 60000, 32000]
         .map((value) => value / 2592000);
+      const PAUSE_WEIGHTS = [100000, 200000, 200000, 300000, 0, 0, 1000000, 700000, 60000, 32000]
+        .map((value) => value / 2592000);
       const PAIR_IDS = Object.keys(DEFAULTS);
-      const state = { courseSchedule: true, selectedIndex: 0, model: null, baseline: null, activeScenario: "course" };
+      const state = { scheduleMode: "course", selectedIndex: 0, model: null, baseline: null, activeScenario: "course" };
       const money0 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
       const money1 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 2 });
       const number0 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
@@ -871,7 +885,7 @@
           source.value = String(next);
           target.value = String(next);
           output.textContent = outputFormat(id, next);
-          if (["duration", "peakTiming", "spread"].includes(id)) state.courseSchedule = false;
+          if (["duration", "peakTiming", "spread"].includes(id)) state.scheduleMode = "generated";
           state.activeScenario = "custom";
           render();
         };
@@ -887,7 +901,7 @@
       function setDefaults(renderNow = true) {
         Object.entries(DEFAULTS).forEach(([id, v]) => setPair(id, v));
         $("releaseDeposits").checked = false;
-        state.courseSchedule = true;
+        state.scheduleMode = "course";
         state.selectedIndex = 0;
         state.activeScenario = "course";
         if (renderNow) render();
@@ -926,11 +940,14 @@
         return total / 6;
       }
 
-      function calculate(a, courseSchedule = state.courseSchedule) {
+      function calculate(a, scheduleMode = state.scheduleMode) {
         const duration = Math.round(a.duration);
         const delay = Math.round(a.closingDelay);
-        const useCourse = courseSchedule && duration === 8;
-        const weights = useCourse ? COURSE_WEIGHTS.slice() : generatedWeights(duration, a.peakTiming, a.spread);
+        const useCourse = scheduleMode === "course" && duration === 8;
+        const usePause = scheduleMode === "pause" && duration === 10;
+        const weights = useCourse
+          ? COURSE_WEIGHTS.slice()
+          : (usePause ? PAUSE_WEIGHTS.slice() : generatedWeights(duration, a.peakTiming, a.spread));
         const constructionCost = a.constructionBudget * (1 + a.costOverrun / 100);
         const acquisitionCost = a.purchasePrice * (1 + a.transactionRate / 100);
         const projectCost = acquisitionCost + constructionCost;
@@ -1104,7 +1121,7 @@
         const equityProfit = projectProfitBeforeFinancing - totalInterest;
         const additionalEquity = Math.max(0, totalEquity - a.initialEquity);
         return {
-          a, rows, weights, useCourse, constructionCost, acquisitionCost, projectCost,
+          a, rows, weights, useCourse, usePause, constructionCost, acquisitionCost, projectCost,
           averageTwo, averageThree, grossSales, salesCostsTotal, netSales, totalDeposits,
           firstClosing, secondClosing, totalInterest, totalEquity, totalDistributions,
           peakLoan, additionalEquity, projectProfitBeforeFinancing, equityProfit, realizedEquityCashReturn,
@@ -1166,7 +1183,7 @@
       }
       function drawSpendChart(model, baseline) {
         const svg = $("spendChart");
-        clearSvg(svg, "spendChartTitle", "Baseline and current construction spending by quarter", "spendChartDesc", "Grouped bars compare fixed course-case spending with spending under the current assumptions.");
+        clearSvg(svg, "spendChartTitle", "Baseline and active-case construction spending by quarter", "spendChartDesc", "Grouped bars compare fixed course-case spending with spending under the active case.");
         const series = comparisonSeries(model, baseline);
         const dims = { left: 100, top: 34, width: 850, height: 350 };
         const yMax = Math.max(1, ...series.currentSpend, ...series.baselineSpend) * 1.12;
@@ -1192,17 +1209,30 @@
               width: step * 0.34,
               height: Math.max(0, currentH),
               rx: 3,
-              fill: i + 1 === state.selectedIndex ? COLORS.selected : COLORS.principal
+              fill: COLORS.principal
             });
-            currentRect.append(svgEl("title", {}, `Current assumptions, Q${i + 1}: ${formatMoney(series.currentSpend[i])}`));
+            currentRect.append(svgEl("title", {}, `Active case, Q${i + 1}: ${formatMoney(series.currentSpend[i])}`));
             selectable(currentRect, i + 1);
             svg.append(currentRect);
+            if (i + 1 === state.selectedIndex) {
+              svg.append(svgEl("rect", {
+                x: dims.left + i * step + step * 0.54 - 3,
+                y: dims.top + dims.height - currentH - 3,
+                width: step * 0.34 + 6,
+                height: Math.max(0, currentH) + 6,
+                rx: 4,
+                fill: "none",
+                stroke: COLORS.interest,
+                "stroke-width": 4,
+                "pointer-events": "none"
+              }));
+            }
           }
         }
       }
       function drawCumulativeChart(model, baseline) {
         const svg = $("cumulativeChart");
-        clearSvg(svg, "cumulativeChartTitle", "Baseline and current cumulative construction spending", "cumulativeChartDesc", "Lines compare cumulative course-case spending with cumulative spending under the current assumptions.");
+        clearSvg(svg, "cumulativeChartTitle", "Baseline and active-case cumulative construction spending", "cumulativeChartDesc", "Lines compare cumulative course-case spending with cumulative spending under the active case.");
         const series = comparisonSeries(model, baseline);
         const dims = { left: 100, top: 34, width: 850, height: 350 };
         drawAxes(svg, dims, 1, (v) => `${Math.round(v * 100)}%`, series.axisRows, false);
@@ -1215,10 +1245,10 @@
         }
         const currentLine = svgEl("polyline", {
           points: currentPoints.map((p) => `${p.x},${p.y}`).join(" "),
-          fill: "none", stroke: COLORS.interest, "stroke-width": 7,
+          fill: "none", stroke: COLORS.principal, "stroke-width": 7,
           "stroke-linecap": "round", "stroke-linejoin": "round"
         });
-        currentLine.append(svgEl("title", {}, "Cumulative spending under current assumptions"));
+        currentLine.append(svgEl("title", {}, "Cumulative spending under the active case"));
         svg.append(currentLine);
         const baselineLine = svgEl("polyline", {
           points: baselinePoints.map((p) => `${p.x},${p.y}`).join(" "),
@@ -1228,39 +1258,108 @@
         baselineLine.append(svgEl("title", {}, "Fixed course-case cumulative spending baseline"));
         svg.append(baselineLine);
         currentPoints.slice(1, model.weights.length + 1).forEach((p, i) => {
-          const circle = svgEl("circle", { cx: p.x, cy: p.y, r: p.index === state.selectedIndex ? 10 : 7, fill: p.index === state.selectedIndex ? COLORS.selected : COLORS.interest, stroke: COLORS.white, "stroke-width": 3 });
-          circle.append(svgEl("title", {}, `Current assumptions, Q${p.index}: ${formatPercentValue(series.currentCumulative[i])}`));
+          const circle = svgEl("circle", {
+            cx: p.x,
+            cy: p.y,
+            r: p.index === state.selectedIndex ? 10 : 7,
+            fill: COLORS.principal,
+            stroke: p.index === state.selectedIndex ? COLORS.interest : COLORS.white,
+            "stroke-width": p.index === state.selectedIndex ? 4 : 3
+          });
+          circle.append(svgEl("title", {}, `Active case, Q${p.index}: ${formatPercentValue(series.currentCumulative[i])}`));
           selectable(circle, p.index);
           svg.append(circle);
         });
       }
-      function drawLoanChart(model) {
+      function loanAxisRows(model, baseline) {
+        const periods = Math.max(model.rows.length, baseline.rows.length);
+        return Array.from({ length: periods }, (_, index) => ({ index }));
+      }
+      function loanPoints(rows, dims, periods, yMax, field) {
+        return rows.map((row) => ({
+          x: dims.left + (row.index + 0.5) * dims.width / periods,
+          y: dims.top + dims.height - row[field] / yMax * dims.height,
+          index: row.index,
+          value: row[field],
+          label: row.label
+        }));
+      }
+      function drawLoanChart(model, baseline) {
         const svg = $("loanChart");
-        clearSvg(svg, "loanChartTitle", "Construction loan account by quarter", "loanChartDesc", "Stacked bars show cash advances and accrued interest within the total construction-loan facility.");
-        const rows = model.rows;
-        const dims = { left: 112, top: 36, width: 930, height: 370 };
-        const yMax = Math.max(1, model.facility) * 1.12;
-        drawAxes(svg, dims, yMax, axisMoney, rows, true);
+        clearSvg(svg, "loanChartTitle", "Baseline and active construction-loan balances by quarter", "loanChartDesc", "Lines compare the total construction-loan balance for the fixed course-case baseline and the active case.");
+        const axisRows = loanAxisRows(model, baseline);
+        const periods = axisRows.length;
+        const dims = { left: 100, top: 32, width: 850, height: 310 };
+        const yMax = Math.max(
+          1,
+          model.facility,
+          baseline.facility,
+          ...model.rows.map((row) => row.endingLoan),
+          ...baseline.rows.map((row) => row.endingLoan)
+        ) * 1.12;
+        drawAxes(svg, dims, yMax, axisMoney, axisRows, true);
         const limitY = dims.top + dims.height - model.facility / yMax * dims.height;
         svg.append(svgEl("line", { x1: dims.left, x2: dims.left + dims.width, y1: limitY, y2: limitY, stroke: COLORS.negative, "stroke-width": 4, "stroke-dasharray": "12 8" }));
-        const step = dims.width / rows.length;
-        rows.forEach((row, i) => {
-          const principalH = row.endingPrincipal / yMax * dims.height;
-          const interestH = row.endingAccrued / yMax * dims.height;
-          const x = dims.left + i * step + step * 0.16;
-          const w = step * 0.68;
-          const principalRect = svgEl("rect", { x, y: dims.top + dims.height - principalH, width: w, height: Math.max(0, principalH), fill: COLORS.principal });
-          const interestRect = svgEl("rect", { x, y: dims.top + dims.height - principalH - interestH, width: w, height: Math.max(0, interestH), fill: COLORS.interest });
-          principalRect.append(svgEl("title", {}, `${row.label}: cash advances ${formatMoney(row.endingPrincipal)}`));
-          interestRect.append(svgEl("title", {}, `${row.label}: accrued interest ${formatMoney(row.endingAccrued)}`));
-          svg.append(principalRect, interestRect);
-          const hitRect = svgEl("rect", { x, y: dims.top, width: w, height: dims.height, fill: "transparent", "pointer-events": "all" });
-          selectable(hitRect, row.index);
-          hitRect.setAttribute("aria-label", `Select ${row.label}, total loan balance ${formatMoney(row.endingLoan)}`);
-          svg.append(hitRect);
-          if (row.index === state.selectedIndex) {
-            svg.append(svgEl("rect", { x: x - 4, y: dims.top + dims.height - principalH - interestH - 4, width: w + 8, height: principalH + interestH + 8, fill: "none", stroke: COLORS.selected, "stroke-width": 4, rx: 3 }));
-          }
+        const baselinePoints = loanPoints(baseline.rows, dims, periods, yMax, "endingLoan");
+        const currentPoints = loanPoints(model.rows, dims, periods, yMax, "endingLoan");
+        svg.append(svgEl("polyline", {
+          points: currentPoints.map((p) => `${p.x},${p.y}`).join(" "),
+          fill: "none", stroke: COLORS.principal, "stroke-width": 7,
+          "stroke-linecap": "round", "stroke-linejoin": "round"
+        }));
+        svg.append(svgEl("polyline", {
+          points: baselinePoints.map((p) => `${p.x},${p.y}`).join(" "),
+          fill: "none", stroke: COLORS.baseline, "stroke-width": 4,
+          "stroke-dasharray": "12 9", "stroke-linecap": "round", "stroke-linejoin": "round"
+        }));
+        currentPoints.forEach((point) => {
+          const selected = point.index === state.selectedIndex;
+          const circle = svgEl("circle", {
+            cx: point.x, cy: point.y, r: selected ? 10 : 7,
+            fill: COLORS.principal,
+            stroke: selected ? COLORS.interest : COLORS.white,
+            "stroke-width": selected ? 4 : 3
+          });
+          circle.append(svgEl("title", {}, `${point.label}: active-case loan balance ${formatMoney(point.value)}`));
+          selectable(circle, point.index);
+          svg.append(circle);
+        });
+      }
+      function drawLoanInterestChart(model, baseline) {
+        const svg = $("loanInterestChart");
+        clearSvg(svg, "loanInterestChartTitle", "Baseline and active accrued-interest balances by quarter", "loanInterestChartDesc", "Lines compare accrued interest accumulated inside the construction-loan account for the fixed course-case baseline and the active case.");
+        const axisRows = loanAxisRows(model, baseline);
+        const periods = axisRows.length;
+        const dims = { left: 100, top: 32, width: 850, height: 310 };
+        const yMax = Math.max(
+          1000,
+          ...model.rows.map((row) => row.endingAccrued),
+          ...baseline.rows.map((row) => row.endingAccrued)
+        ) * 1.12;
+        drawAxes(svg, dims, yMax, axisMoney, axisRows, true);
+        const baselinePoints = loanPoints(baseline.rows, dims, periods, yMax, "endingAccrued");
+        const currentPoints = loanPoints(model.rows, dims, periods, yMax, "endingAccrued");
+        svg.append(svgEl("polyline", {
+          points: currentPoints.map((p) => `${p.x},${p.y}`).join(" "),
+          fill: "none", stroke: COLORS.principal, "stroke-width": 7,
+          "stroke-linecap": "round", "stroke-linejoin": "round"
+        }));
+        svg.append(svgEl("polyline", {
+          points: baselinePoints.map((p) => `${p.x},${p.y}`).join(" "),
+          fill: "none", stroke: COLORS.baseline, "stroke-width": 4,
+          "stroke-dasharray": "12 9", "stroke-linecap": "round", "stroke-linejoin": "round"
+        }));
+        currentPoints.forEach((point) => {
+          const selected = point.index === state.selectedIndex;
+          const circle = svgEl("circle", {
+            cx: point.x, cy: point.y, r: selected ? 10 : 7,
+            fill: COLORS.principal,
+            stroke: selected ? COLORS.interest : COLORS.white,
+            "stroke-width": selected ? 4 : 3
+          });
+          circle.append(svgEl("title", {}, `${point.label}: active-case accrued interest ${formatMoney(point.value)}`));
+          selectable(circle, point.index);
+          svg.append(circle);
         });
       }
 
@@ -1288,14 +1387,16 @@
           status.className = "status-callout info";
           status.innerHTML = "<strong>Facility is sufficient:</strong> the selected loan and initial equity cover project costs and construction interest through the scheduled closings.";
         }
-        $("scheduleType").textContent = model.useCourse ? "Current: course quarterly schedule" : "Current: generated spending distribution";
+        $("scheduleType").textContent = model.useCourse
+          ? "Active: course quarterly schedule"
+          : (model.usePause ? "Active: two-quarter pause after Q4" : "Active: generated spending distribution");
       }
 
       function updateScenarioButtons() {
         const scenarios = {
           course: ["coursePreset", "Course case"],
           early: ["earlyPreset", "Earlier construction spending"],
-          delay: ["delayPreset", "Two-quarter closing delay"]
+          pause: ["pausePreset", "Two-quarter construction pause after Q4"]
         };
         Object.entries(scenarios).forEach(([key, [id]]) => {
           const active = state.activeScenario === key;
@@ -1319,7 +1420,16 @@
         if (Math.abs(interestDifference) >= 0.5) {
           interestText = `Total construction interest is ${formatMoney(Math.abs(interestDifference))} ${interestDifference > 0 ? "above" : "below"} the baseline.`;
         }
-        $("curveComparison").innerHTML = `<strong>Direct comparison:</strong> the fixed baseline peaks in Q${baselinePeak.quarter} at ${formatMoney(baselinePeak.spending)}; current assumptions peak in Q${currentPeak.quarter} at ${formatMoney(currentPeak.spending)}. ${interestText}`;
+        $("curveComparison").innerHTML = `<strong>Direct comparison:</strong> the fixed baseline peaks in Q${baselinePeak.quarter} at ${formatMoney(baselinePeak.spending)}; the active case peaks in Q${currentPeak.quarter} at ${formatMoney(currentPeak.spending)}. ${interestText}`;
+      }
+
+      function updateLoanComparison(model, baseline) {
+        const peak = (rows, field) => rows.reduce((best, row) => row[field] > best[field] ? row : best, rows[0]);
+        const baselineLoanPeak = peak(baseline.rows, "endingLoan");
+        const currentLoanPeak = peak(model.rows, "endingLoan");
+        const baselineInterestPeak = peak(baseline.rows, "endingAccrued");
+        const currentInterestPeak = peak(model.rows, "endingAccrued");
+        $("loanComparison").innerHTML = `<strong>Loan-account comparison:</strong> the course-case balance peaks at ${formatMoney(baselineLoanPeak.endingLoan)} in ${baselineLoanPeak.label}; the active case peaks at ${formatMoney(currentLoanPeak.endingLoan)} in ${currentLoanPeak.label}. Accrued interest inside the account reaches ${formatMoney(baselineInterestPeak.endingAccrued)} in the baseline and ${formatMoney(currentInterestPeak.endingAccrued)} in the active case.`;
       }
 
       function updateSelected(model) {
@@ -1374,24 +1484,27 @@
 
       function render() {
         const model = calculate(assumptions());
-        const baseline = calculate({ ...DEFAULTS, releaseDeposits: false }, true);
+        const baseline = calculate({ ...DEFAULTS, releaseDeposits: false }, "course");
         state.model = model;
         state.baseline = baseline;
         updateScenarioButtons();
         updateMetrics(model);
         updateCurveComparison(model, baseline);
+        updateLoanComparison(model, baseline);
         updateTable(model);
         updateSelected(model);
         drawSpendChart(model, baseline);
         drawCumulativeChart(model, baseline);
-        drawLoanChart(model);
+        drawLoanChart(model, baseline);
+        drawLoanInterestChart(model, baseline);
       }
       function selectPeriod(index) {
         state.selectedIndex = clamp(Number(index) || 0, 0, state.model.rows.length - 1);
         updateSelected(state.model);
         drawSpendChart(state.model, state.baseline);
         drawCumulativeChart(state.model, state.baseline);
-        drawLoanChart(state.model);
+        drawLoanChart(state.model, state.baseline);
+        drawLoanInterestChart(state.model, state.baseline);
       }
       function csvCell(value) {
         const text = String(value ?? "");
@@ -1424,14 +1537,16 @@
       $("earlyPreset").addEventListener("click", () => {
         setDefaults(false);
         setPair("peakTiming", 42);
-        state.courseSchedule = false;
+        state.scheduleMode = "generated";
         state.activeScenario = "early";
         render();
       });
-      $("delayPreset").addEventListener("click", () => {
+      $("pausePreset").addEventListener("click", () => {
         setDefaults(false);
-        setPair("closingDelay", 2);
-        state.activeScenario = "delay";
+        setPair("duration", 10);
+        setPair("peakTiming", 65);
+        state.scheduleMode = "pause";
+        state.activeScenario = "pause";
         render();
       });
       $("downloadCsv").addEventListener("click", downloadCsv);
