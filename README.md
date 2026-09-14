@@ -65,7 +65,7 @@ The collection is designed to grow over time. New interactive tools and course p
     </tr>
     <tr>
       <td><strong>Construction Pro Forma: Draws, Interest Reserve, and Loan Balance</strong></td>
-      <td>Links an S-shaped construction-spending schedule to an inclusive construction-loan facility, showing how accrued interest, cost timing, sale timing, and overruns affect loan capacity, developer equity, and project profit.</td>
+      <td>Compares a fixed course-case S-curve with editable spending assumptions, then links project costs to an inclusive construction-loan facility to show how timing, accrued interest, cost overruns, and sale delays affect loan capacity, developer equity, and project profit.</td>
       <td><a href="https://desenlin.com/FIN355/construction-pro-forma.html">Launch the tool</a></td>
     </tr>
     <tr>
