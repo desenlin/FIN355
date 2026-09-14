@@ -64,6 +64,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/FIN355/development-feasibility.html">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Construction Pro Forma: Draws, Interest Reserve, and Loan Balance</strong></td>
+      <td>Links an S-shaped construction-spending schedule to an inclusive construction-loan facility, showing how accrued interest, cost timing, sale timing, and overruns affect loan capacity, developer equity, and project profit.</td>
+      <td><a href="https://desenlin.com/FIN355/construction-pro-forma.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>Three Real Estate Company Valuation Approaches</strong></td>
       <td>Compares discounted cash flow, direct capitalization, and net asset value, showing how operating forecasts, required returns, cap rates, debt, and other balance-sheet assumptions change the implied equity value.</td>
       <td><a href="https://desenlin.com/FIN355/valuation-approaches.html">Launch the tool</a></td>
@@ -87,6 +92,7 @@ The collection is designed to grow over time. New interactive tools and course p
 <!--  · [View source](./cmbs-tranching.html) -->
 <!--  · [View source](./net-effective-rent.html) -->
 <!--  · [View source](./development-feasibility.html) -->
+<!--  · [View source](./construction-pro-forma.html) -->
 <!--  · [View source](./ground-lease-valuation.html) -->
 <!--  · [View source](./exit-strategies.html) -->
 <!--  · [View source](./valuation-approaches.html) -->
