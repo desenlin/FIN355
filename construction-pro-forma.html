@@ -30,6 +30,7 @@
       --warning: #a95d00;
       --principal: #244f76;
       --interest: #f58220;
+      --baseline: #7d8ea3;
       --equity: #6c7d91;
       --shadow: 0 12px 30px rgba(0, 39, 76, 0.10);
     }
@@ -45,7 +46,7 @@
       line-height: 1.55;
     }
     button, input { font: inherit; }
-    button:focus-visible, input:focus-visible, summary:focus-visible {
+    button:focus-visible, input:focus-visible, summary:focus-visible, .help-tip:focus-visible {
       outline: 3px solid rgba(245, 130, 32, 0.45);
       outline-offset: 2px;
     }
@@ -178,6 +179,52 @@
       font-size: 0.82rem;
       font-weight: 780;
     }
+    .label-copy { min-width: 0; }
+    .help-tip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      margin-left: 3px;
+      color: var(--white);
+      background: var(--navy-2);
+      border-radius: 50%;
+      cursor: help;
+      font-size: 0.68rem;
+      font-weight: 850;
+      line-height: 1;
+      vertical-align: 1px;
+    }
+    .help-tip::after {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 20;
+      width: min(260px, calc(100vw - 48px));
+      padding: 9px 10px;
+      color: var(--white);
+      background: #172033;
+      border-radius: 7px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+      content: attr(data-tip);
+      font-size: 0.74rem;
+      font-weight: 550;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      text-align: left;
+      transform: translate(-50%, 4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      visibility: hidden;
+      white-space: normal;
+    }
+    .help-tip:hover::after, .help-tip:focus::after {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      visibility: visible;
+    }
     .control output { color: var(--orange-dark); white-space: nowrap; }
     .control-row {
       display: grid;
@@ -215,7 +262,7 @@
     }
     summary { padding: 12px 14px; color: var(--navy); cursor: pointer; font-weight: 800; }
     details .control-section { padding: 4px 14px 14px; }
-    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 18px; }
     .action-button {
       min-height: 38px;
       padding: 8px 13px;
@@ -230,6 +277,21 @@
     .action-button:hover { background: #e6edf5; }
     .action-button.primary { color: var(--white); background: var(--navy); border-color: var(--navy); }
     .action-button.primary:hover { background: var(--navy-2); }
+    .action-button.scenario.active,
+    .action-button.scenario[aria-pressed="true"] {
+      color: var(--white);
+      background: var(--navy);
+      border-color: var(--navy);
+      box-shadow: inset 0 -3px var(--orange);
+    }
+    .action-button.scenario.active:hover,
+    .action-button.scenario[aria-pressed="true"]:hover { background: var(--navy-2); }
+    .scenario-state {
+      margin-left: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 750;
+    }
     .metrics {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -302,6 +364,12 @@
     .legend-item { display: inline-flex; align-items: center; gap: 6px; }
     .swatch { width: 13px; height: 8px; border-radius: 2px; }
     .swatch.line { height: 3px; }
+    .swatch.dashed {
+      height: 0;
+      background: transparent !important;
+      border-top: 3px dashed var(--baseline);
+      border-radius: 0;
+    }
     .explorer {
       display: grid;
       grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
@@ -364,6 +432,7 @@
     tbody tr:nth-child(even) { background: #fafbfd; }
     tbody tr:hover, tbody tr.selected-row { background: #fff3e8; }
     tbody tr.selected-row { box-shadow: inset 4px 0 var(--orange); }
+    td.negative-number { color: var(--negative); font-weight: 800; }
     .table-caption { margin: 10px 14px 14px; color: var(--muted); font-size: 0.76rem; }
     .takeaways { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .takeaway { padding: 17px; background: #f8fafc; border: 1px solid var(--line); border-top: 4px solid var(--orange); border-radius: 10px; }
@@ -371,7 +440,7 @@
     .takeaway p { margin-bottom: 0; color: var(--muted); font-size: 0.85rem; }
     .scope-note { margin-top: 17px; color: var(--muted); font-size: 0.82rem; }
     .disclaimer { padding: 18px 20px; color: #5b4300; background: #fff8df; border: 1px solid #e8cf78; border-radius: 11px; font-size: 0.84rem; }
-    footer { padding: 0 0 34px; color: var(--muted); text-align: center; font-size: 0.8rem; }
+    footer { padding: 0 0 38px; color: var(--muted); text-align: center; font-size: 0.8rem; }
     .sr-only {
       position: absolute;
       width: 1px;
@@ -423,10 +492,10 @@
   <div class="topbar" aria-hidden="true"></div>
   <header class="hero">
     <div class="hero-inner">
-      <div class="course-tag">FIN 355 · Real Estate Investment Analysis</div>
+      <span class="course-tag">FIN 355 · Real Estate Investment Analysis</span>
       <h1>Construction Pro Forma: Draws, Interest Reserve, and Loan Balance</h1>
       <p>Follow acquisition costs, construction spending, loan draws, accrued interest, and sale proceeds from project start through condominium closings.</p>
-      <p class="creator">Created by Desen Lin for instructional use at Cal State Fullerton</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
     </div>
   </header>
 
@@ -466,36 +535,37 @@
         </div>
 
         <div class="actions" aria-label="Scenario presets">
-          <button id="coursePreset" class="action-button primary" type="button">Course case</button>
-          <button id="earlyPreset" class="action-button" type="button">Earlier construction spending</button>
-          <button id="delayPreset" class="action-button" type="button">Two-quarter closing delay</button>
+          <button id="coursePreset" class="action-button scenario active" type="button" aria-pressed="true">Course case</button>
+          <button id="earlyPreset" class="action-button scenario" type="button" aria-pressed="false">Earlier construction spending</button>
+          <button id="delayPreset" class="action-button scenario" type="button" aria-pressed="false">Two-quarter closing delay</button>
+          <span id="scenarioState" class="scenario-state">Selected: Course case</span>
         </div>
 
         <div class="control-section">
           <h3>Project and construction assumptions</h3>
           <div class="controls">
             <div class="control core">
-              <label for="purchasePrice">Building purchase price <output id="purchasePriceOut">$3.60m</output></label>
+              <label for="purchasePrice"><span class="label-copy">Building purchase price <span class="help-tip" tabindex="0" aria-label="Building purchase price definition: Price paid for the existing building at Time 0, before transaction costs." data-tip="Price paid for the existing building at Time 0, before transaction costs.">?</span></span><output id="purchasePriceOut">$3.60m</output></label>
               <div class="control-row"><input id="purchasePrice" type="range" min="1000000" max="8000000" step="10000" value="3600000"><input id="purchasePriceNum" type="number" min="1000000" max="8000000" step="10000" value="3600000" aria-label="Building purchase price exact value"></div>
             </div>
             <div class="control core">
-              <label for="constructionBudget">Development and construction <output id="constructionBudgetOut">$2.59m</output></label>
+              <label for="constructionBudget"><span class="label-copy">Development and construction <span class="help-tip" tabindex="0" aria-label="Development and construction definition: Base development and construction expenditures distributed across the construction schedule, before any cost overrun." data-tip="Base development and construction expenditures distributed across the construction schedule, before any cost overrun.">?</span></span><output id="constructionBudgetOut">$2.59m</output></label>
               <div class="control-row"><input id="constructionBudget" type="range" min="500000" max="8000000" step="1000" value="2592000"><input id="constructionBudgetNum" type="number" min="500000" max="8000000" step="1000" value="2592000" aria-label="Development and construction budget exact value"></div>
             </div>
             <div class="control core">
-              <label for="duration">Construction duration <output id="durationOut">8 quarters</output></label>
+              <label for="duration"><span class="label-copy">Construction duration <span class="help-tip" tabindex="0" aria-label="Construction duration definition: Number of quarters over which development and construction spending occurs." data-tip="Number of quarters over which development and construction spending occurs.">?</span></span><output id="durationOut">8 quarters</output></label>
               <div class="control-row"><input id="duration" type="range" min="4" max="12" step="1" value="8"><input id="durationNum" type="number" min="4" max="12" step="1" value="8" aria-label="Construction duration exact value"></div>
             </div>
             <div class="control">
-              <label for="costOverrun">Cost overrun <output id="costOverrunOut">0.0%</output></label>
+              <label for="costOverrun"><span class="label-copy">Cost overrun <span class="help-tip" tabindex="0" aria-label="Cost overrun definition: Percentage increase applied to the base development and construction budget." data-tip="Percentage increase applied to the base development and construction budget.">?</span></span><output id="costOverrunOut">0.0%</output></label>
               <div class="control-row"><input id="costOverrun" type="range" min="0" max="30" step="0.5" value="0"><input id="costOverrunNum" type="number" min="0" max="30" step="0.5" value="0" aria-label="Cost overrun exact value"></div>
             </div>
             <div class="control">
-              <label for="peakTiming">Peak spending point <output id="peakTimingOut">62%</output></label>
+              <label for="peakTiming"><span class="label-copy">Peak spending point <span class="help-tip" tabindex="0" aria-label="Peak spending point definition: Location in the construction timeline where quarterly spending is highest. Changing it replaces the exact course schedule with a generated curve." data-tip="Location in the construction timeline where quarterly spending is highest. Changing it replaces the exact course schedule with a generated curve.">?</span></span><output id="peakTimingOut">62%</output></label>
               <div class="control-row"><input id="peakTiming" type="range" min="25" max="80" step="1" value="62"><input id="peakTimingNum" type="number" min="25" max="80" step="1" value="62" aria-label="Peak spending point exact value"></div>
             </div>
             <div class="control">
-              <label for="spread">Spending spread <output id="spreadOut">18%</output></label>
+              <label for="spread"><span class="label-copy">Spending spread <span class="help-tip" tabindex="0" aria-label="Spending spread definition: Concentration of spending around its peak. A smaller value produces a narrower, steeper schedule." data-tip="Concentration of spending around its peak. A smaller value produces a narrower, steeper schedule.">?</span></span><output id="spreadOut">18%</output></label>
               <div class="control-row"><input id="spread" type="range" min="8" max="40" step="1" value="18"><input id="spreadNum" type="number" min="8" max="40" step="1" value="18" aria-label="Spending spread exact value"></div>
             </div>
           </div>
@@ -505,15 +575,15 @@
           <h3>Construction financing assumptions</h3>
           <div class="controls">
             <div class="control core">
-              <label for="loanFacility">Loan facility including interest <output id="loanFacilityOut">$4.20m</output></label>
+              <label for="loanFacility"><span class="label-copy">Loan facility including interest <span class="help-tip" tabindex="0" aria-label="Loan facility definition: Maximum total outstanding construction-loan balance, including cash advances and accrued interest." data-tip="Maximum total outstanding construction-loan balance, including cash advances and accrued interest.">?</span></span><output id="loanFacilityOut">$4.20m</output></label>
               <div class="control-row"><input id="loanFacility" type="range" min="1000000" max="10000000" step="10000" value="4200000"><input id="loanFacilityNum" type="number" min="1000000" max="10000000" step="10000" value="4200000" aria-label="Construction loan facility exact value"></div>
             </div>
             <div class="control core">
-              <label for="initialEquity">Equity applied at acquisition <output id="initialEquityOut">$2.10m</output></label>
+              <label for="initialEquity"><span class="label-copy">Equity applied at acquisition <span class="help-tip" tabindex="0" aria-label="Initial equity definition: Developer equity available at acquisition. Additional equity is contributed later if project costs or interest exceed available loan capacity." data-tip="Developer equity available at acquisition. Additional equity is contributed later if project costs or interest exceed available loan capacity.">?</span></span><output id="initialEquityOut">$2.10m</output></label>
               <div class="control-row"><input id="initialEquity" type="range" min="0" max="5000000" step="10000" value="2100000"><input id="initialEquityNum" type="number" min="0" max="5000000" step="10000" value="2100000" aria-label="Initial equity exact value"></div>
             </div>
             <div class="control core">
-              <label for="annualRate">Annual loan rate <output id="annualRateOut">6.8%</output></label>
+              <label for="annualRate"><span class="label-copy">Annual loan rate <span class="help-tip" tabindex="0" aria-label="Annual loan rate definition: Nominal annual interest rate divided by four and applied to the average total loan balance each quarter." data-tip="Nominal annual interest rate divided by four and applied to the average total loan balance each quarter.">?</span></span><output id="annualRateOut">6.8%</output></label>
               <div class="control-row"><input id="annualRate" type="range" min="0" max="18" step="0.1" value="6.8"><input id="annualRateNum" type="number" min="0" max="18" step="0.1" value="6.8" aria-label="Annual loan rate exact value"></div>
             </div>
           </div>
@@ -524,36 +594,36 @@
           <div class="control-section">
             <div class="controls">
               <div class="control">
-                <label for="transactionRate">Transaction costs <output id="transactionRateOut">3.0%</output></label>
+                <label for="transactionRate"><span class="label-copy">Transaction costs <span class="help-tip" tabindex="0" aria-label="Transaction costs definition: Acquisition transaction costs stated as a percentage of the building purchase price." data-tip="Acquisition transaction costs stated as a percentage of the building purchase price.">?</span></span><output id="transactionRateOut">3.0%</output></label>
                 <div class="control-row"><input id="transactionRate" type="range" min="0" max="10" step="0.1" value="3"><input id="transactionRateNum" type="number" min="0" max="10" step="0.1" value="3" aria-label="Transaction cost rate exact value"></div>
               </div>
               <div class="control">
-                <label for="twoBedPrice">Two-bedroom base price <output id="twoBedPriceOut">$450,000</output></label>
+                <label for="twoBedPrice"><span class="label-copy">Two-bedroom base price <span class="help-tip" tabindex="0" aria-label="Two-bedroom base price definition: Starting condominium price used to calculate the average two-bedroom selling price over six growth periods." data-tip="Starting condominium price used to calculate the average two-bedroom selling price over six growth periods.">?</span></span><output id="twoBedPriceOut">$450,000</output></label>
                 <div class="control-row"><input id="twoBedPrice" type="range" min="200000" max="1000000" step="5000" value="450000"><input id="twoBedPriceNum" type="number" min="200000" max="1000000" step="5000" value="450000" aria-label="Two-bedroom base price exact value"></div>
               </div>
               <div class="control">
-                <label for="threeBedPrice">Three-bedroom base price <output id="threeBedPriceOut">$625,000</output></label>
+                <label for="threeBedPrice"><span class="label-copy">Three-bedroom base price <span class="help-tip" tabindex="0" aria-label="Three-bedroom base price definition: Starting condominium price used to calculate the average three-bedroom selling price over six growth periods." data-tip="Starting condominium price used to calculate the average three-bedroom selling price over six growth periods.">?</span></span><output id="threeBedPriceOut">$625,000</output></label>
                 <div class="control-row"><input id="threeBedPrice" type="range" min="250000" max="1500000" step="5000" value="625000"><input id="threeBedPriceNum" type="number" min="250000" max="1500000" step="5000" value="625000" aria-label="Three-bedroom base price exact value"></div>
               </div>
               <div class="control">
-                <label for="priceGrowth">Quarterly price growth <output id="priceGrowthOut">2.0%</output></label>
+                <label for="priceGrowth"><span class="label-copy">Quarterly price growth <span class="help-tip" tabindex="0" aria-label="Quarterly price growth definition: Assumed percentage change in condominium prices from one quarter to the next." data-tip="Assumed percentage change in condominium prices from one quarter to the next.">?</span></span><output id="priceGrowthOut">2.0%</output></label>
                 <div class="control-row"><input id="priceGrowth" type="range" min="-5" max="10" step="0.1" value="2"><input id="priceGrowthNum" type="number" min="-5" max="10" step="0.1" value="2" aria-label="Quarterly price growth exact value"></div>
               </div>
               <div class="control">
-                <label for="salesCostRate">Sales costs <output id="salesCostRateOut">3.0%</output></label>
+                <label for="salesCostRate"><span class="label-copy">Sales costs <span class="help-tip" tabindex="0" aria-label="Sales costs definition: Brokerage and disposition costs deducted as a percentage of gross condominium closing proceeds." data-tip="Brokerage and disposition costs deducted as a percentage of gross condominium closing proceeds.">?</span></span><output id="salesCostRateOut">3.0%</output></label>
                 <div class="control-row"><input id="salesCostRate" type="range" min="0" max="10" step="0.1" value="3"><input id="salesCostRateNum" type="number" min="0" max="10" step="0.1" value="3" aria-label="Sales cost rate exact value"></div>
               </div>
               <div class="control">
-                <label for="closingDelay">Closing delay <output id="closingDelayOut">0 quarters</output></label>
+                <label for="closingDelay"><span class="label-copy">Closing delay <span class="help-tip" tabindex="0" aria-label="Closing delay definition: Number of quarters that all scheduled condominium closings are postponed after construction." data-tip="Number of quarters that all scheduled condominium closings are postponed after construction.">?</span></span><output id="closingDelayOut">0 quarters</output></label>
                 <div class="control-row"><input id="closingDelay" type="range" min="0" max="4" step="1" value="0"><input id="closingDelayNum" type="number" min="0" max="4" step="1" value="0" aria-label="Closing delay exact value"></div>
               </div>
               <div class="control">
-                <label for="depositRate">Presale down payment <output id="depositRateOut">5.0%</output></label>
+                <label for="depositRate"><span class="label-copy">Presale down payment <span class="help-tip" tabindex="0" aria-label="Presale down payment definition: Buyer deposit as a percentage of the presold unit's modeled selling price." data-tip="Buyer deposit as a percentage of the presold unit's modeled selling price.">?</span></span><output id="depositRateOut">5.0%</output></label>
                 <div class="control-row"><input id="depositRate" type="range" min="0" max="20" step="0.5" value="5"><input id="depositRateNum" type="number" min="0" max="20" step="0.5" value="5" aria-label="Presale down payment exact value"></div>
               </div>
               <div class="control switch-control">
                 <input id="releaseDeposits" type="checkbox">
-                <label for="releaseDeposits">Release deposits before closing<small>Off matches the course case: deposits remain unavailable until closing.</small></label>
+                <label for="releaseDeposits">Release deposits before closing <span class="help-tip" tabindex="0" aria-label="Deposit-release definition: If selected, presale deposits become available to pay project costs before closing instead of remaining in escrow." data-tip="If selected, presale deposits become available to pay project costs before closing instead of remaining in escrow.">?</span><small>Off matches the course case: deposits remain unavailable until closing.</small></label>
               </div>
             </div>
           </div>
@@ -582,16 +652,25 @@
         </div>
         <div class="chart-grid">
           <div class="visual-panel">
-            <div class="panel-header"><strong>Construction spending by quarter</strong><span id="scheduleType">Course quarterly schedule</span></div>
-            <div class="chart-wrap"><svg id="spendChart" viewBox="0 0 1000 470" role="img" aria-labelledby="spendChartTitle spendChartDesc"><title id="spendChartTitle">Construction spending by quarter</title><desc id="spendChartDesc">Bars show development and construction spending in each quarter.</desc></svg></div>
-            <p class="chart-note">Changing duration, peak timing, or spread generates a new distribution while holding the selected construction budget constant.</p>
+            <div class="panel-header"><strong>Construction spending by quarter</strong><span id="scheduleType">Current: course quarterly schedule</span></div>
+            <div class="legend" aria-label="Construction spending comparison legend">
+              <span class="legend-item"><span class="swatch" style="background:var(--baseline)"></span>Fixed course-case baseline</span>
+              <span class="legend-item"><span class="swatch" style="background:var(--principal)"></span>Current assumptions</span>
+            </div>
+            <div class="chart-wrap"><svg id="spendChart" viewBox="0 0 1000 470" role="img" aria-labelledby="spendChartTitle spendChartDesc"><title id="spendChartTitle">Baseline and current construction spending by quarter</title><desc id="spendChartDesc">Grouped bars compare fixed course-case spending with spending under the current assumptions.</desc></svg></div>
+            <p class="chart-note">The gray baseline remains fixed. Duration, peak timing, spread, budget, and cost overruns change the current series.</p>
           </div>
           <div class="visual-panel">
             <div class="panel-header"><strong>Cumulative construction spending</strong><span>Share of selected construction budget</span></div>
-            <div class="chart-wrap"><svg id="cumulativeChart" viewBox="0 0 1000 470" role="img" aria-labelledby="cumulativeChartTitle cumulativeChartDesc"><title id="cumulativeChartTitle">Cumulative construction spending</title><desc id="cumulativeChartDesc">A line shows cumulative construction spending as a share of the selected construction budget.</desc></svg></div>
-            <p class="chart-note">A steeper middle section indicates that a larger share of the budget is spent over a shorter interval.</p>
+            <div class="legend" aria-label="Cumulative spending comparison legend">
+              <span class="legend-item"><span class="swatch dashed"></span>Fixed course-case baseline</span>
+              <span class="legend-item"><span class="swatch line" style="background:var(--interest)"></span>Current assumptions</span>
+            </div>
+            <div class="chart-wrap"><svg id="cumulativeChart" viewBox="0 0 1000 470" role="img" aria-labelledby="cumulativeChartTitle cumulativeChartDesc"><title id="cumulativeChartTitle">Baseline and current cumulative construction spending</title><desc id="cumulativeChartDesc">Lines compare cumulative course-case spending with cumulative spending under the current assumptions.</desc></svg></div>
+            <p class="chart-note">A steeper middle section means that a larger share of the budget is spent over a shorter interval.</p>
           </div>
         </div>
+        <div id="curveComparison" class="status-callout info" aria-live="polite">—</div>
       </div>
     </section>
 
@@ -695,7 +774,10 @@
     <div class="disclaimer"><strong>Instructional-use notice.</strong> This simplified model omits taxes, lender fees, retainage, guarantees, default interest, detailed draw procedures, and many transaction-specific provisions. It is intended for teaching only, not for financial, legal, tax, appraisal, lending, or investment advice.</div>
   </main>
 
-  <footer>Created by Desen Lin · FIN 355 · California State University, Fullerton · For instructional use only</footer>
+  <footer>
+    <strong>Created by Desen Lin</strong> for instructional purposes in FIN 355 at California State University, Fullerton.<br>
+    This educational illustration is not financial, investment, tax, legal, or appraisal advice.
+  </footer>
   <div id="liveMessage" class="sr-only" aria-live="polite"></div>
 
   <script>
@@ -713,6 +795,7 @@
         muted: "#5c677d",
         grid: "#d8dee9",
         soft: "#edf2f7",
+        baseline: "#7d8ea3",
         white: "#ffffff",
         selected: "#101828"
       };
@@ -737,7 +820,7 @@
       const COURSE_WEIGHTS = [100000, 200000, 200000, 300000, 1000000, 700000, 60000, 32000]
         .map((value) => value / 2592000);
       const PAIR_IDS = Object.keys(DEFAULTS);
-      const state = { courseSchedule: true, selectedIndex: 0, model: null };
+      const state = { courseSchedule: true, selectedIndex: 0, model: null, baseline: null, activeScenario: "course" };
       const money0 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
       const money1 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 2 });
       const number0 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
@@ -789,6 +872,7 @@
           target.value = String(next);
           output.textContent = outputFormat(id, next);
           if (["duration", "peakTiming", "spread"].includes(id)) state.courseSchedule = false;
+          state.activeScenario = "custom";
           render();
         };
         range.addEventListener("input", () => sync(range, exact));
@@ -800,12 +884,13 @@
         $(`${id}Num`).value = String(v);
         $(`${id}Out`).textContent = outputFormat(id, v);
       }
-      function setDefaults() {
+      function setDefaults(renderNow = true) {
         Object.entries(DEFAULTS).forEach(([id, v]) => setPair(id, v));
         $("releaseDeposits").checked = false;
         state.courseSchedule = true;
         state.selectedIndex = 0;
-        render();
+        state.activeScenario = "course";
+        if (renderNow) render();
       }
       function svgEl(name, attrs = {}, text = "") {
         const el = document.createElementNS(NS, name);
@@ -841,10 +926,10 @@
         return total / 6;
       }
 
-      function calculate(a) {
+      function calculate(a, courseSchedule = state.courseSchedule) {
         const duration = Math.round(a.duration);
         const delay = Math.round(a.closingDelay);
-        const useCourse = state.courseSchedule && duration === 8;
+        const useCourse = courseSchedule && duration === 8;
         const weights = useCourse ? COURSE_WEIGHTS.slice() : generatedWeights(duration, a.peakTiming, a.spread);
         const constructionCost = a.constructionBudget * (1 + a.costOverrun / 100);
         const acquisitionCost = a.purchasePrice * (1 + a.transactionRate / 100);
@@ -1058,54 +1143,94 @@
           if (event.key === "Enter" || event.key === " ") { event.preventDefault(); select(); }
         });
       }
-      function drawSpendChart(model) {
-        const svg = $("spendChart");
-        clearSvg(svg, "spendChartTitle", "Construction spending by quarter", "spendChartDesc", "Bars show development and construction spending in each quarter.");
-        const rows = model.rows.slice(1);
-        const dims = { left: 100, top: 34, width: 850, height: 350 };
-        const yMax = Math.max(1, ...rows.map((r) => r.constructionSpend)) * 1.12;
-        drawAxes(svg, dims, yMax, axisMoney, model.rows, false);
-        const step = dims.width / rows.length;
-        rows.forEach((row, i) => {
-          const h = row.constructionSpend / yMax * dims.height;
-          const rect = svgEl("rect", {
-            x: dims.left + i * step + step * 0.18,
-            y: dims.top + dims.height - h,
-            width: step * 0.64,
-            height: Math.max(0, h),
-            rx: 3,
-            fill: row.index === state.selectedIndex ? COLORS.selected : COLORS.principal
-          });
-          rect.append(svgEl("title", {}, `${row.label}: ${formatMoney(row.constructionSpend)}`));
-          selectable(rect, row.index);
-          svg.append(rect);
-        });
+      function comparisonSeries(model, baseline) {
+        const periods = Math.max(model.weights.length, baseline.weights.length);
+        const currentSpend = [];
+        const baselineSpend = [];
+        const currentCumulative = [];
+        const baselineCumulative = [];
+        let currentShare = 0;
+        let baselineShare = 0;
+        for (let i = 0; i < periods; i += 1) {
+          const currentWeight = model.weights[i] || 0;
+          const baselineWeight = baseline.weights[i] || 0;
+          currentShare += currentWeight;
+          baselineShare += baselineWeight;
+          currentSpend.push(model.constructionCost * currentWeight);
+          baselineSpend.push(baseline.constructionCost * baselineWeight);
+          currentCumulative.push(Math.min(1, currentShare));
+          baselineCumulative.push(Math.min(1, baselineShare));
+        }
+        const axisRows = [{ index: 0 }, ...Array.from({ length: periods }, (_, i) => ({ index: i + 1 }))];
+        return { periods, currentSpend, baselineSpend, currentCumulative, baselineCumulative, axisRows };
       }
-      function drawCumulativeChart(model) {
-        const svg = $("cumulativeChart");
-        clearSvg(svg, "cumulativeChartTitle", "Cumulative construction spending", "cumulativeChartDesc", "A line shows cumulative construction spending as a share of the selected construction budget.");
-        const rows = model.rows.slice(1);
+      function drawSpendChart(model, baseline) {
+        const svg = $("spendChart");
+        clearSvg(svg, "spendChartTitle", "Baseline and current construction spending by quarter", "spendChartDesc", "Grouped bars compare fixed course-case spending with spending under the current assumptions.");
+        const series = comparisonSeries(model, baseline);
         const dims = { left: 100, top: 34, width: 850, height: 350 };
-        drawAxes(svg, dims, 1, (v) => `${Math.round(v * 100)}%`, model.rows, false);
-        const total = Math.max(1, model.constructionCost);
-        const points = [{ x: dims.left, y: dims.top + dims.height }];
-        rows.forEach((row, i) => {
-          const x = dims.left + (i + 0.5) * dims.width / rows.length;
-          const y = dims.top + dims.height - row.cumulativeConstruction / total * dims.height;
-          points.push({ x, y, row });
+        const yMax = Math.max(1, ...series.currentSpend, ...series.baselineSpend) * 1.12;
+        drawAxes(svg, dims, yMax, axisMoney, series.axisRows, false);
+        const step = dims.width / series.periods;
+        for (let i = 0; i < series.periods; i += 1) {
+          const baselineH = series.baselineSpend[i] / yMax * dims.height;
+          const currentH = series.currentSpend[i] / yMax * dims.height;
+          const baselineRect = svgEl("rect", {
+            x: dims.left + i * step + step * 0.12,
+            y: dims.top + dims.height - baselineH,
+            width: step * 0.34,
+            height: Math.max(0, baselineH),
+            rx: 3,
+            fill: COLORS.baseline
+          });
+          baselineRect.append(svgEl("title", {}, `Course baseline, Q${i + 1}: ${formatMoney(series.baselineSpend[i])}`));
+          svg.append(baselineRect);
+          if (i < model.weights.length) {
+            const currentRect = svgEl("rect", {
+              x: dims.left + i * step + step * 0.54,
+              y: dims.top + dims.height - currentH,
+              width: step * 0.34,
+              height: Math.max(0, currentH),
+              rx: 3,
+              fill: i + 1 === state.selectedIndex ? COLORS.selected : COLORS.principal
+            });
+            currentRect.append(svgEl("title", {}, `Current assumptions, Q${i + 1}: ${formatMoney(series.currentSpend[i])}`));
+            selectable(currentRect, i + 1);
+            svg.append(currentRect);
+          }
+        }
+      }
+      function drawCumulativeChart(model, baseline) {
+        const svg = $("cumulativeChart");
+        clearSvg(svg, "cumulativeChartTitle", "Baseline and current cumulative construction spending", "cumulativeChartDesc", "Lines compare cumulative course-case spending with cumulative spending under the current assumptions.");
+        const series = comparisonSeries(model, baseline);
+        const dims = { left: 100, top: 34, width: 850, height: 350 };
+        drawAxes(svg, dims, 1, (v) => `${Math.round(v * 100)}%`, series.axisRows, false);
+        const currentPoints = [{ x: dims.left, y: dims.top + dims.height }];
+        const baselinePoints = [{ x: dims.left, y: dims.top + dims.height }];
+        for (let i = 0; i < series.periods; i += 1) {
+          const x = dims.left + (i + 0.5) * dims.width / series.periods;
+          currentPoints.push({ x, y: dims.top + dims.height - series.currentCumulative[i] * dims.height, index: i + 1 });
+          baselinePoints.push({ x, y: dims.top + dims.height - series.baselineCumulative[i] * dims.height, index: i + 1 });
+        }
+        const currentLine = svgEl("polyline", {
+          points: currentPoints.map((p) => `${p.x},${p.y}`).join(" "),
+          fill: "none", stroke: COLORS.interest, "stroke-width": 7,
+          "stroke-linecap": "round", "stroke-linejoin": "round"
         });
-        svg.append(svgEl("polyline", {
-          points: points.map((p) => `${p.x},${p.y}`).join(" "),
-          fill: "none",
-          stroke: COLORS.interest,
-          "stroke-width": 7,
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round"
-        }));
-        points.slice(1).forEach((p) => {
-          const circle = svgEl("circle", { cx: p.x, cy: p.y, r: p.row.index === state.selectedIndex ? 10 : 7, fill: p.row.index === state.selectedIndex ? COLORS.selected : COLORS.interest, stroke: COLORS.white, "stroke-width": 3 });
-          circle.append(svgEl("title", {}, `${p.row.label}: ${formatPercentValue(p.row.cumulativeConstruction / total)}`));
-          selectable(circle, p.row.index);
+        currentLine.append(svgEl("title", {}, "Cumulative spending under current assumptions"));
+        svg.append(currentLine);
+        const baselineLine = svgEl("polyline", {
+          points: baselinePoints.map((p) => `${p.x},${p.y}`).join(" "),
+          fill: "none", stroke: COLORS.baseline, "stroke-width": 4,
+          "stroke-dasharray": "12 9", "stroke-linecap": "round", "stroke-linejoin": "round"
+        });
+        baselineLine.append(svgEl("title", {}, "Fixed course-case cumulative spending baseline"));
+        svg.append(baselineLine);
+        currentPoints.slice(1, model.weights.length + 1).forEach((p, i) => {
+          const circle = svgEl("circle", { cx: p.x, cy: p.y, r: p.index === state.selectedIndex ? 10 : 7, fill: p.index === state.selectedIndex ? COLORS.selected : COLORS.interest, stroke: COLORS.white, "stroke-width": 3 });
+          circle.append(svgEl("title", {}, `Current assumptions, Q${p.index}: ${formatPercentValue(series.currentCumulative[i])}`));
+          selectable(circle, p.index);
           svg.append(circle);
         });
       }
@@ -1163,7 +1288,38 @@
           status.className = "status-callout info";
           status.innerHTML = "<strong>Facility is sufficient:</strong> the selected loan and initial equity cover project costs and construction interest through the scheduled closings.";
         }
-        $("scheduleType").textContent = model.useCourse ? "Course quarterly schedule" : "Generated spending distribution";
+        $("scheduleType").textContent = model.useCourse ? "Current: course quarterly schedule" : "Current: generated spending distribution";
+      }
+
+      function updateScenarioButtons() {
+        const scenarios = {
+          course: ["coursePreset", "Course case"],
+          early: ["earlyPreset", "Earlier construction spending"],
+          delay: ["delayPreset", "Two-quarter closing delay"]
+        };
+        Object.entries(scenarios).forEach(([key, [id]]) => {
+          const active = state.activeScenario === key;
+          $(id).classList.toggle("active", active);
+          $(id).setAttribute("aria-pressed", String(active));
+        });
+        const selectedLabel = scenarios[state.activeScenario]?.[1] || "Customized assumptions";
+        $("scenarioState").textContent = `Selected: ${selectedLabel}`;
+      }
+
+      function updateCurveComparison(model, baseline) {
+        const peak = (m) => {
+          const maxWeight = Math.max(...m.weights);
+          const index = m.weights.indexOf(maxWeight);
+          return { quarter: index + 1, spending: m.constructionCost * maxWeight };
+        };
+        const baselinePeak = peak(baseline);
+        const currentPeak = peak(model);
+        const interestDifference = model.totalInterest - baseline.totalInterest;
+        let interestText = "Total construction interest matches the baseline.";
+        if (Math.abs(interestDifference) >= 0.5) {
+          interestText = `Total construction interest is ${formatMoney(Math.abs(interestDifference))} ${interestDifference > 0 ? "above" : "below"} the baseline.`;
+        }
+        $("curveComparison").innerHTML = `<strong>Direct comparison:</strong> the fixed baseline peaks in Q${baselinePeak.quarter} at ${formatMoney(baselinePeak.spending)}; current assumptions peak in Q${currentPeak.quarter} at ${formatMoney(currentPeak.spending)}. ${interestText}`;
       }
 
       function updateSelected(model) {
@@ -1200,11 +1356,11 @@
           tr.innerHTML = `
             <td>${row.label}</td>
             <td>${formatMoney(row.projectCost)}</td>
-            <td>${formatSigned(row.netSalesCash)}</td>
-            <td>${formatSigned(row.unleveredCashFlow)}</td>
+            <td class="${row.netSalesCash < -0.5 ? "negative-number" : ""}">${formatSigned(row.netSalesCash)}</td>
+            <td class="${row.unleveredCashFlow < -0.5 ? "negative-number" : ""}">${formatSigned(row.unleveredCashFlow)}</td>
             <td>${formatMoney(row.advance)}</td>
             <td>${formatMoney(row.interestExpense)}</td>
-            <td>${formatSigned(-row.repayment)}</td>
+            <td class="${row.repayment > 0.5 ? "negative-number" : ""}">${formatSigned(-row.repayment)}</td>
             <td>${formatMoney(row.endingLoan)}</td>
             <td>${formatMoney(row.equityContribution)}</td>
             <td>${formatMoney(row.distribution)}</td>`;
@@ -1218,19 +1374,23 @@
 
       function render() {
         const model = calculate(assumptions());
+        const baseline = calculate({ ...DEFAULTS, releaseDeposits: false }, true);
         state.model = model;
+        state.baseline = baseline;
+        updateScenarioButtons();
         updateMetrics(model);
+        updateCurveComparison(model, baseline);
         updateTable(model);
         updateSelected(model);
-        drawSpendChart(model);
-        drawCumulativeChart(model);
+        drawSpendChart(model, baseline);
+        drawCumulativeChart(model, baseline);
         drawLoanChart(model);
       }
       function selectPeriod(index) {
         state.selectedIndex = clamp(Number(index) || 0, 0, state.model.rows.length - 1);
         updateSelected(state.model);
-        drawSpendChart(state.model);
-        drawCumulativeChart(state.model);
+        drawSpendChart(state.model, state.baseline);
+        drawCumulativeChart(state.model, state.baseline);
         drawLoanChart(state.model);
       }
       function csvCell(value) {
@@ -1257,19 +1417,21 @@
       }
 
       PAIR_IDS.forEach(bindPair);
-      $("releaseDeposits").addEventListener("change", render);
+      $("releaseDeposits").addEventListener("change", () => { state.activeScenario = "custom"; render(); });
       $("periodSlider").addEventListener("input", (event) => selectPeriod(event.target.value));
-      $("resetAll").addEventListener("click", setDefaults);
-      $("coursePreset").addEventListener("click", setDefaults);
+      $("resetAll").addEventListener("click", () => setDefaults());
+      $("coursePreset").addEventListener("click", () => setDefaults());
       $("earlyPreset").addEventListener("click", () => {
-        setDefaults();
+        setDefaults(false);
         setPair("peakTiming", 42);
         state.courseSchedule = false;
+        state.activeScenario = "early";
         render();
       });
       $("delayPreset").addEventListener("click", () => {
-        setDefaults();
+        setDefaults(false);
         setPair("closingDelay", 2);
+        state.activeScenario = "delay";
         render();
       });
       $("downloadCsv").addEventListener("click", downloadCsv);
