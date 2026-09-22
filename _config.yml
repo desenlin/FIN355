@@ -1,1 +1,7 @@
 google_analytics: G-MDGMSFPEH2
+
+# Keep repository-only licensing and citation metadata out of the public site.
+exclude:
+  - LICENSE-CODE.md
+  - LICENSE-CONTENT.md
+  - CITATION.cff

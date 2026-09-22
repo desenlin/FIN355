@@ -6,9 +6,9 @@
 
 ---
 
-## About This Repository
+## About This Collection
 
-This repository hosts browser-based interactive tools and supporting pages developed for **FIN 355: Real Estate Investment Analysis** at California State University, Fullerton. The goal is to help students move from formulas and definitions to a more visual, hands-on understanding of real estate concepts.
+This collection provides browser-based interactive tools and supporting pages developed for **FIN 355: Real Estate Investment Analysis** at California State University, Fullerton. The goal is to help students move from formulas and definitions to a more visual, hands-on understanding of real estate concepts.
 
 The collection is designed to grow over time. New interactive tools and course pages will be added to the catalog below as they become available.
 
@@ -85,17 +85,6 @@ The collection is designed to grow over time. New interactive tools and course p
     </tr>
   </tbody>
 </table>
-<!--  · [View source](./market-research-explorer.html) -->
-<!--  · [View source](./amortization.html) -->
-<!--  · [View source](./loan-sizing.html) --> 
-<!--  · [View source](./irr.html) -->
-<!--  · [View source](./cmbs-tranching.html) -->
-<!--  · [View source](./net-effective-rent.html) -->
-<!--  · [View source](./development-feasibility.html) -->
-<!--  · [View source](./construction-pro-forma.html) -->
-<!--  · [View source](./ground-lease-valuation.html) -->
-<!--  · [View source](./exit-strategies.html) -->
-<!--  · [View source](./valuation-approaches.html) -->
 
 > Additional FIN 355 tools and pages will be listed here as they are developed.
 
@@ -108,17 +97,6 @@ The collection is designed to grow over time. New interactive tools and course p
 
 All calculations run within the browser. The tools do not collect or transmit student inputs.
 
-<!--
-## Adding Future Resources
-
-The repository is organized so that each interactive resource can be maintained as a standalone HTML page. To add a future resource:
-
-1. Add the new HTML file to the repository.
-2. Confirm that it opens correctly through GitHub Pages.
-3. Add its title, description, and public link to the table above.
-
-This structure keeps individual tools easy to update while providing one central catalog for FIN 355 students. -->
-
 ## Educational Scope
 
 The examples simplify some real-world details so that students can focus on the underlying concepts. Individual tools identify their specific assumptions and exclusions. Results should be interpreted as instructional illustrations rather than estimates for an actual transaction or financial decision.
@@ -126,28 +104,11 @@ The examples simplify some real-world details so that students can focus on the 
 
 ## Citation
 
-If you use or adapt this collection, please cite it as:
+To cite this collection:
 
-> Lin, D. (2026). *FIN 355: Real Estate Investment Analysis Interactive Learning Resources* [Computer software]. GitHub. https://github.com/desenlin/FIN355
-
-GitHub also provides formatted citation options through **Cite this repository**, based on the repository's [CITATION.cff](CITATION.cff) metadata.
-
-
-## Reuse, Attribution, and Licensing
-
-Responsible reuse and adaptation are encouraged with attribution:
-
-- Original HTML, CSS, and JavaScript code is licensed under the [MIT License](LICENSE-CODE.md).
-- Original educational text, examples, tables, diagrams, and visualizations are licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CONTENT.md), unless otherwise noted.
-- Suggested attribution: **FIN 355: Real Estate Investment Analysis Interactive Learning Resources by Desen Lin, California State University, Fullerton**, with a link to https://github.com/desenlin/FIN355.
-- Citation metadata is provided in [CITATION.cff](CITATION.cff), which enables GitHub's **Cite this repository** feature.
-
-The licenses apply only to material for which Desen Lin holds the necessary rights. CSUF and CSU names, logos, and trademarks, as well as third-party libraries, fonts, icons, images, data, publications, and other externally owned materials, are excluded and remain subject to their respective terms. Attribution does not imply institutional endorsement.
+> Lin, D. (2026). *FIN 355: Real Estate Investment Analysis Interactive Learning Resources* [Interactive learning resources]. https://desenlin.com/FIN355/
 
 ---
 
 <p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
 <p align="center"><em>These materials are provided for educational use and should not be interpreted as financial advice.</em></p>
-
-
-<!--  · [View source](https://github.com/desenlin/site-feasibility-sandbox) -->
