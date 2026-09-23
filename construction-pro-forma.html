@@ -738,7 +738,6 @@
           </div>
           <div class="table-toolbar">
             <button id="downloadCsv" class="action-button primary" type="button">Download CSV</button>
-            <button id="printPage" class="action-button" type="button">Print</button>
           </div>
         </div>
       </div>
@@ -1550,7 +1549,6 @@
         render();
       });
       $("downloadCsv").addEventListener("click", downloadCsv);
-      $("printPage").addEventListener("click", () => window.print());
 
       setDefaults();
     })();
