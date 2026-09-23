@@ -29,7 +29,7 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/site-feasibility-sandbox/">Launch the tool</a></td>
     </tr>
     <tr>
-      <td><strong>Atlas Fullerton: From Retail Land to 329 Homes</strong><br><small>Case Study</small></td>
+      <td><strong>Retail-to-Residential Redevelopment</strong><br><small>Case Study</small></td>
       <td>Connects a real redevelopment’s public planning and acquisition history with a site schematic, nearby apartment comparisons, commercial lease NPV, and hypothetical development-feasibility and loan scenarios.</td>
       <td><a href="https://desenlin.com/FIN355/atlas-fullerton-case.html">Explore the case study</a></td>
     </tr>

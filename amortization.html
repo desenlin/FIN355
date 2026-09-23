@@ -833,7 +833,6 @@
           </div>
           <div class="table-actions">
             <button id="downloadCsv" class="action-button primary" type="button">Download CSV</button>
-            <button id="printPage" class="action-button" type="button">Print</button>
           </div>
         </div>
 
@@ -1300,7 +1299,6 @@
       $("shareView").addEventListener("click", () => setChartMode("share"));
       $("dollarView").addEventListener("click", () => setChartMode("dollar"));
       $("downloadCsv").addEventListener("click", downloadCsv);
-      $("printPage").addEventListener("click", () => window.print());
 
       updateAll();
     })();
