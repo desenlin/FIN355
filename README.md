@@ -29,6 +29,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/site-feasibility-sandbox/">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Atlas Fullerton: From Retail Land to 329 Homes</strong><br><small>Case Study</small></td>
+      <td>Connects a real redevelopment’s public planning and acquisition history with a site schematic, nearby apartment comparisons, commercial lease NPV, and hypothetical development-feasibility and loan scenarios.</td>
+      <td><a href="https://desenlin.com/FIN355/atlas-fullerton-case.html">Explore the case study</a></td>
+    </tr>
+    <tr>
       <td><strong>Market Research Explorer</strong></td>
       <td>Introduces supply, demand, property-and-lease, and local-context factors, then shows why investments with the same projected return can carry different levels of uncertainty.</td>
       <td><a href="https://desenlin.com/FIN355/market-research-explorer.html">Launch the tool</a></td>
