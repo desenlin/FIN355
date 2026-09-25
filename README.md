@@ -34,8 +34,8 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/FIN355/atlas-fullerton-case.html">Explore the case study</a></td>
     </tr>
     <tr>
-      <td><strong>Ame Quarter</strong><br><small>CRE studio · FIN 355</small></td>
-      <td>Explores a six-shop plaza from the landlord’s perspective, connecting premises and hypothetical leases to a rent roll, lease expirations, and a renewal-versus-re-leasing cash-flow activity. Maintained as an independent project.</td>
+      <td><strong>3-D Retail Plaza &amp; Leasing</strong><br><small>CRE studio · FIN 355</small></td>
+      <td>Explore Ame Quarter’s interactive 3-D plaza, step inside six shops, and connect hypothetical leases with rent rolls and landlord leasing decisions. Maintained as an independent project.</td>
       <td><a href="https://desenlin.com/ame-quarter/">Open the CRE studio</a></td>
     </tr>
     <tr>
