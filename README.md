@@ -34,6 +34,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/FIN355/atlas-fullerton-case.html">Explore the case study</a></td>
     </tr>
     <tr>
+      <td><strong>Ame Quarter</strong><br><small>CRE studio · FIN 355</small></td>
+      <td>Explores a six-shop plaza from the landlord’s perspective, connecting premises and hypothetical leases to a rent roll, lease expirations, and a renewal-versus-re-leasing cash-flow activity. Maintained as an independent project.</td>
+      <td><a href="https://github.com/desenlin/ame-quarter">Explore the prototype project</a></td>
+    </tr>
+    <tr>
       <td><strong>Market Research Explorer</strong></td>
       <td>Introduces supply, demand, property-and-lease, and local-context factors, then shows why investments with the same projected return can carry different levels of uncertainty.</td>
       <td><a href="https://desenlin.com/FIN355/market-research-explorer.html">Launch the tool</a></td>
@@ -117,3 +122,4 @@ To cite this collection:
 
 <p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
 <p align="center"><em>These materials are provided for educational use and should not be interpreted as financial advice.</em></p>
+
