@@ -36,7 +36,7 @@ The collection is designed to grow over time. New interactive tools and course p
     <tr>
       <td><strong>Ame Quarter</strong><br><small>CRE studio · FIN 355</small></td>
       <td>Explores a six-shop plaza from the landlord’s perspective, connecting premises and hypothetical leases to a rent roll, lease expirations, and a renewal-versus-re-leasing cash-flow activity. Maintained as an independent project.</td>
-      <td><a href="https://github.com/desenlin/ame-quarter">Explore the prototype project</a></td>
+      <td><a href="https://desenlin.com/ame-quarter/">Open the CRE studio</a></td>
     </tr>
     <tr>
       <td><strong>Market Research Explorer</strong></td>
