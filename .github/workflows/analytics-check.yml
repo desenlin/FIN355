@@ -2,6 +2,7 @@ name: Analytics tracking audit
 on:
   push:
   pull_request:
+  page_build:
   workflow_dispatch:
     inputs:
       live:
@@ -25,4 +26,4 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     uses: desenlin/desenlin.github.io/.github/workflows/analytics-reusable.yml@main
     with:
-      live: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.live) }}
+      live: ${{ github.event_name == 'schedule' || github.event_name == 'page_build' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.live) }}
