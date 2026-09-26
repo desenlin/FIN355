@@ -1,0 +1,16 @@
+{
+  "site_url": "https://desenlin.com/FIN355/",
+  "measurement_id": "G-MDGMSFPEH2",
+  "mode": "jekyll",
+  "tracker": "assets/analytics.js",
+  "project": "FIN355",
+  "exclude": {
+    "_layouts/**": "Jekyll template, validated together with the analytics include.",
+    "_includes/**": "Jekyll include, validated through the site layout."
+  },
+  "smoke": [
+    {
+      "path": ""
+    }
+  ]
+}
