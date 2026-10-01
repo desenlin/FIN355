@@ -114,9 +114,9 @@ All calculations run within the browser. The tools do not collect or transmit st
 
 ## Creating and Maintaining Tools
 
-Start new pages from [`_templates/interactive-tool.html`](_templates/interactive-tool.html). The template uses a full-width navy header background, matching responsive 1180px containers for header text and main content, and a centered footer. Header titles and descriptions wrap naturally across the full content width.
+Start new pages from [`_templates/interactive-tool.html`](https://github.com/desenlin/FIN355/blob/main/_templates/interactive-tool.html). The template uses a full-width navy header background, matching responsive 1180px containers for header text and main content, and a centered footer. Header titles and descriptions wrap naturally across the full content width.
 
-[`assets/tool-layout.css`](assets/tool-layout.css) is the shared source for these widths. After copying the template to a root-level HTML file or changing the shared layout, run:
+[`assets/tool-layout.css`](https://github.com/desenlin/FIN355/blob/main/assets/tool-layout.css) is the shared source for these widths. After copying the template to a root-level HTML file or changing the shared layout, run:
 
 ```sh
 python3 _tools/sync_tool_layout.py

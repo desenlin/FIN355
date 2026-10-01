@@ -6,7 +6,8 @@
   "project": "FIN355",
   "exclude": {
     "_layouts/**": "Jekyll template, validated together with the analytics include.",
-    "_includes/**": "Jekyll include, validated through the site layout."
+    "_includes/**": "Jekyll include, validated through the site layout.",
+    "_templates/**": "Repository-only starter templates, not published by Jekyll. Generated root-level tool pages are audited normally."
   },
   "smoke": [
     {
