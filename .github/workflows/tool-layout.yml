@@ -14,3 +14,10 @@ jobs:
         with:
           python-version: '3.x'
       - run: python3 _tools/sync_tool_layout.py --check
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Check quarterly benchmark and valuation chart bounds
+        run: |
+          npm install --prefix "$RUNNER_TEMP/cap-rate-qa" --no-save --ignore-scripts linkedom@0.18.12
+          NODE_PATH="$RUNNER_TEMP/cap-rate-qa/node_modules" node _tools/test_cap_rate_treasury.cjs

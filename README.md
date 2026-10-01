@@ -45,7 +45,7 @@ The collection is designed to grow over time. New interactive tools and course p
     </tr>
     <tr>
       <td><strong>Historical Cap Rate Explorer</strong></td>
-      <td>Explores historical apartment and office cap rates across markets and submarkets, then connects cap-rate and NOI changes to income multiples and property values. Market history spans 2005 Q1–2024 Q3; submarket comparisons use a 2024 Q3 snapshot.</td>
+      <td>Compares historical apartment and office cap rates with quarterly 10-year Treasury yields, explores spreads across time and locations, and connects cap-rate and NOI changes to property values. Market history spans 2005 Q1–2024 Q3; submarket comparisons use a 2024 Q3 snapshot.</td>
       <td><a href="https://desenlin.com/FIN355/cap-rate-explorer.html">Launch the tool</a></td>
     </tr>
     <tr>
@@ -111,6 +111,14 @@ The collection is designed to grow over time. New interactive tools and course p
 - Each published tool can be linked directly from Canvas and opened in a separate browser tab.
 
 All calculations run within the browser. The tools do not collect or transmit student inputs.
+
+### Historical Cap Rate Explorer: Treasury Benchmark
+
+The explorer compares cap rates with the **10-year constant-maturity Treasury yield**. The public benchmark is Federal Reserve H.15 series [DGS10, retrieved through FRED](https://fred.stlouisfed.org/series/DGS10). Each of the 79 calendar-quarter values from 2005 Q1 through 2024 Q3 is the arithmetic mean of available daily observations, excluding missing days without interpolation. Yields remain annualized; they are not divided by four. The September 27, 2024 submarket snapshot is compared with the full 2024 Q3 average, so observation timing differs.
+
+The default chart includes the Treasury yield; **Spread over Treasury** displays cap rate minus Treasury yield in basis points. The change table separates each cap-rate change into the Treasury change and the spread change. This identity does not identify causation or isolate a pure property risk premium: growth, liquidity, income conventions, capital needs, and adjustment lags also matter. Treasury yields are omitted from the constant-NOI value index because a reciprocal Treasury yield is not a bond-return index.
+
+Quarterly values, observation counts, and source metadata are stored in [`_data/treasury-10y-quarterly.json`](https://github.com/desenlin/FIN355/blob/main/_data/treasury-10y-quarterly.json) and embedded in the page for offline use. To rebuild the fixed historical window, run `python3 _tools/build_treasury_data.py`; use `--csv path/to/DGS10.csv` to rebuild from a saved FRED export. This does not extend the historical tool to current dates.
 
 ## Creating and Maintaining Tools
 
