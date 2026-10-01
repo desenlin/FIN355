@@ -1,0 +1,41 @@
+/* Shared FIN355 frame. Inline with _tools/sync_tool_layout.py for offline use. */
+body.tool-page {
+  --tool-content-width: 1180px;
+  --tool-gutter: 16px;
+  margin: 0;
+}
+
+.tool-page,
+.tool-page * {
+  box-sizing: border-box;
+}
+
+.tool-page .shell {
+  width: min(var(--tool-content-width), calc(100% - 2 * var(--tool-gutter)));
+  max-width: none;
+  margin-inline: auto;
+}
+
+.tool-page > .hero {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+/* Titles and descriptions use the same frame as the tool, with natural wrapping. */
+.tool-page .hero .hero-inner > h1,
+.tool-page .hero .hero-inner > p,
+.tool-page > footer > p {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.tool-page > footer.shell {
+  display: block;
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  body.tool-page { --tool-gutter: 12px; }
+}

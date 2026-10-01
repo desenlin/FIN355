@@ -5,3 +5,4 @@ exclude:
   - LICENSE-CODE.md
   - LICENSE-CONTENT.md
   - CITATION.cff
+  - AGENTS.md

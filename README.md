@@ -112,6 +112,19 @@ The collection is designed to grow over time. New interactive tools and course p
 
 All calculations run within the browser. The tools do not collect or transmit student inputs.
 
+## Creating and Maintaining Tools
+
+Start new pages from [`_templates/interactive-tool.html`](_templates/interactive-tool.html). The template uses a full-width navy header background, matching responsive 1180px containers for header text and main content, and a centered footer. Header titles and descriptions wrap naturally across the full content width.
+
+[`assets/tool-layout.css`](assets/tool-layout.css) is the shared source for these widths. After copying the template to a root-level HTML file or changing the shared layout, run:
+
+```sh
+python3 _tools/sync_tool_layout.py
+python3 _tools/sync_tool_layout.py --check
+```
+
+The script embeds the shared CSS into each participating page so standalone/offline copies retain the layout. The **Shared tool layout** workflow checks that those copies stay synchronized. Historical Cap Rate Explorer uses this frame; existing tools can adopt it when updated. Avoid copying narrower title/description rules from older pages or nesting `.shell` containers. Check the header, main content, and footer together on desktop and mobile before publication.
+
 ## Educational Scope
 
 The examples simplify some real-world details so that students can focus on the underlying concepts. Individual tools identify their specific assumptions and exclusions. Results should be interpreted as instructional illustrations rather than estimates for an actual transaction or financial decision.
@@ -127,5 +140,6 @@ To cite this collection:
 
 <p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
 <p align="center"><em>These materials are provided for educational use and should not be interpreted as financial advice.</em></p>
+
 
 

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="REPLACE: describe what students can explore.">
+  <title>REPLACE: Tool title</title>
+  <style>
+    :root { --navy:#00274c; --orange:#f58220; --ink:#17212b; --muted:#5e6b78; --line:#d8e0e8; }
+    body { color:var(--ink); background:#eef2f7; font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .topbar { height:8px; background:var(--orange); }
+    .hero { color:white; background:linear-gradient(135deg,var(--navy),#0b3a67); }
+    .hero-inner { padding:34px 0 32px; }
+    .course-tag { display:inline-block; padding:6px 11px; border-radius:999px; background:var(--orange); color:var(--navy); font-size:.78rem; font-weight:800; }
+    h1 { margin:14px 0 12px; font-size:clamp(2.1rem,4.5vw,3.45rem); line-height:1.08; letter-spacing:-.035em; }
+    .hero p { margin:0 0 9px; color:#e4edf6; font-size:1.1rem; }
+    .hero .creator { margin-bottom:0; color:#f8c99f; font-size:.9rem; font-weight:700; }
+    main { padding-block:24px; }
+    .panel { background:white; border:1px solid var(--line); border-radius:16px; padding:22px; }
+    footer { margin-block:28px 0; padding:22px 0 30px; border-top:1px solid var(--line); color:var(--muted); font-size:.8rem; line-height:1.8; }
+    footer p { margin-block:0; }
+    footer strong { color:var(--navy); }
+    .skip-link { position:absolute; left:12px; top:-60px; padding:10px; background:white; color:var(--navy); }
+    .skip-link:focus { top:12px; }
+    :focus-visible { outline:3px solid #0066cc; outline-offset:3px; }
+    /* Add tool-specific styles here. Keep frame widths in assets/tool-layout.css. */
+  </style>
+  <style id="fin355-tool-layout">
+/* Shared FIN355 frame. Inline with _tools/sync_tool_layout.py for offline use. */
+body.tool-page {
+  --tool-content-width: 1180px;
+  --tool-gutter: 16px;
+  margin: 0;
+}
+
+.tool-page,
+.tool-page * {
+  box-sizing: border-box;
+}
+
+.tool-page .shell {
+  width: min(var(--tool-content-width), calc(100% - 2 * var(--tool-gutter)));
+  max-width: none;
+  margin-inline: auto;
+}
+
+.tool-page > .hero {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+/* Titles and descriptions use the same frame as the tool, with natural wrapping. */
+.tool-page .hero .hero-inner > h1,
+.tool-page .hero .hero-inner > p,
+.tool-page > footer > p {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.tool-page > footer.shell {
+  display: block;
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  body.tool-page { --tool-gutter: 12px; }
+}
+</style>
+  <script defer src="assets/analytics.js" data-ga-id="G-MDGMSFPEH2" data-project="FIN355"></script>
+</head>
+<body class="tool-page">
+  <a class="skip-link" href="#main">Skip to explorer</a>
+  <div class="topbar" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="shell hero-inner">
+      <span class="course-tag">FIN 355 · Real Estate Investment Analysis</span>
+      <h1>REPLACE: Tool title</h1>
+      <p>REPLACE: Describe the concept and what students can change or compare.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+  <!-- Put any navigation or coverage strip in a sibling .shell, not inside main. -->
+  <main class="shell" id="main" tabindex="-1">
+    <section class="panel" aria-labelledby="explorer-heading">
+      <h2 id="explorer-heading">REPLACE: Exploration heading</h2>
+      <p>REPLACE: Add accessible controls, results, and explanations.</p>
+    </section>
+  </main>
+  <footer class="shell">
+    <p><strong>Created by Desen Lin</strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
+    <p>This educational illustration is not financial or investment advice.</p>
+  </footer>
+  <!-- Add tool logic here. Keep calculations and any required data local. -->
+</body>
+</html>
