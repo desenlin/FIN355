@@ -11,6 +11,25 @@
   "smoke": [
     {
       "path": ""
+    },
+    {
+      "path": "cap-rate-explorer.html",
+      "actions": [
+        {
+          "selector": "#metricValue",
+          "event": "activity_start"
+        },
+        {
+          "selector": "#tab-local",
+          "event": "section_view",
+          "value": "local"
+        },
+        {
+          "selector": "#tab-value",
+          "event": "section_view",
+          "value": "value"
+        }
+      ]
     }
   ]
 }

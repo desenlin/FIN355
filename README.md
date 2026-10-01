@@ -44,6 +44,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/FIN355/market-research-explorer.html">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Historical Cap Rate Explorer</strong></td>
+      <td>Explores historical apartment and office cap rates across markets and submarkets, then connects cap-rate and NOI changes to income multiples and property values. Market history spans 2005 Q1–2024 Q3; submarket comparisons use a 2024 Q3 snapshot.</td>
+      <td><a href="https://desenlin.com/FIN355/cap-rate-explorer.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>How Amortization Changes a Loan Payment</strong></td>
       <td>Shows how a fixed monthly payment is divided between principal and interest, why the principal share rises over time, and how the annual amortization schedule changes with the loan amount, interest rate, and term.</td>
       <td><a href="https://desenlin.com/FIN355/amortization.html">Launch the tool</a></td>
@@ -122,4 +127,5 @@ To cite this collection:
 
 <p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
 <p align="center"><em>These materials are provided for educational use and should not be interpreted as financial advice.</em></p>
+
 
