@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore the Kathy Center property-level pro forma from rental income to after-tax cash flow, with editable assumptions and step-by-step calculations.">
+  <title>Property-Level Pro Forma Explorer</title>
+  <style>
+    :root { --navy:#00274c; --orange:#f58220; --ink:#17212b; --muted:#5e6b78; --line:#d8e0e8; }
+    body { color:var(--ink); background:#eef2f7; font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .topbar { height:8px; background:var(--orange); }
+    .hero { color:white; background:linear-gradient(135deg,var(--navy),#0b3a67); }
+    .hero-inner { padding:34px 0 32px; }
+    .course-tag { display:inline-block; padding:6px 11px; border-radius:999px; background:var(--orange); color:var(--navy); font-size:.78rem; font-weight:800; }
+    h1 { margin:14px 0 12px; font-size:clamp(2.1rem,4.5vw,3.45rem); line-height:1.08; letter-spacing:-.035em; }
+    .hero p { margin:0 0 9px; color:#e4edf6; font-size:1.1rem; }
+    .hero .creator { margin-bottom:0; color:#f8c99f; font-size:.9rem; font-weight:700; }
+    main { padding-block:24px; }
+    .panel { background:white; border:1px solid var(--line); border-radius:16px; padding:22px; }
+    footer { margin-block:28px 0; padding:22px 0 30px; border-top:1px solid var(--line); color:var(--muted); font-size:.8rem; line-height:1.8; }
+    footer p { margin-block:0; }
+    footer strong { color:var(--navy); }
+    .skip-link { position:absolute; left:12px; top:-60px; padding:10px; background:white; color:var(--navy); }
+    .skip-link:focus { top:12px; }
+    :focus-visible { outline:3px solid #0066cc; outline-offset:3px; }
+    /* Subject-specific layout. Shared frame widths remain in tool-layout.css. */
+button,input,select { font:inherit; }
+button,select { cursor:pointer; }
+button { touch-action:manipulation; }
+button:disabled { cursor:default; opacity:.5; }
+.case-strip { display:flex; flex-wrap:wrap; gap:14px 30px; padding:19px 0; color:var(--muted); font-size:.86rem; }
+.case-strip strong { color:var(--navy); font-weight:750; }
+.step-nav { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; padding-bottom:22px; }
+.step-tab { border:1px solid var(--line); border-radius:11px; background:#fff; color:var(--muted); padding:13px 12px; text-align:left; line-height:1.25; display:flex; align-items:center; gap:9px; }
+.step-tab .step-num { font-size:.76rem; color:#66788c; }
+.step-tab strong { font-size:.88rem; }
+.step-tab[aria-selected=true] { background:var(--navy); border-color:var(--navy); color:white; }
+.step-tab[aria-selected=true] .step-num { color:#f6ba87; }
+main { padding-top:0; }
+.lesson-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin:0 0 19px; }
+.lesson-heading h2 { margin:0 0 5px; font-size:clamp(1.4rem,2.4vw,1.85rem); line-height:1.25; color:var(--navy); letter-spacing:-.025em; }
+.lesson-heading p { margin:0; color:var(--muted); font-size:.93rem; }
+.reference { font-size:.75rem; color:var(--muted); white-space:nowrap; padding-top:5px; }
+.workspace { display:grid; grid-template-columns:290px minmax(0,1fr); gap:20px; align-items:start; }
+.controls-panel { padding:20px; }
+.controls-panel h3,.chart-heading h3 { color:var(--navy); font-size:1rem; margin:0; }
+.controls-panel .description { margin:5px 0 16px; font-size:.8rem; color:var(--muted); }
+.field-label { font-size:.82rem; font-weight:700; display:block; margin-bottom:6px; color:var(--navy); }
+select { width:100%; border:1px solid #bfccd9; border-radius:7px; padding:9px 10px; background:white; color:var(--ink); min-height:42px; }
+.input-group { margin:19px 0; }
+.input-top { display:flex; gap:8px; align-items:center; justify-content:space-between; }
+.input-top label { font-size:.87rem; font-weight:650; line-height:1.35; }
+.number-wrap { display:flex; align-items:center; gap:5px; }
+.number-wrap input { width:78px; padding:6px; border:1px solid #bfccd9; border-radius:6px; text-align:right; font-size:.9rem; background:white; color:var(--ink); }
+.number-wrap.wide input { width:100px; }
+.input-unit { font-size:.8rem; color:var(--muted); }
+input[type=range] { display:block; width:100%; margin:12px 0 5px; accent-color:#0b527d; }
+.input-hint { font-size:.74rem; line-height:1.45; color:var(--muted); margin:6px 0 0; }
+.scope-note { color:var(--muted); font-size:.78rem; line-height:1.55; margin:15px 0; padding-top:14px; border-top:1px solid var(--line); }
+.button { border:1px solid #bbcbd9; border-radius:7px; padding:8px 12px; font-size:.82rem; font-weight:650; background:#fff; color:var(--navy); }
+.button.primary { background:var(--navy); color:white; border-color:var(--navy); }
+.button.subtle { background:#f1f5f9; }
+.button:hover { filter:brightness(.96); }
+.controls-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.predict { border-top:1px solid var(--line); margin-top:22px; padding-top:17px; }
+.predict h4 { margin:0 0 8px; font-size:.81rem; color:var(--navy); text-transform:uppercase; letter-spacing:.04em; }
+.predict p { font-size:.85rem; margin:0 0 12px; }
+.predict details summary { font-size:.82rem; color:#135984; font-weight:700; cursor:pointer; }
+.predict details p { margin-top:9px; font-size:.8rem; color:var(--muted); }
+.results-panel { padding:22px 24px; min-width:0; }
+.results-toolbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.view-switch { display:flex; gap:3px; padding:3px; background:#edf2f7; border-radius:8px; }
+.view-switch button { border:0; background:transparent; color:var(--muted); border-radius:6px; padding:7px 11px; font-size:.8rem; }
+.view-switch button[aria-pressed=true] { background:white; color:var(--navy); box-shadow:0 1px 3px #00274c18; }
+.year-choice { display:flex; gap:8px; align-items:center; font-size:.8rem; color:var(--muted); }
+.year-choice select { width:auto; min-height:34px; padding:5px 25px 5px 9px; }
+.result-summary { display:flex; flex-wrap:wrap; align-items:flex-end; gap:10px 20px; margin:20px 0 17px; }
+.result-summary .label { display:block; color:var(--muted); font-size:.8rem; }
+.result-summary .value { display:block; color:var(--navy); font-size:clamp(1.7rem,3vw,2.15rem); font-weight:750; letter-spacing:-.04em; line-height:1.25; font-variant-numeric:tabular-nums; }
+.delta-note { color:var(--muted); font-size:.79rem; margin-bottom:4px; }
+.table-caption { color:var(--muted); font-size:.75rem; margin:0 0 8px; }
+.table-scroll { overflow-x:auto; overscroll-behavior-x:contain; }
+.flow-table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+.flow-table th { font-size:.74rem; font-weight:650; color:var(--muted); text-align:right; padding:8px 0 9px 12px; border-bottom:1px solid var(--line); }
+.flow-table th:first-child { text-align:left; width:50%; padding-left:0; }
+.flow-table td { text-align:right; padding:12px 0 12px 12px; border-bottom:1px solid #e8edf2; vertical-align:top; font-size:.89rem; }
+.flow-table td:first-child { text-align:left; padding-left:0; }
+.flow-table .total-row td { border-top:2px solid #6f859b; background:#f5f8fc; font-weight:750; color:var(--navy); }
+.flow-table .total-row td:first-child { padding-left:9px; }
+.flow-table .total-row td:last-child { padding-right:9px; }
+.row-label { border:0; background:none; padding:0; text-align:left; font:inherit; color:inherit; line-height:1.45; text-decoration:underline dotted #a4b8c9; text-underline-offset:4px; }
+.row-label:hover { color:#0067a3; }
+.row-label .disclosure-mark { font-size:.75rem; color:#607d98; display:inline-block; width:13px; }
+.cell-delta { display:block; color:#766150; font-size:.69rem; margin-top:2px; font-weight:400; white-space:nowrap; }
+.formula-row td { padding:0 0 14px!important; border-bottom:1px solid var(--line); }
+.formula { padding:14px 16px; background:#eef5fb; border-left:3px solid #5392b9; text-align:left; }
+.formula .equation { margin:0 0 5px; font-size:.86rem; font-weight:700; color:var(--navy); overflow-wrap:anywhere; }
+.formula .substitution { margin:0 0 8px; font-size:.83rem; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+.formula p { margin:7px 0; font-size:.78rem; font-weight:400; color:#475e73; }
+.formula .source { font-size:.71rem; color:#61768a; }
+.five-year { min-width:710px; }
+.five-year th:first-child { width:31%; }
+.five-year td { font-size:.78rem; }
+.takeaway { padding:14px 0 0; color:#41546a; font-size:.84rem; line-height:1.6; }
+.loan-facts { display:flex; gap:20px; flex-wrap:wrap; margin:14px 0 0; padding-top:13px; border-top:1px solid var(--line); }
+.loan-facts span { font-size:.77rem; color:var(--muted); }
+.loan-facts strong { display:block; color:var(--navy); font-size:.97rem; }
+.chart-section { margin-top:23px; padding-top:18px; border-top:1px solid var(--line); }
+.chart-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.legend { display:flex; gap:15px; font-size:.71rem; color:var(--muted); }
+.legend span { display:flex; align-items:center; gap:5px; }
+.legend i { width:18px; border-top:2px solid #126181; }
+.legend .baseline { border-top:2px dashed #7e8fa3; }
+.chart { width:100%; display:block; height:205px; }
+.chart-caption { margin:0; color:var(--muted); font-size:.73rem; }
+.next-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:22px 0; }
+.next-row span { color:var(--muted); font-size:.78rem; }
+.support { background:white; border:1px solid var(--line); border-radius:12px; margin-top:14px; }
+.support>summary { padding:17px 20px; color:var(--navy); cursor:pointer; font-weight:700; font-size:.9rem; }
+.support-content { padding:0 20px 20px; font-size:.85rem; color:#46596b; }
+.support-content p { margin:7px 0 12px; }
+.support-content h4 { margin:19px 0 7px; color:var(--navy); font-size:.86rem; }
+.support-content table { min-width:680px; width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+.support-content th,.support-content td { padding:9px 8px; border-bottom:1px solid #e6edf4; font-size:.76rem; text-align:right; }
+.support-content th:first-child,.support-content td:first-child { text-align:left; padding-left:0; }
+.support-content th { color:var(--navy); }
+.support-content ul { padding-left:20px; }
+.support-content li { margin:8px 0; }
+.support-content a { color:#135984; }
+.notice { color:var(--muted); font-size:.75rem; }
+.active-changes { margin:11px 0 0; font-size:.74rem; color:#685442; }
+.validation { color:#a01919; font-size:.79rem; margin:10px 0; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+[hidden] { display:none!important; }
+@media(max-width:850px) {
+ .workspace { grid-template-columns:240px minmax(0,1fr); gap:14px; }
+ .controls-panel,.results-panel { padding:17px; }
+ .step-tab { padding:11px 8px; gap:5px; }
+ .step-tab strong { font-size:.78rem; }
+ .flow-table td { font-size:.8rem; padding-left:8px; }
+ .flow-table th:first-child { width:44%; }
+}
+@media(max-width:680px) {
+ .hero-inner { padding:26px 0; }
+ .hero p { font-size:1rem; }
+ .course-tag { font-size:.7rem; }
+ .case-strip { font-size:.77rem; gap:8px 18px; padding:16px 0; }
+ .step-nav { grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; padding-bottom:18px; }
+ .step-tab { min-height:47px; }
+ .step-tab strong { font-size:.77rem; }
+ .workspace { grid-template-columns:1fr; }
+ .lesson-heading { display:block; }
+ .reference { display:block; margin-top:8px; }
+ .controls-panel { padding:18px; }
+ .controls-panel #stage-inputs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+ .input-group { margin:17px 0 5px; }
+ .input-top { align-items:flex-start; flex-direction:column; }
+ .predict { margin-top:17px; }
+ .number-wrap input { font-size:16px; }
+ .results-panel { padding:18px 14px; }
+ .flow-table { table-layout:fixed; }
+ .flow-table th:first-child { width:46%; }
+ .flow-table th,.flow-table td { padding-left:6px; }
+ .flow-table td { font-size:.79rem; }
+ .flow-table .total-row td:first-child { padding-left:5px; }
+ .flow-table .total-row td:last-child { padding-right:5px; }
+ .flow-table .five-year { table-layout:auto; }
+ .row-label { min-height:30px; }
+ .chart { height:190px; }
+ .next-row span { display:none; }
+ .button { min-height:42px; }
+ .support>summary { padding:16px 14px; }
+ .support-content { padding-inline:14px; }
+}
+@media(prefers-reduced-motion:no-preference) {
+ .step-tab,.button { transition:background .15s,color .15s; }
+}
+@media print {
+ .hero { color:var(--navy); background:white; }
+ .hero p,.hero .creator { color:var(--muted); }
+ .controls-panel,.step-nav,.next-row,.view-switch { display:none; }
+ .workspace { display:block; }
+ .panel { break-inside:avoid; }
+}
+
+  </style>
+  <style id="fin355-tool-layout">
+/* Shared FIN355 frame. Inline with _tools/sync_tool_layout.py for offline use. */
+body.tool-page {
+  --tool-content-width: 1180px;
+  --tool-gutter: 16px;
+  margin: 0;
+}
+
+.tool-page,
+.tool-page * {
+  box-sizing: border-box;
+}
+
+.tool-page .shell {
+  width: min(var(--tool-content-width), calc(100% - 2 * var(--tool-gutter)));
+  max-width: none;
+  margin-inline: auto;
+}
+
+.tool-page > .hero {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+/* Titles and descriptions use the same frame as the tool, with natural wrapping. */
+.tool-page .hero .hero-inner > h1,
+.tool-page .hero .hero-inner > p,
+.tool-page > footer > p {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.tool-page > footer.shell {
+  display: block;
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  body.tool-page { --tool-gutter: 12px; }
+}
+</style>
+  <script defer src="assets/analytics.js" data-ga-id="G-MDGMSFPEH2" data-project="FIN355"></script>
+</head>
+<body class="tool-page">
+  <a class="skip-link" href="#main">Skip to explorer</a>
+  <div class="topbar" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="shell hero-inner">
+      <span class="course-tag">FIN 355 · Real Estate Investment Analysis</span>
+      <h1>Property-Level Pro Forma Explorer</h1>
+      <p>Follow the Kathy Center case from rental income to after-tax cash flow. Change an assumption, trace the calculation, and compare five years.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+  <div class="shell case-strip" aria-label="Original Kathy Center case">
+    <span><strong>Kathy Center</strong> · Retail property</span>
+    <span><strong>300,000 SF</strong> leasable area</span>
+    <span><strong>$15 / SF</strong> Year 1 base rent</span>
+    <span><strong>$48.5 million</strong> purchase price</span>
+  </div>
+  <nav class="shell step-nav" role="tablist" aria-label="Pro forma stages">
+    <button class="step-tab" id="step-0" role="tab" aria-selected="true" aria-controls="lesson" data-step="0"><span class="step-num">01</span><strong>Property income</strong></button>
+    <button class="step-tab" id="step-1" role="tab" aria-selected="false" aria-controls="lesson" tabindex="-1" data-step="1"><span class="step-num">02</span><strong>Expenses &amp; NOI</strong></button>
+    <button class="step-tab" id="step-2" role="tab" aria-selected="false" aria-controls="lesson" tabindex="-1" data-step="2"><span class="step-num">03</span><strong>Capital costs</strong></button>
+    <button class="step-tab" id="step-3" role="tab" aria-selected="false" aria-controls="lesson" tabindex="-1" data-step="3"><span class="step-num">04</span><strong>Financing</strong></button>
+    <button class="step-tab" id="step-4" role="tab" aria-selected="false" aria-controls="lesson" tabindex="-1" data-step="4"><span class="step-num">05</span><strong>Taxes</strong></button>
+  </nav>
+  <main class="shell" id="main" tabindex="-1">
+    <section id="lesson" role="tabpanel" aria-labelledby="step-0">
+      <div class="lesson-heading">
+        <div><h2 id="lesson-title">How much potential rent becomes operating income?</h2><p id="lesson-description">Follow rent, vacancy, reimbursements, and credit losses into the income the property expects to collect.</p></div>
+        <span class="reference" id="lesson-reference">Figures 5.1–5.7</span>
+      </div>
+      <div class="workspace">
+        <aside class="panel controls-panel" aria-labelledby="controls-heading">
+          <h3 id="controls-heading">Explore assumptions</h3>
+          <p class="description">Changes carry across stages. The original case stays fixed for comparison.</p>
+          <label class="field-label" for="experiment">Choose an experiment</label>
+          <select id="experiment"><option value="baseline">Original case</option><option value="vacancy">Vacancy +5 percentage points</option><option value="capital">Extra $100,000 CapEx in Year 2</option><option value="interest">Interest rate rises to 6%</option><option value="leverage">Lower leverage: 40% LTV</option><option value="custom" disabled>Custom assumptions</option></select>
+          <div id="stage-inputs"></div>
+          <p class="scope-note" id="scope-note"></p>
+          <div id="validation" class="validation" role="alert" hidden></div>
+          <div class="controls-actions"><button class="button" type="button" id="reset">Reset original case</button></div>
+          <p class="active-changes" id="active-changes"></p>
+          <div class="predict">
+            <h4>Before you calculate</h4><p id="predict-question"></p>
+            <details id="predict-detail"><summary>Reveal the explanation</summary><p id="predict-answer"></p></details>
+          </div>
+        </aside>
+        <section class="panel results-panel" aria-label="Calculation and results">
+          <div class="results-toolbar">
+            <div class="view-switch" role="group" aria-label="Calculation view"><button id="view-year" type="button" aria-pressed="true">Selected year</button><button id="view-five" type="button" aria-pressed="false">Five-year view</button></div>
+            <label class="year-choice" for="year">Focus year<select id="year"><option value="0">Year 1</option><option value="1">Year 2</option><option value="2">Year 3</option><option value="3">Year 4</option><option value="4">Year 5</option></select></label>
+          </div>
+          <div class="result-summary"><div><span class="label" id="metric-label"></span><strong class="value" id="metric-value"></strong></div><span class="delta-note" id="metric-delta"></span></div>
+          <p class="table-caption" id="table-caption">Annual amounts in dollars. Select a line to see the calculation.</p>
+          <div class="table-scroll" id="flow-table-container"></div>
+          <div class="takeaway" id="takeaway"></div>
+          <div class="loan-facts" id="loan-facts" hidden></div>
+          <div class="chart-section">
+            <div class="chart-heading"><h3 id="chart-heading">Operating income over five years</h3><div class="legend"><span><i class="baseline"></i>Original case</span><span><i></i>Your case</span></div></div>
+            <svg class="chart" id="trend-chart" role="img" aria-labelledby="trend-title trend-desc"></svg>
+            <p class="chart-caption" id="chart-caption"></p>
+          </div>
+        </section>
+      </div>
+      <div class="next-row"><button class="button" type="button" id="previous">Previous stage</button><span id="step-progress">Stage 1 of 5</span><button class="button primary" type="button" id="next">Next: Expenses &amp; NOI</button></div>
+      <details class="support" id="tax-support" hidden><summary>Depreciation, amortization, and suspended losses</summary><div class="support-content" id="tax-schedules"></div></details>
+      <details class="support" id="model-assumptions"><summary>Case assumptions and how the experiments work</summary><div class="support-content">
+        <p>This model follows the five annual operating periods in the Kathy Center teaching case. Purchase price is $48.5 million, leasable area is 300,000 square feet, and Year 1 base rent is $15 per square foot.</p>
+        <ul>
+          <li><strong>Income:</strong> Year 2–5 base-rent growth is 2.00%, 4.93%, 2.25%, and 0.67%. The rent-growth adjustment adds percentage points to each of those rates. Vacancy is 0%, 1%, 1.5%, 2%, and 3%; the vacancy adjustment adds percentage points in all five years. Credit loss is 1% of gross income after vacancy.</li>
+          <li><strong>Supplied income schedules:</strong> Percentage rent, CAM billings, property-tax billings, and ancillary income remain at the workbook amounts. The vacancy experiment isolates base-rent losses and their effect on credit losses. It does not estimate a tenant-turnover or lease-renewal event.</li>
+          <li><strong>Operating expenses:</strong> CAM and property-tax costs start at $445,368 and $390,428 and grow at 4% annually in the original case. Their growth rate is editable. Insurance and utilities follow the supplied annual schedules. The management fee is 10% of CAM and property-tax costs, before reimbursements.</li>
+          <li><strong>Capital and leasing costs:</strong> TI, leasing commissions, and CapEx follow the workbook schedules. Additional CapEx changes spending only in the chosen year and adds one-seventh of that amount to annual depreciation from that year through Year 5. It does not automatically increase rent or property value.</li>
+          <li><strong>Financing:</strong> The original case uses an 80% LTV, 5% interest-only loan, a seven-year loan term, and 0.5% origination points paid by equity at acquisition. Annual principal amortization is zero. Initial equity shown includes those points.</li>
+          <li><strong>Purchase depreciation:</strong> Land is 20% and is not depreciated. Structure is 50%, depreciated over 39 years. Seven-year items are 20%; three-year items are 10%. TI spending is depreciated 50% in its first year and 50% over the next six years. CapEx and leasing commissions use seven-year schedules.</li>
+          <li><strong>Taxes:</strong> The tax rate is 21% in the original case. Negative taxable income accumulates as suspended losses without an immediate cash refund. Prior losses offset positive taxable income. Under the case’s Year 5 disposition convention, all remaining prior losses are released, and unamortized leasing commissions and loan points are deducted.</li>
+          <li><strong>Scope:</strong> These are annual operating cash flows. The model excludes sale proceeds, loan payoff, capital-gains taxes, and depreciation recapture. Year 5 tax adjustments do not make this a complete disposition or investment-return model. Tax schedules are teaching assumptions from the supplied case, not a current-law tax calculator.</li>
+        </ul>
+        <div class="table-scroll" id="assumption-table"></div>
+      </div></details>
+      <details class="support"><summary>Connect the explorer to the Excel exercise</summary><div class="support-content">
+        <p>Use the original case to reproduce a calculation in Excel. Select a line in the explorer to see its formula, numbers, and worksheet reference. Then change one assumption and explain which other lines move.</p>
+        <div class="table-scroll"><table><thead><tr><th>Explorer stage</th><th>Workbook figures</th><th>Calculation to reproduce</th></tr></thead><tbody>
+          <tr><td>Property income</td><td>5.1–5.7</td><td>Gross potential rent through total operating income</td></tr><tr><td>Expenses &amp; NOI</td><td>5.8–5.10</td><td>Operating expenses and NOI</td></tr><tr><td>Capital costs</td><td>5.11</td><td>NOI through unlevered cash flow</td></tr><tr><td>Financing</td><td>5.15</td><td>Unlevered through before-tax levered cash flow</td></tr><tr><td>Taxes</td><td>5.12–5.14, 5.16–5.18</td><td>Depreciation, taxable income, suspended losses, and after-tax cash flow</td></tr>
+        </tbody></table></div>
+        <p><strong>Source:</strong> The supplied Kathy Center solution workbook, <em>Chapter_5_Figures_5.3E (Solution).xlsx</em>, and FIN 355 property-level pro forma lecture slides. Original case values follow the workbook. In particular, Year 1 TI spending is $36,200 and loan points are $194,000.</p>
+        <p class="notice">Amounts display as whole dollars; calculations retain full precision, so independently rounded rows may differ by $1 from a displayed subtotal.</p>
+      </div></details>
+    </section>
+    <div id="live-status" class="sr-only" aria-live="polite"></div>
+  </main>
+  <footer class="shell">
+    <p><strong>Created by Desen Lin</strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
+    <p>This educational illustration is not financial or investment advice.</p>
+  </footer>
+  <script>
+/* Kathy Center teaching model. Case inputs: supplied Figures 5.1–5.18. */
+(function (root) {
+  'use strict';
+  const inputs = Object.freeze({
+    area:300000, rent:15, price:48500000, loanYears:7, pointsRate:.005,
+    rentGrowth:[0,.02,.0493,.0225,.0067], vacancy:[0,.01,.015,.02,.03],
+    percentageRent:[93305,66209,66925,64003,65425],
+    camBilling:[445368,440267,420196,415895,376894],
+    taxBilling:[390428,370123,351126,346681,330128],
+    ancillary:[24580,23251,24654,23125,24188],
+    insurance:[55548,57734,60017,62389,64855],
+    utilities:[105114,109355,113755,118334,123097],
+    ti:[36200,57629,152145,46696,18629],
+    lc:[12200,41722,107561,25567,18760],
+    capex:[103400,323565,190919,24947,10975]
+  });
+  const defaults=Object.freeze({rentShift:0,vacancyShift:0,expenseGrowth:4,extraCapex:0,capexYear:2,ltv:80,interest:5,taxRate:21});
+  const limits={rentShift:[-3,5],vacancyShift:[0,15],expenseGrowth:[0,10],extraCapex:[0,500000],capexYear:[1,5],ltv:[0,90],interest:[0,12],taxRate:[0,40]};
+  function calculate(overrides={}) {
+    const a={...defaults,...overrides};
+    for(const [k,[lo,hi]] of Object.entries(limits)) if(!Number.isFinite(a[k])||a[k]<lo||a[k]>hi) throw new RangeError(k+' is outside the supported range.');
+    if(!Number.isInteger(a.capexYear))throw new RangeError('Spending year must be a whole year.');
+    const debt=inputs.price*a.ltv/100, points=debt*inputs.pointsRate;
+    const tiVintage=[], capexVintage=[], lcVintage=[];
+    for(let vintage=0;vintage<5;vintage++) {
+      const cap=inputs.capex[vintage]+(vintage+1===a.capexYear?a.extraCapex:0);
+      tiVintage.push(Array.from({length:5},(_,y)=>y<vintage?0:y===vintage?inputs.ti[vintage]*.5:inputs.ti[vintage]*.5/6));
+      capexVintage.push(Array.from({length:5},(_,y)=>y<vintage?0:cap/7));
+      lcVintage.push(Array.from({length:5},(_,y)=>y<vintage?0:inputs.lc[vintage]/7));
+    }
+    const sumYear=(arr,y)=>arr.reduce((s,v)=>s+v[y],0);
+    let lastGpr=inputs.area*inputs.rent, lossBalance=0, cumulativeLC=0, cumulativeLCAmort=0;
+    const years=[];
+    for(let y=0;y<5;y++) {
+      const r={year:y+1,debt,points,initialEquity:inputs.price-debt+points};
+      r.rentGrowth=y===0?0:inputs.rentGrowth[y]+a.rentShift/100;
+      r.gpr=y===0?lastGpr:lastGpr*(1+r.rentGrowth); lastGpr=r.gpr;
+      r.vacancyRate=inputs.vacancy[y]+a.vacancyShift/100;
+      r.vacancy=r.gpr*r.vacancyRate; r.netBase=r.gpr-r.vacancy;
+      r.percentageRent=inputs.percentageRent[y];r.rental=r.netBase+r.percentageRent;
+      r.camBilling=inputs.camBilling[y];r.taxBilling=inputs.taxBilling[y];r.recovery=r.camBilling+r.taxBilling;
+      r.ancillary=inputs.ancillary[y];r.gross=r.rental+r.recovery+r.ancillary;
+      r.credit=r.gross*.01;r.egi=r.gross-r.credit;
+      r.cam=445368*Math.pow(1+a.expenseGrowth/100,y);
+      r.propertyTax=390428*Math.pow(1+a.expenseGrowth/100,y);
+      r.reimbursable=r.cam+r.propertyTax;r.unrecovered=r.reimbursable-r.recovery;
+      r.insurance=inputs.insurance[y];r.utilities=inputs.utilities[y];r.otherExpense=r.insurance+r.utilities;
+      r.management=r.reimbursable*.1;r.opex=r.reimbursable+r.otherExpense+r.management;r.noi=r.egi-r.opex;
+      r.ti=inputs.ti[y];r.lc=inputs.lc[y];r.capex=inputs.capex[y]+(y+1===a.capexYear?a.extraCapex:0);
+      r.capital=r.ti+r.lc+r.capex;r.ufcf=r.noi-r.capital;
+      r.interest=debt*a.interest/100;r.principal=0;r.debtService=r.interest;r.btcf=r.ufcf-r.debtService;
+      r.structureDep=inputs.price*.5/39;r.sevenDep=inputs.price*.2/7;r.threeDep=y<3?inputs.price*.1/3:0;
+      r.purchaseDep=r.structureDep+r.sevenDep+r.threeDep;
+      r.tiDep=sumYear(tiVintage,y);r.capexDep=sumYear(capexVintage,y);r.depreciation=r.purchaseDep+r.tiDep+r.capexDep;
+      r.regularLCAmort=sumYear(lcVintage,y);cumulativeLC+=r.lc;cumulativeLCAmort+=r.regularLCAmort;
+      r.lcWriteoff=y===4?cumulativeLC-cumulativeLCAmort:0;r.lcAmort=r.regularLCAmort+r.lcWriteoff;
+      r.regularPointsAmort=points/7;r.pointsWriteoff=y===4?points-5*points/7:0;r.pointsAmort=r.regularPointsAmort+r.pointsWriteoff;
+      r.amortization=r.lcAmort+r.pointsAmort;
+      r.taxable=r.btcf+r.capital+r.principal-r.depreciation-r.amortization;
+      r.lossBeginning=lossBalance;r.newLoss=Math.max(0,-r.taxable);
+      r.lossUsed=y===4?lossBalance:Math.min(lossBalance,Math.max(0,r.taxable));
+      r.netTaxable=r.taxable-r.lossUsed;r.tax=Math.max(0,r.netTaxable)*a.taxRate/100;
+      r.lossEnding=lossBalance+r.newLoss-r.lossUsed;lossBalance=r.lossEnding;
+      r.atcf=r.btcf-r.tax;years.push(r);
+    }
+    return {assumptions:a,years,tiVintage,capexVintage,lcVintage};
+  }
+  root.KathyModel={inputs,defaults,limits,calculate};
+})(typeof window!=='undefined'?window:globalThis);
+
+(function () {
+ 'use strict';
+ const $=id=>document.getElementById(id), M=window.KathyModel;
+ const base=M.calculate(), state={stage:0,year:0,view:'year',open:null,a:{...M.defaults}};
+ const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
+ const num=v=>Math.abs(v)<.5?'0':v<0?'('+nf.format(-v)+')':nf.format(v);
+ const money=v=>v<0?'−$'+nf.format(-v):'$'+nf.format(v);
+ const signed=v=>Math.abs(v)<.5?'No change':(v<0?'−':'+')+'$'+nf.format(Math.abs(v));
+ const pct=v=>(v*100).toFixed(2)+'%';
+ const source=(fig,row,y,tax=false)=>`Workbook Fig ${fig}, ${String.fromCharCode((tax?68:67)+y)}${row}`;
+ const stages=[
+  {title:'How much potential rent becomes operating income?',description:'Follow rent, vacancy, reimbursements, and credit losses into the income the property expects to collect.',ref:'Figures 5.1–5.7',metric:'egi',metricName:'Total operating income',chart:'Operating income over five years',inputs:['rentShift','vacancyShift'],scope:'Rent growth changes in Years 2–5. Vacancy changes in all five years. Percentage rent, reimbursements, and ancillary income keep their original schedules.',question:'If vacancy rises, does operating income fall by exactly the lost base rent?',answer:'Not quite in this model. Lower gross income also lowers the 1% credit-loss allowance. Other supplied income amounts stay fixed, so each $1 of additional vacancy loss reduces operating income by $0.99.',rows:[['gpr','Gross potential rental revenue',1],['vacancy','Vacancy loss',-1],['percentageRent','Percentage rent',1],['recovery','Expense reimbursements',1],['ancillary','Ancillary income',1],['credit','Credit loss',-1],['egi','Total operating income (EGI)',1,true]]},
+  {title:'What remains after operating the property?',description:'Separate expenses paid by the owner from reimbursements collected from tenants.',ref:'Figures 5.8–5.10',metric:'noi',metricName:'Net operating income',chart:'NOI over five years',inputs:['expenseGrowth'],scope:'The growth rate applies to CAM and property-tax costs. Management is 10% of those costs. Insurance, utilities, and tenant billings retain their original schedules.',question:'If expenses rise while reimbursements stay fixed, who bears the extra cost?',answer:'The owner bears the unrecovered increase. In this case, the management fee also rises because it equals 10% of CAM and property-tax costs. Neither debt nor capital spending is deducted in NOI.',rows:[['egi','Total operating income',1],['cam','Common area maintenance',-1],['propertyTax','Property taxes',-1],['otherExpense','Insurance and utilities',-1],['management','Management fee',-1],['noi','Net operating income (NOI)',1,true]]},
+  {title:'Why is NOI different from available cash?',description:'Deduct tenant improvements, leasing commissions, and capital expenditures to reach unlevered cash flow.',ref:'Figure 5.11',metric:'ufcf',metricName:'Unlevered cash flow',chart:'Unlevered cash flow over five years',inputs:['extraCapex','capexYear'],scope:'Additional CapEx occurs only in the chosen spending year. It also creates seven-year depreciation. Rent, NOI, and future property value do not automatically rise.',question:'Does spending an additional $100,000 on CapEx reduce NOI?',answer:'No. CapEx is below NOI in this retail case. It lowers unlevered cash flow and before-tax levered cash flow by $100,000 in the spending year. Its tax deduction follows the depreciation schedule.',rows:[['noi','Net operating income',1],['ti','Tenant improvements',-1],['lc','Leasing commissions',-1],['capex','Capital expenditures',-1],['ufcf','Unlevered cash flow',1,true]]},
+  {title:'How much operating cash remains for equity?',description:'Apply the interest-only loan to property cash flow, then compare the financing burden.',ref:'Figure 5.15',metric:'btcf',metricName:'Before-tax levered cash flow',chart:'Before-tax levered cash flow over five years',inputs:['ltv','interest'],scope:'Interest-only debt, seven-year term, and 0.5% origination points. This view shows annual operations; loan payoff and sale proceeds are outside the model.',question:'Does lower leverage improve the property’s NOI?',answer:'No. Lower leverage reduces debt service and increases annual equity cash flow, but it also requires more equity at acquisition. Higher annual cash flow alone does not establish a higher investment return.',rows:[['ufcf','Unlevered cash flow',1],['debtService','Debt service',-1],['btcf','Before-tax levered cash flow',1,true]]},
+  {title:'Why can positive cash flow produce no income tax?',description:'Translate cash flow into taxable income, apply available losses, and return to after-tax cash flow.',ref:'Figures 5.12–5.14 and 5.16–5.18',metric:'atcf',metricName:'After-tax cash flow',chart:'After-tax cash flow over five years',inputs:['taxRate'],scope:'Original-case income-tax liability is zero in all five years. Try 40% LTV to see taxable income emerge. Tax schedules use the case’s assumptions, including Year 5 write-offs.',question:'Why does a higher tax rate have no effect on the original case?',answer:'The original case has no positive taxable income remaining after the modeled loss adjustments. Its income-tax liability is therefore zero at any tax rate. Negative taxable income does not create an immediate cash refund here.',rows:[['btcf','Before-tax levered cash flow',1],['taxable','Taxable income before prior losses',1],['lossUsed','Prior suspended losses applied',-1],['netTaxable','Net taxable income (loss)',1],['tax','Income tax liability',-1],['atcf','After-tax cash flow',1,true]]}
+ ];
+ const labels={rentShift:'Rent-growth adjustment',vacancyShift:'Additional vacancy',expenseGrowth:'CAM & tax expense growth',extraCapex:'Additional CapEx',capexYear:'Spending year',ltv:'Loan-to-value ratio',interest:'Interest rate',taxRate:'Income tax rate'};
+ const hints={rentShift:'Percentage points added to each Year 2–5 growth rate.',vacancyShift:'Percentage points added to each annual vacancy rate.',expenseGrowth:'Annual growth after Year 1; original case: 4%.',extraCapex:'Added to the workbook’s capital expenditure schedule.',capexYear:'Select the same focus year to inspect the immediate effect.',ltv:'Loan amount ÷ $48.5 million purchase price.',interest:'Annual rate on the interest-only balance.',taxRate:'Applied only to positive net taxable income.'};
+ function field(k) {
+  const [min,max]=M.limits[k],v=state.a[k];
+  if(k==='capexYear')return `<div class="input-group"><label class="field-label" for="input-${k}">${labels[k]}</label><select id="input-${k}" data-input="${k}">${[1,2,3,4,5].map(y=>`<option value="${y}" ${y===v?'selected':''}>Year ${y}</option>`).join('')}</select><p class="input-hint">${hints[k]}</p></div>`;
+  const unit=k==='extraCapex'?'$':k.endsWith('Shift')?'pp':'%';
+  return `<div class="input-group"><div class="input-top"><label for="input-${k}">${labels[k]}</label><div class="number-wrap ${k==='extraCapex'?'wide':''}"><input id="input-${k}" data-input="${k}" type="number" min="${min}" max="${max}" step="${k==='extraCapex'?1000:.1}" value="${v}" aria-describedby="hint-${k}" required><span class="input-unit">${unit}</span></div></div><input type="range" aria-label="${labels[k]}" data-range="${k}" min="${min}" max="${max}" step="${k==='extraCapex'?1000:.1}" value="${v}"><p class="input-hint" id="hint-${k}">${hints[k]}</p></div>`;
+ }
+ function formula(key,r,y) {
+  const prior=y?current.years[y-1]:null;
+  const wrap=(eq,calc,note,ref)=>({eq,calc,note,ref});
+  switch(key) {
+   case 'gpr':return y===0?wrap('Leasable area × annual base rent per SF',`300,000 × $15 = ${money(r.gpr)}`,'Year 1 anchors the rental forecast. Later years grow the previous year’s potential rent.','Workbook Fig 5.1, C5:C8'):wrap('Prior-year potential rent × (1 + annual rent growth)',`${money(prior.gpr)} × (1 + ${pct(r.rentGrowth)}) = ${money(r.gpr)}`,'The adjustment adds percentage points to the original annual growth rate; effects compound into later years.',source('5.2',15,y));
+   case 'vacancy':return wrap('Gross potential rent × vacancy rate',`${money(r.gpr)} × ${pct(r.vacancyRate)} = ${money(r.vacancy)}`,'This is revenue not collected because space is vacant. It is distinct from credit loss on expected revenues.',source('5.3',16,y));
+   case 'percentageRent':return wrap('Supplied percentage-rent schedule',`${money(r.percentageRent)} in Year ${r.year}`,'This additional rent is supplied by the case. The explorer does not model tenant sales or lease breakpoints.',source('5.4',18,y));
+   case 'recovery':return wrap('CAM billings + property-tax billings',`${money(r.camBilling)} + ${money(r.taxBilling)} = ${money(r.recovery)}`,'Billings are supplied inputs. They are not the same as owner expenses and are not automatically linked to vacancy in these experiments.',source('5.5',22,y)+' and '+String.fromCharCode(67+y)+'23');
+   case 'ancillary':return wrap('Supplied ancillary-income schedule',`${money(r.ancillary)} in Year ${r.year}`,'Ancillary income is held at the case amount. No additional occupancy sensitivity is assumed.',source('5.6',25,y));
+   case 'credit':return wrap('Gross income × 1% credit-loss allowance',`${money(r.gross)} × 1% = ${money(r.credit)}`,'Gross income equals potential rent less vacancy, plus percentage rent, reimbursements, and ancillary income.',source('5.7',28,y));
+   case 'egi':return wrap('Potential rent − vacancy + percentage rent + reimbursements + ancillary income − credit loss',`${money(r.gpr)} − ${money(r.vacancy)} + ${money(r.percentageRent)} + ${money(r.recovery)} + ${money(r.ancillary)} − ${money(r.credit)} = ${money(r.egi)}`,'Effective gross income (EGI) is called total operating income in the workbook.',source('5.7',29,y));
+   case 'cam':return wrap('Year 1 CAM cost × (1 + expense growth)^(year − 1)',`$445,368 × (1 + ${state.a.expenseGrowth.toFixed(1)}%)^${y} = ${money(r.cam)}`,'The owner’s expense is shown before tenant reimbursements. Reimbursements enter operating income separately.',source('5.8',34,y));
+   case 'propertyTax':return wrap('Year 1 property tax × (1 + expense growth)^(year − 1)',`$390,428 × (1 + ${state.a.expenseGrowth.toFixed(1)}%)^${y} = ${money(r.propertyTax)}`,'Property-tax costs do not fall automatically when vacancy rises in this model.',source('5.8',35,y));
+   case 'otherExpense':return wrap('Insurance + utilities',`${money(r.insurance)} + ${money(r.utilities)} = ${money(r.otherExpense)}`,'Both amounts follow the supplied annual schedules. The CAM-and-tax growth control does not change these rows.',source('5.9',38,y)+' and '+String.fromCharCode(67+y)+'39');
+   case 'management':return wrap('(CAM cost + property-tax cost) × 10%',`(${money(r.cam)} + ${money(r.propertyTax)}) × 10% = ${money(r.management)}`,'This is the management-fee convention in Kathy Center. The basis is reimbursable costs, not billings collected or EGI.',source('5.9',40,y));
+   case 'noi':return wrap('Operating income − operating expenses',`${money(r.egi)} − ${money(r.opex)} = ${money(r.noi)}`,'Operating expenses include CAM, property taxes, insurance, utilities, and management. Capital costs, debt service, and income taxes are below NOI.',source('5.10',44,y));
+   case 'ti':return wrap('Supplied tenant-improvement spending',`${money(r.ti)} in Year ${r.year}`,'TI spending is a cash outflow when incurred. Under the case assumption, 50% is depreciated in that year and the rest over the following six years.',source('5.11',48,y));
+   case 'lc':return wrap('Supplied leasing-commission spending',`${money(r.lc)} in Year ${r.year}`,'The entire commission is a current cash outflow. The tax deduction normally follows a seven-year amortization schedule in this case.',source('5.11',49,y));
+   case 'capex':return wrap('Original CapEx + additional spending in the chosen year',`${money(M.inputs.capex[y])} + ${money(r.capex-M.inputs.capex[y])} = ${money(r.capex)}`,'CapEx is deducted below NOI. Each spending vintage creates one-seventh of its amount in annual depreciation, starting in its spending year.',source('5.11',50,y));
+   case 'ufcf':return wrap('NOI − TI − leasing commissions − CapEx',`${money(r.noi)} − ${money(r.ti)} − ${money(r.lc)} − ${money(r.capex)} = ${money(r.ufcf)}`,'Unlevered cash flow measures annual property cash flow before financing and income taxes.',source('5.11',52,y));
+   case 'debtService':return wrap('Purchase price × LTV × interest rate',`$48,500,000 × ${state.a.ltv.toFixed(1)}% × ${state.a.interest.toFixed(1)}% = ${money(r.debtService)}`,'The loan is interest-only. Annual principal amortization is zero. The outstanding loan is not an operating expense or a depreciation deduction.',source('5.15',16,y));
+   case 'btcf':return wrap('Unlevered cash flow − debt service',`${money(r.ufcf)} − ${money(r.debtService)} = ${money(r.btcf)}`,'This is annual cash flow to equity before income taxes. It excludes acquisition equity, sale proceeds, and debt payoff.',source('5.15',17,y));
+   case 'taxable':return wrap('Before-tax cash flow + capital and leasing costs − depreciation − amortization',`${money(r.btcf)} + ${money(r.capital)} − ${money(r.depreciation)} − ${money(r.amortization)} = ${money(r.taxable)}`,`Add back cash TI, commissions, and CapEx (${money(r.capital)}); deduct purchase/TI/CapEx depreciation (${money(r.depreciation)}) and LC/points amortization (${money(r.amortization)}). Principal amortization is zero. Expand the schedules below for each component.`,source('5.18',31,y,true));
+   case 'lossUsed':return y===4?wrap('Year 5 convention: release all remaining prior losses',`Beginning suspended-loss balance = ${money(r.lossBeginning)}`,'The case releases the entire beginning balance in its disposition year. Negative net taxable income receives no cash refund in this operating model. Complete sale taxes are outside scope.',source('5.18',11,y,true)):wrap('Smaller of available prior losses and positive taxable income',`min(${money(r.lossBeginning)}, ${money(Math.max(0,r.taxable))}) = ${money(r.lossUsed)}`,'Negative taxable income adds to the loss balance. Positive taxable income can use prior suspended losses; unused losses remain available for later years.',source('5.18',11,y,true));
+   case 'netTaxable':return wrap('Taxable income − prior suspended losses applied',`${money(r.taxable)} − ${money(r.lossUsed)} = ${money(r.netTaxable)}`,'A negative result is a tax loss, not negative cash flow and not an immediate tax refund.',source('5.18',33,y,true));
+   case 'tax':return wrap('max(0, net taxable income) × income tax rate',`${money(Math.max(0,r.netTaxable))} × ${state.a.taxRate.toFixed(1)}% = ${money(r.tax)}`,'Only a positive amount remaining after loss adjustments creates income-tax liability here.',source('5.18',34,y,true));
+   case 'atcf':return wrap('Before-tax levered cash flow − income tax liability',`${money(r.btcf)} − ${money(r.tax)} = ${money(r.atcf)}`,'Depreciation is used to calculate taxable income; it is not deducted again from cash flow.',source('5.18',44,y,true));
+  }
+ }
+ function detailHTML(key,r,y,cols) {
+  const f=formula(key,r,y);
+  return `<tr class="formula-row" id="formula-${key}"><td colspan="${cols}"><div class="formula"><p class="source">Your case · Year ${y+1}</p><div class="equation">${f.eq}</div><div class="substitution">${f.calc}</div><p>${f.note}</p><div class="source">${f.ref}</div></div></td></tr>`;
+ }
+ let current=M.calculate(state.a);
+ function changedKeys(){return Object.keys(state.a).filter(k=>Math.abs(state.a[k]-M.defaults[k])>1e-8);}
+ function flowTable() {
+  const stage=stages[state.stage],five=state.view==='five';
+  const headings=five?['Line item',...base.years.map(r=>'Year '+r.year)]:['Line item','Original case','Your case'];
+  let html=`<table class="flow-table ${five?'five-year':''}" aria-label="${stage.metricName} calculation"><thead><tr>${headings.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>`;
+  for(const [k,label,sign,total] of stage.rows) {
+   const open=state.open===k;
+   html+=`<tr class="${total?'total-row':''}"><td><button type="button" class="row-label" data-row="${k}" aria-expanded="${open}" ${open?`aria-controls="formula-${k}"`:''}><span class="disclosure-mark" aria-hidden="true">${open?'−':'+'}</span>${sign<0?'− ':''}${label}</button></td>`;
+   const cell=(r,b)=>{const d=(r[k]-b[k])*sign;return `<td>${num(r[k]*sign)}${Math.abs(d)>=.5?`<span class="cell-delta">${d<0?'−':'+'}${nf.format(Math.abs(d))}</span>`:''}</td>`};
+   if(five)for(let y=0;y<5;y++)html+=cell(current.years[y],base.years[y]);
+   else html+=`<td>${num(base.years[state.year][k]*sign)}</td>`+cell(current.years[state.year],base.years[state.year]);
+   html+='</tr>';
+   if(open)html+=detailHTML(k,current.years[state.year],state.year,headings.length);
+  }
+  html+='</tbody></table>';$('flow-table-container').innerHTML=html;
+ }
+ function scheduleTable(title,rows,caption='') {
+  return `<h4>${title}</h4>${caption?`<p>${caption}</p>`:''}<div class="table-scroll"><table><thead><tr><th>Annual amounts ($)</th>${[1,2,3,4,5].map(y=>`<th>Year ${y}</th>`).join('')}</tr></thead><tbody>${rows.map(([label,values])=>`<tr><td>${label}</td>${values.map(v=>`<td>${num(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+ }
+ function taxSchedules() {
+  const r=current.years;
+  const rows=[['Purchase depreciation','purchaseDep'],['TI depreciation','tiDep'],['CapEx depreciation','capexDep'],['Total depreciation','depreciation'],['Regular LC amortization','regularLCAmort'],['Remaining LC write-off','lcWriteoff'],['Regular loan-point amortization','regularPointsAmort'],['Remaining loan-point write-off','pointsWriteoff']].map(([n,k])=>[n,r.map(x=>x[k])]);
+  let html=scheduleTable('Annual tax deductions',rows,'Your case. All amounts are shown as positive deductions. Year 5 includes the case’s disposition adjustments.');
+  html+=scheduleTable('Suspended-loss balance',[['Beginning balance',r.map(x=>x.lossBeginning)],['New annual losses',r.map(x=>x.newLoss)],['Prior losses applied',r.map(x=>-x.lossUsed)],['Ending balance',r.map(x=>x.lossEnding)]],'Balances are shown as positive amounts available to offset taxable income. The source workbook uses negative balances. Year 5 releases prior losses; a new Year 5 loss can remain in this operating-only schedule.');
+  html+='<details><summary>Show depreciation by spending year</summary>';
+  html+=scheduleTable('Tenant-improvement spending vintages',current.tiVintage.map((v,i)=>['Year '+(i+1)+' TI spending',v]),'Each row follows one spending year. First-year depreciation is 50%; the remaining half is spread over six years.');
+  html+=scheduleTable('Capital-expenditure spending vintages',current.capexVintage.map((v,i)=>['Year '+(i+1)+' CapEx spending',v]),'Each vintage contributes one-seventh annually starting in its spending year. Amounts after Year 5 are outside the holding period.');
+  html+='</details>';$('tax-schedules').innerHTML=html;
+ }
+ function takeaway(r,b) {
+  switch(state.stage) {
+   case 0:return `Year ${r.year}: ${money(r.gross)} of gross income becomes ${money(r.egi)} after the 1% credit-loss allowance.${state.a.vacancyShift?' Extra vacancy affects rent and the credit-loss allowance; supplied billings stay fixed.':''}`;
+   case 1:return `The owner pays ${money(r.reimbursable)} in CAM and property taxes and collects ${money(r.recovery)} in reimbursements. The unrecovered difference is ${money(r.unrecovered)}.`;
+   case 2:return `Capital and leasing costs use ${money(r.capital)} of cash in Year ${r.year}. ${state.a.extraCapex?`Your additional CapEx occurs in Year ${state.a.capexYear}; it leaves NOI unchanged.`:'These outlays explain the gap between NOI and unlevered cash flow.'}`;
+   case 3:return `Annual debt service is ${money(r.debtService)}.${state.a.interest!==5||state.a.ltv!==80?' Financing changes do not alter NOI or unlevered cash flow.':' An increase of one percentage point in the interest rate adds $388,000 to annual debt service at the original loan amount.'}`;
+   case 4:return r.tax<.005?`Year ${r.year} income-tax liability is zero. After-tax cash flow equals before-tax cash flow; this does not mean taxable income itself is necessarily zero.`:`Year ${r.year} has ${money(Math.max(0,r.netTaxable))} of taxable income after loss adjustments. Income tax reduces cash flow by ${money(r.tax)}.`;
+  }
+ }
+ function chart() {
+  const svg=$('trend-chart'),rect=svg.getBoundingClientRect(),w=Math.max(260,rect.width),h=rect.height||205;
+  const stage=stages[state.stage],key=stage.metric,vals=[...base.years,...current.years].map(r=>r[key]);
+  let lo=Math.min(...vals),hi=Math.max(...vals),span=hi-lo;
+  const pad=Math.max(span*.18,Math.abs(hi)*.015,1000);lo-=pad;hi+=pad;
+  const left=60,right=18,top=18,bottom=37,plotW=w-left-right,plotH=h-top-bottom;
+  const x=i=>left+8+i*(plotW-16)/4,y=v=>top+plotH-(v-lo)/(hi-lo)*plotH;
+  let out=`<title id="trend-title">${stage.chart}</title><desc id="trend-desc">Original case and your case, annual dollars, Years 1 through 5. The table above gives exact amounts.</desc><defs><clipPath id="plot-clip"><rect x="${left}" y="${top}" width="${plotW}" height="${plotH}"/></clipPath></defs>`;
+  for(let i=0;i<3;i++){let v=lo+(hi-lo)*i/2,yy=y(v);out+=`<line x1="${left}" x2="${w-right}" y1="${yy}" y2="${yy}" stroke="#dce5ee"/><text x="${left-9}" y="${yy+4}" text-anchor="end" fill="#617184" font-size="11">${(v/1e6).toFixed(2)}</text>`;}
+  out+=`<text x="${left}" y="11" fill="#617184" font-size="11">$ million / year</text>`;
+  for(let i=0;i<5;i++)out+=`<text x="${x(i)}" y="${h-15}" text-anchor="middle" fill="#617184" font-size="11">${w<360?'Y':'Year '}${i+1}</text>`;
+  out+=`<g clip-path="url(#plot-clip)"><line x1="${x(state.year)}" x2="${x(state.year)}" y1="${top}" y2="${top+plotH}" stroke="#d0dce7"/>`;
+  const path=rs=>rs.map((r,i)=>(i?'L':'M')+x(i)+' '+y(r[key])).join(' ');
+  out+=`<path d="${path(base.years)}" fill="none" stroke="#7e8fa3" stroke-width="2" stroke-dasharray="5 4"/><path d="${path(current.years)}" fill="none" stroke="#126181" stroke-width="2.5"/>`;
+  current.years.forEach((r,i)=>{out+=`<circle cx="${x(i)}" cy="${y(r[key])}" r="${i===state.year?5:3.5}" fill="#126181" stroke="white" stroke-width="1.5"><title>Year ${i+1}: ${money(r[key])}; original case ${money(base.years[i][key])}</title></circle>`});
+  out+='</g>';svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.innerHTML=out;
+  const same=current.years.every((r,i)=>Math.abs(r[key]-base.years[i][key])<.01);
+  $('chart-caption').textContent=(same?'The two paths coincide. ':'')+'The vertical guide marks the focus year. Exact values are available in the five-year view.';
+ }
+ function results() {
+  current=M.calculate(state.a); const s=stages[state.stage],r=current.years[state.year],b=base.years[state.year];
+  $('metric-label').textContent=s.metricName+' · Year '+r.year;
+  $('metric-value').textContent=money(r[s.metric]);
+  $('metric-delta').textContent=signed(r[s.metric]-b[s.metric])+' from original case';
+  $('table-caption').textContent=state.view==='five'?'Your case, annual dollars. Differences from original appear beneath values. Line calculations use the focus year.':'Annual amounts in dollars. Select a line to see the calculation.';
+  flowTable();$('takeaway').textContent=takeaway(r,b);
+  $('loan-facts').hidden=state.stage!==3;
+  if(state.stage===3)$('loan-facts').innerHTML=`<span>Loan amount<strong>${money(r.debt)}</strong></span><span>Initial equity, including points<strong>${money(r.initialEquity)}</strong></span><span>Origination points<strong>${money(r.points)}</strong></span>`;
+  $('chart-heading').textContent=s.chart;
+  $('tax-support').hidden=state.stage!==4;
+  if(state.stage===4)taxSchedules();
+  const changes=changedKeys();
+  $('active-changes').textContent=changes.length?'Changed: '+changes.map(k=>labels[k]+': '+(k==='extraCapex'?money(state.a[k]):k==='capexYear'?'Year '+state.a[k]:state.a[k]+(k.endsWith('Shift')?' pp':'%'))).join('; '):'Original case assumptions';
+  $('assumption-table').innerHTML=scheduleTable('Active annual assumptions',[['Base-rent growth',current.years.map(r=>r.rentGrowth*100)],['Vacancy rate',current.years.map(r=>r.vacancyRate*100)]],'Values below are percentages. Full-precision rates are used in calculations.').replace(/<td>([\d.,()]+)<\/td>/g,(all,v)=>`<td>${v}%</td>`);
+  // Preserve fractional percentages in this assumptions table.
+  const assumptionCells=$('assumption-table').querySelectorAll('tbody tr');
+  [current.years.map(r=>r.rentGrowth),current.years.map(r=>r.vacancyRate)].forEach((row,i)=>row.forEach((v,j)=>assumptionCells[i].children[j+1].textContent=pct(v)));
+  $('live-status').textContent=s.metricName+', Year '+r.year+': '+money(r[s.metric])+'. '+signed(r[s.metric]-b[s.metric])+' from original case.';
+  requestAnimationFrame(chart);
+ }
+ function renderStage() {
+  const s=stages[state.stage];state.open=null;
+  document.querySelectorAll('[data-step]').forEach((b,i)=>{b.setAttribute('aria-selected',String(i===state.stage));b.tabIndex=i===state.stage?0:-1;});
+  $('lesson').setAttribute('aria-labelledby','step-'+state.stage);
+  $('lesson-title').textContent=s.title;$('lesson-description').textContent=s.description;$('lesson-reference').textContent=s.ref;
+  $('stage-inputs').innerHTML=s.inputs.map(field).join('')+(state.stage===4?'<div class="controls-actions"><button type="button" class="button subtle" id="try-tax">Try 40% LTV</button></div>':'');
+  $('scope-note').textContent=s.scope;$('predict-question').textContent=s.question;$('predict-answer').textContent=s.answer;$('predict-detail').open=false;
+  $('previous').disabled=state.stage===0;$('next').disabled=state.stage===4;
+  $('next').textContent=state.stage<4?'Next: '+['','Expenses & NOI','Capital costs','Financing','Taxes'][state.stage+1]:'Final stage';
+  $('step-progress').textContent='Stage '+(state.stage+1)+' of 5';
+  $('validation').hidden=true;results();
+ }
+ function chooseExperiment(value) {
+  state.a={...M.defaults};state.open=null;
+  if(value==='vacancy'){state.a.vacancyShift=5;state.stage=0;state.year=1;}
+  if(value==='capital'){state.a.extraCapex=100000;state.a.capexYear=2;state.stage=2;state.year=1;}
+  if(value==='interest'){state.a.interest=6;state.stage=3;state.year=1;}
+  if(value==='leverage'){state.a.ltv=40;state.stage=4;state.year=3;}
+  $('experiment').value=value;$('year').value=String(state.year);renderStage();
+ }
+ document.querySelectorAll('[data-step]').forEach(b=>{
+  b.addEventListener('click',()=>{state.stage=Number(b.dataset.step);renderStage();});
+  b.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();state.stage=e.key==='Home'?0:e.key==='End'?4:(state.stage+(e.key==='ArrowRight'?1:4))%5;renderStage();$('step-'+state.stage).focus();});
+ });
+ $('experiment').addEventListener('change',e=>chooseExperiment(e.target.value));
+ $('reset').addEventListener('click',()=>chooseExperiment('baseline'));
+ $('year').addEventListener('change',e=>{state.year=Number(e.target.value);results();});
+ $('stage-inputs').addEventListener('input',e=>{
+  const k=e.target.dataset.input||e.target.dataset.range;if(!k)return;
+  const v=Number(e.target.value),[lo,hi]=M.limits[k];
+  if(e.target.value===''||!Number.isFinite(v)||v<lo||v>hi||!e.target.validity.valid){$('validation').hidden=false;$('validation').textContent=`Enter a valid ${labels[k].toLowerCase()} between ${lo} and ${hi}. Results retain the last valid value.`;e.target.setAttribute('aria-invalid','true');return;}
+  e.target.removeAttribute('aria-invalid');$('validation').hidden=true;state.a[k]=v;
+  $('input-'+k).value=String(v);const slider=document.querySelector(`[data-range="${k}"]`);if(slider)slider.value=String(v);
+  $('experiment').value=changedKeys().length?'custom':'baseline';results();
+ });
+ $('stage-inputs').addEventListener('click',e=>{if(e.target.id==='try-tax')chooseExperiment('leverage');});
+ $('flow-table-container').addEventListener('click',e=>{const b=e.target.closest('[data-row]');if(!b)return;const key=b.dataset.row;state.open=state.open===key?null:key;flowTable();document.querySelector(`[data-row="${key}"]`).focus({preventScroll:true});});
+ for(const view of ['year','five'])$('view-'+view).addEventListener('click',()=>{state.view=view;$('view-year').setAttribute('aria-pressed',String(view==='year'));$('view-five').setAttribute('aria-pressed',String(view==='five'));results();});
+ $('previous').addEventListener('click',()=>{if(state.stage>0){state.stage--;renderStage();$('lesson-title').scrollIntoView({block:'start'});}});
+ $('next').addEventListener('click',()=>{if(state.stage<4){state.stage++;renderStage();$('lesson-title').scrollIntoView({block:'start'});}});
+ if(typeof ResizeObserver!=='undefined')new ResizeObserver(chart).observe($('trend-chart'));
+ else window.addEventListener('resize',chart);
+ renderStage();
+})();
+
+</script>
+</body>
+</html>
+

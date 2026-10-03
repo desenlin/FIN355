@@ -74,6 +74,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/FIN355/net-effective-rent.html">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Property-Level Pro Forma Explorer</strong></td>
+      <td>Builds the Kathy Center pro forma from rental income to after-tax cash flow, reveals step-by-step calculations, and compares editable assumptions across five years.</td>
+      <td><a href="https://desenlin.com/FIN355/property-pro-forma.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>Development Feasibility: Replacement Rent and Land Value</strong></td>
       <td>Uses one development model to solve either for the minimum replacement rent or the maximum supportable land cost, with a live feasibility boundary linking rent, land, NOI, and yield on cost.</td>
       <td><a href="https://desenlin.com/FIN355/development-feasibility.html">Launch the tool</a></td>
