@@ -31,6 +31,25 @@
           "value": "value"
         }
       ]
+    },
+    {
+      "path": "financial-model-explorer.html",
+      "actions": [
+        {
+          "selector": "#cash-years button[data-year=\"2\"]",
+          "event": "activity_start"
+        },
+        {
+          "selector": "#nav-tax",
+          "event": "section_view",
+          "value": "tax"
+        },
+        {
+          "selector": "#nav-sale",
+          "event": "section_view",
+          "value": "sale"
+        }
+      ]
     }
   ]
 }

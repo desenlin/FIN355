@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore Leslie Court cash flow, replacement reserves, and sale-driven investment returns.">
+  <title>Financial Model Explorer</title>
+  <style>
+    :root { --navy:#00274c; --orange:#f58220; --ink:#17212b; --muted:#5e6b78; --line:#d8e0e8; }
+    body { color:var(--ink); background:#eef2f7; font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .topbar { height:8px; background:var(--orange); }
+    .hero { color:white; background:linear-gradient(135deg,var(--navy),#0b3a67); }
+    .hero-inner { padding:34px 0 32px; }
+    .course-tag { display:inline-block; padding:6px 11px; border-radius:999px; background:var(--orange); color:var(--navy); font-size:.78rem; font-weight:800; }
+    h1 { margin:14px 0 12px; font-size:clamp(2.1rem,4.5vw,3.45rem); line-height:1.08; letter-spacing:-.035em; }
+    .hero p { margin:0 0 9px; color:#e4edf6; font-size:1.1rem; }
+    .hero .creator { margin-bottom:0; color:#f8c99f; font-size:.9rem; font-weight:700; }
+    main { padding-block:24px; }
+    .panel { background:white; border:1px solid var(--line); border-radius:16px; padding:22px; }
+    footer { margin-block:28px 0; padding:22px 0 30px; border-top:1px solid var(--line); color:var(--muted); font-size:.8rem; line-height:1.8; }
+    footer p { margin-block:0; }
+    footer strong { color:var(--navy); }
+    .skip-link { position:absolute; left:12px; top:-60px; padding:10px; background:white; color:var(--navy); }
+    .skip-link:focus { top:12px; }
+    :focus-visible { outline:3px solid #0066cc; outline-offset:3px; }
+    button,input {font:inherit} button {cursor:pointer} button {touch-action:manipulation} [hidden]{display:none!important}
+h2,h3,p{margin-top:0} h2{font-size:1.65rem;letter-spacing:-.025em;line-height:1.25;margin-bottom:8px} h3{font-size:1.08rem;line-height:1.35;margin-bottom:16px} p{margin-bottom:12px} button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid #0066cc;outline-offset:3px}
+.case-strip{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;padding-block:18px;color:var(--muted);font-size:.88rem}.case-strip strong{color:var(--navy)}.prototype-label{margin-left:auto;background:#e1e8ef;padding:2px 9px;border-radius:4px;font-size:.75rem;color:#44576c}
+.view-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.view-nav button{border:1px solid var(--line);padding:14px 12px;border-radius:9px;background:white;color:var(--navy);font-weight:650;display:flex;gap:10px;align-items:center;justify-content:center;font-size:.95rem}.view-nav button.active{background:var(--navy);border-color:var(--navy);color:white}.nav-number{font-size:.8rem;border:1px solid currentColor;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-intro{display:flex;gap:18px;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.section-intro p:not(.eyebrow){color:var(--muted);margin-bottom:0}.eyebrow{text-transform:uppercase;letter-spacing:.1em;font-size:.73rem;font-weight:750;color:#52728e;margin-bottom:7px}.context-label{white-space:nowrap;color:var(--muted);font-size:.78rem;border-left:3px solid var(--orange);padding-left:10px;margin-top:12px}
+.year-selector{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px}.year-selector button{background:white;color:var(--navy);border:1px solid var(--line);border-radius:8px;padding:10px 5px;line-height:1.35}.year-selector strong{display:block;font-size:.94rem}.year-selector small{display:block;color:var(--muted);font-size:.74rem;margin-top:3px}.year-selector button[aria-pressed=true]{border-color:var(--navy);background:#e4eef7;box-shadow:inset 0 -3px var(--navy)}
+.market-strip{display:flex;flex-wrap:wrap;gap:8px 25px;padding:0 3px 16px;font-size:.86rem;color:var(--muted)}.market-strip strong{color:var(--ink)}
+.cash-grid{display:grid;grid-template-columns:1.13fr 1fr;gap:18px}.panel-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}.panel-title h3{margin:0}.panel-title>span{font-size:.72rem;color:var(--muted);white-space:nowrap}.cash-panel .small{margin-top:14px;margin-bottom:0}.bridge-row{position:relative;text-align:left;border:0;border-bottom:1px solid #e7edf3;background:transparent;display:block;width:100%;padding:12px 10px;color:var(--ink);border-radius:5px}.bridge-row[aria-pressed=true]{background:#eef5fb;box-shadow:inset 3px 0 #14669b}.bridge-top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:7px}.bridge-name{font-size:.88rem;font-weight:600;line-height:1.35}.bridge-name small{display:block;font-size:.72rem;color:var(--muted);font-weight:400}.bridge-value{font-size:1.15rem;color:var(--navy);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.bar-track{height:5px;background:#e3e9ef;display:block}.bar-fill{height:100%;display:block;background:#2673a5}.bridge-row[aria-pressed=true] .bar-fill{background:#00274c}
+.detail-panel{border-top:4px solid #14669b}.math-row{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px solid #e7edf3;font-size:.86rem}.math-row span:first-child{line-height:1.4}.math-row span:first-child small{display:block;color:var(--muted);font-size:.73rem;margin-top:2px}.math-row .amount{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--navy)}.math-row.total{font-weight:750;border-top:2px solid #adbecf;border-bottom:0;margin-top:4px;padding-top:12px}.math-row.total .amount{font-size:1.13rem}.math-row.negative .amount{color:#9b471f}.insight{font-size:.86rem;background:#f1f6fa;padding:13px 14px;border-radius:7px;color:#264760;margin:17px 0 0}.small{font-size:.78rem;color:var(--muted);line-height:1.6}.inner-details{margin-top:16px;font-size:.83rem}.inner-details summary{font-weight:650;color:#175d8b}.inner-details p{margin-top:12px}.inner-details .math-row{font-size:.79rem}.inner-details .math-row.total .amount{font-size:.95rem}
+.lesson-note{font-size:.86rem;padding:17px 19px;margin-top:18px;background:#e8eef5;border-left:3px solid #7998b5;border-radius:0 8px 8px 0}.disclosure,.prompt,.source-notes{margin-top:18px;padding:16px 20px}.disclosure summary,.prompt summary,.source-notes summary{font-size:.9rem;font-weight:650;color:var(--navy);cursor:pointer}.disclosure[open] summary,.prompt[open] summary,.source-notes[open] summary{margin-bottom:16px}.disclosure p,.prompt p,.source-notes p,.source-notes li{font-size:.86rem}.source-notes{background:#f7f9fc}.source-notes ul{padding-left:23px}.source-notes li{margin-bottom:9px}.text-button{background:none;border:0;padding:0;color:#005f96;text-decoration:underline;font-size:.85rem}.table-scroll{overflow-x:auto;width:100%;margin-top:12px}table{width:100%;border-collapse:collapse;font-size:.8rem;font-variant-numeric:tabular-nums}th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}th{color:var(--navy);background:#f0f5fa}.formula{background:#f1f6fa;border-radius:7px;padding:13px 15px;font-size:.9rem;line-height:1.6;color:var(--navy)}
+.reserve-top{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-bottom:22px}.controls label{font-size:.92rem;font-weight:650;display:block}.controls output{display:block;font-size:2rem;letter-spacing:-.025em;color:var(--navy);font-variant-numeric:tabular-nums;margin:5px 0 12px}.controls input[type=range]{width:100%;accent-color:#175d8b;display:block;cursor:pointer;margin:7px 0;height:25px}.range-ends{display:flex;justify-content:space-between;color:var(--muted);font-size:.75rem}.preset-buttons{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0}.preset-buttons button{border:1px solid #c5d1dd;border-radius:6px;background:#fff;color:var(--navy);font-size:.77rem;padding:7px 10px}.preset-buttons button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:white}.controls .small{margin-bottom:0}.control-scope{font-size:.74rem;line-height:1.6;color:var(--muted);border-top:1px solid var(--line);padding-top:13px;margin:14px 0 0}.chart{width:100%;min-width:0}.chart svg{width:100%;display:block;overflow:visible}.chart-legend{display:flex;gap:15px;flex-wrap:wrap;font-size:.76rem;color:var(--muted);margin:8px 0}.chart-legend span{display:inline-flex;align-items:center;gap:6px}.key{display:inline-block;width:17px;height:3px;background:#14669b}.base-key{height:0;background:none;border-top:3px dashed #889aaa}.operating-key{background:#14669b;height:8px}.refund-key{background:#44a695;height:8px}.sale-key{background:#f58220;height:8px}.reserve-bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px}.funding-bar{height:17px;background:#e9edf2;display:flex;border-radius:4px;overflow:hidden;margin:20px 0 12px}.funding-reserve{background:#14669b}.funding-cash{background:#bf6233}
+.sale-top{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-bottom:18px}.returns-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{background:white;border:1px solid var(--line);border-radius:14px;padding:20px 17px;display:flex;flex-direction:column;justify-content:center}.metric-name{font-size:.81rem;color:var(--muted);font-weight:600;line-height:1.4}.metric-value{font-size:clamp(1.45rem,2.5vw,2.1rem);color:var(--navy);font-weight:750;letter-spacing:-.025em;font-variant-numeric:tabular-nums;margin:12px 0 5px;white-space:nowrap}.metric-unit{font-size:.72rem;color:var(--muted)}.metric-delta{margin-top:13px;padding-top:11px;border-top:1px solid var(--line);color:#9b471f;font-size:.75rem}.metric-delta.neutral{color:var(--muted)}.metric-delta.positive{color:#157058}.sale-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}.sale-formula{font-size:.91rem}.timing-note{border:1px dashed #aab8c7;border-radius:8px;padding:15px;margin-top:18px;font-size:.85rem}.timing-note p{color:var(--muted);margin:5px 0 0}.timeline-panel{margin-top:18px}.terminal-item{margin-bottom:16px}.terminal-label{display:flex;justify-content:space-between;gap:15px;font-size:.84rem}.terminal-label strong{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--navy)}.terminal-track{height:8px;background:#ecf0f4;margin-top:7px;border-radius:3px}.terminal-fill{height:100%;border-radius:3px}.terminal-total{border-top:2px solid #adbecf;padding-top:13px;margin-top:7px}.terminal-total .terminal-label{font-weight:750}.terminal-total strong{font-size:1.15rem}
+@media(max-width:1000px){.cash-grid{grid-template-columns:1fr 1fr}.reserve-top,.sale-top{grid-template-columns:280px 1fr}.returns-grid{gap:8px}.metric{padding:15px 11px}.metric-value{font-size:1.45rem}.panel-title{display:block}.panel-title>span{display:block;margin-top:4px}.view-nav button{font-size:.86rem}.context-label{display:none}}
+@media(max-width:760px){.cash-grid,.reserve-top,.reserve-bottom,.sale-top,.sale-grid{grid-template-columns:1fr}.panel{padding:18px}.view-nav button{font-size:.79rem;padding:11px 6px;gap:6px;flex-direction:column;line-height:1.35}.nav-number{width:21px;height:21px;font-size:.72rem}.section-intro h2{font-size:1.42rem}.section-intro p:not(.eyebrow){font-size:.9rem}.year-selector{gap:4px}.year-selector button{padding:9px 3px}.year-selector strong{font-size:.81rem}.year-selector small{font-size:.64rem}.case-strip{font-size:.79rem;gap:5px 14px}.case-strip strong{flex-basis:100%}.prototype-label{margin-left:0}.returns-grid{min-height:170px}.metric-name{font-size:.73rem}.metric-value{font-size:1.45rem}.metric-unit,.metric-delta{font-size:.68rem}.metric{padding:14px 10px}.chart-panel{min-width:0}.hero-inner{padding-block:28px}.hero p{font-size:1rem}.bridge-row{padding-block:12px}.source-notes li{overflow-wrap:anywhere}}
+@media(max-width:480px){.returns-grid{grid-template-columns:1fr;gap:8px}.metric{display:grid;grid-template-columns:1fr auto;column-gap:15px;padding:14px 16px}.metric-name{font-size:.82rem}.metric-value{grid-column:2;grid-row:1 / span 2;font-size:1.55rem;margin:0;align-self:center}.metric-unit{font-size:.73rem;grid-column:1}.metric-delta{grid-column:1 / -1;font-size:.73rem;border-top:0;margin-top:8px;padding:0}.year-selector{grid-template-columns:repeat(3,1fr)}.year-selector strong{font-size:.85rem}.year-selector small{font-size:.72rem}}
+.tax-split-panel{margin-top:18px}.gain-split{display:flex;height:16px;border-radius:4px;overflow:hidden;background:#e8edf3;margin:19px 0 22px}.gain-rec{background:#14669b}.gain-app{background:#ad622d}.tax-components{display:grid;grid-template-columns:1fr 1fr;gap:34px}.tax-component h4{font-size:1rem;color:var(--navy);margin:0 0 9px;display:flex;align-items:center;gap:9px}.tax-component>p{color:var(--muted);font-size:.84rem;min-height:3em}.tax-dot{width:10px;height:10px;display:inline-block;border-radius:2px;flex-shrink:0}.recapture-dot{background:#14669b}.appreciation-dot{background:#ad622d}.tax-total{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#eaf2f9;border-radius:9px;margin-top:24px;padding:18px 20px;color:var(--navy)}.tax-total p{font-size:.83rem;margin:4px 0 0;color:var(--muted)}#total-sale-tax{font-size:1.8rem;white-space:nowrap;font-variant-numeric:tabular-nums}.tax-rounding{margin:12px 0 0}.section-next{margin:20px 0 0;text-align:right}.next-button{border:1px solid var(--navy);background:var(--navy);color:white;padding:12px 18px;font-size:.87rem;border-radius:8px}.sale-tax-reference{margin-top:15px;margin-bottom:0}
+@media(max-width:1000px){.view-nav button{font-size:.82rem;gap:6px;padding-inline:8px}}
+@media(max-width:760px){.view-nav{grid-template-columns:repeat(2,1fr)}.view-nav button{flex-direction:row;justify-content:flex-start;font-size:.79rem;padding:11px 12px}.tax-components{grid-template-columns:1fr;gap:24px}.tax-component>p{min-height:0}.appreciation-component{border-top:1px solid var(--line);padding-top:23px}.tax-total{flex-wrap:wrap}.tax-total p{font-size:.78rem}.section-next{text-align:left}.next-button{width:100%}}
+@media(prefers-reduced-motion:no-preference){.bar-fill,.terminal-fill{transition:width .18s ease}.view-nav button,.preset-buttons button{transition:background .15s ease}}
+
+  </style>
+  <style id="fin355-tool-layout">
+/* Shared FIN355 frame. Inline with _tools/sync_tool_layout.py for offline use. */
+body.tool-page {
+  --tool-content-width: 1180px;
+  --tool-gutter: 16px;
+  margin: 0;
+}
+
+.tool-page,
+.tool-page * {
+  box-sizing: border-box;
+}
+
+.tool-page .shell {
+  width: min(var(--tool-content-width), calc(100% - 2 * var(--tool-gutter)));
+  max-width: none;
+  margin-inline: auto;
+}
+
+.tool-page > .hero {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+/* Titles and descriptions use the same frame as the tool, with natural wrapping. */
+.tool-page .hero .hero-inner > h1,
+.tool-page .hero .hero-inner > p,
+.tool-page > footer > p {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.tool-page > footer.shell {
+  display: block;
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  body.tool-page { --tool-gutter: 12px; }
+}
+</style>
+  <script defer src="assets/analytics.js" data-ga-id="G-MDGMSFPEH2" data-project="FIN355"></script>
+</head>
+<body class="tool-page">
+  <a class="skip-link" href="#main">Skip to explorer</a>
+  <div class="topbar" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="shell hero-inner">
+      <span class="course-tag">FIN 355 · Real Estate Investment Analysis</span>
+      <h1>Financial Model Explorer</h1>
+      <p>Follow Leslie Court from rental income to investor returns. Trace the cash flow, test the reserve, calculate sale taxes, and examine returns.</p>
+      <p class="creator">Created by Desen Lin · California State University, Fullerton</p>
+    </div>
+  </header>
+<div class="shell case-strip" aria-label="Case overview">
+  <strong>Leslie Court Apartments</strong><span>100 units</span><span>$6.7m purchase</span><span>6-year hold</span><span>75% loan financing</span>
+</div>
+<nav class="shell view-nav" aria-label="Learning views">
+ <button id="nav-cash" class="active" data-view="cash" data-analytics-action="section_view" data-analytics-value="cash" aria-current="page"><span class="nav-number">1</span> Trace the cash flow</button>
+ <button id="nav-reserve" data-view="reserve" data-analytics-action="section_view" data-analytics-value="reserve"><span class="nav-number">2</span> Test the reserve</button>
+ <button id="nav-tax" data-view="tax" data-analytics-action="section_view" data-analytics-value="tax"><span class="nav-number">3</span> Calculate sale taxes</button>
+ <button id="nav-sale" data-view="sale" data-analytics-action="section_view" data-analytics-value="sale"><span class="nav-number">4</span> Sell and measure returns</button>
+</nav>
+<main class="shell" id="main" tabindex="-1">
+ <section id="view-cash" class="view" aria-labelledby="cash-heading">
+  <div class="section-intro"><div><p class="eyebrow">Follow the case</p><h2 id="cash-heading">Where does the rental income go?</h2><p>Select a year, then a cash-flow stage to see its calculation.</p></div><span class="context-label">Original course case</span></div>
+  <div class="year-selector" id="cash-years" aria-label="Select cash-flow year"></div>
+  <div class="market-strip" id="market-strip"></div>
+  <div class="cash-grid">
+   <section class="panel cash-panel" aria-labelledby="bridge-heading"><div class="panel-title"><h3 id="bridge-heading">Cash remaining at each stage</h3><span>Annual dollars</span></div><div id="cash-bridge"></div><p class="small">Bars share the same scale: the selected year’s gross rental revenue. Choose a row to show the work.</p></section>
+   <section class="panel detail-panel" aria-live="polite" aria-atomic="true"><p class="eyebrow" id="step-label"></p><h3 id="step-title"></h3><div id="step-math"></div><p class="insight" id="step-note"></p><div id="step-extra"></div></section>
+  </div>
+  <div class="lesson-note"><strong>Read “NOI” carefully.</strong> This case deducts the annual reserve contribution before NOI. The tool labels it <em>NOI after reserve contribution</em> to make that convention visible. A transfer into reserves sets cash aside; it does not itself pay for an improvement.</div>
+  <details class="panel disclosure"><summary>View the six-year summary</summary><div class="table-scroll" tabindex="0" role="region" aria-label="Six-year baseline summary"><table id="annual-summary"></table></div><p class="small">Operating cash flow excludes the sale and reserve refund. These enter the final year only in “Sell and measure returns.” All displayed dollars are rounded; calculations retain full precision, with annual income taxes rounded to the nearest dollar.</p></details>
+  <details class="panel prompt"><summary>Discussion: Why does Year 2 cash flow fall so sharply?</summary><p>Rent falls 5% while vacancy rises from 7% to 14%. Net rental revenue falls about 12.2%, even before other changes. Lower operating expenses partly offset the decline, but higher property taxes, tenant improvements, and leasing commissions add pressure. The mortgage payment stays fixed.</p><button class="text-button" id="show-year2">Inspect Year 2</button></details>
+ </section>
+ <section id="view-reserve" class="view" hidden aria-labelledby="reserve-heading">
+  <div class="section-intro"><div><p class="eyebrow">Isolate one mechanism</p><h2 id="reserve-heading">Who funds this year’s capital spending?</h2><p>Change the opening reserve and follow the same planned CapEx.</p></div><span class="context-label">Reserve experiment only</span></div>
+  <div class="reserve-top">
+   <section class="panel controls"><label for="initial-reserve">Reserve at acquisition <output id="reserve-output" for="initial-reserve"></output></label><input id="initial-reserve" type="range" min="0" max="300000" step="5000" value="225000"><div class="range-ends"><span>$0</span><span>$300,000</span></div><div class="preset-buttons"><button data-reserve="225000" aria-pressed="true">Course case</button><button data-reserve="0" aria-pressed="false">No prefunding</button><button data-reserve="10000" aria-pressed="false">Partial funding</button></div><p class="small">Annual contribution stays at 4.5% of gross rental revenue. The reserve earns no interest.</p><p class="control-scope">This experiment changes the reserve and unlevered cash available. Loan size, taxes, and investment returns are outside this view; the other views retain the original reserve.</p></section>
+   <section class="panel chart-panel"><div class="panel-title"><h3>Reserve balance through the hold</h3><span>Before refund at sale</span></div><div class="chart-legend"><span><i class="key active-key"></i>Your reserve</span><span><i class="key base-key"></i>Course case</span></div><div id="reserve-chart" class="chart" role="img" aria-label="Reserve balance by year"></div><p class="small" id="reserve-chart-note" aria-live="polite"></p></section>
+  </div>
+  <div class="year-selector" id="reserve-years" aria-label="Select reserve year"></div>
+  <div class="reserve-bottom">
+   <section class="panel"><p class="eyebrow" id="reserve-year-label"></p><h3>The reserve account</h3><div id="reserve-math"></div></section>
+   <section class="panel"><p class="eyebrow">Capital spending is unchanged</p><h3>Funding the CapEx bill</h3><div id="funding-bar" class="funding-bar" role="img"></div><div id="funding-math"></div><p id="funding-note" class="insight" aria-live="polite"></p></section>
+  </div>
+  <details class="panel disclosure"><summary>Why a higher adjusted NOI does not mean free CapEx</summary><p>Prefunding moves cash into a restricted account at acquisition. Later withdrawals can preserve annual distributable cash, but the money was committed earlier. When the reserve is exhausted, only the uncovered portion of CapEx reduces adjusted NOI.</p><p class="formula">Uncovered CapEx = max(0, CapEx − beginning reserve − annual contribution)</p><p id="reserve-conservation"></p><p class="small">This is an undiscounted funding identity. Timing, financing, and opportunity cost still matter. The case loan finances 75% of purchase price plus the initial reserve; changing that reserve in a complete investment model would also change the loan and equity.</p></details>
+  <details class="panel prompt"><summary>Discussion: Does prefunding eliminate capital costs?</summary><p>Try “No prefunding,” then inspect Year 1. The annual contribution covers part of the bill and operating cash funds the remaining amount. Next try “Partial funding”: the initial $10,000 covers part of that shortfall. Compare the cash available with the original case.</p></details>
+ </section>
+ <section id="view-tax" class="view" hidden aria-labelledby="tax-heading">
+  <div class="section-intro"><div><p class="eyebrow">Understand the two tax components</p><h2 id="tax-heading">How is the gain on sale taxed?</h2><p>Find the gain above adjusted cost basis, then separate depreciation recapture from property appreciation.</p></div><span class="context-label">End-of-Year-6 sale</span></div>
+  <div class="sale-top">
+   <section class="panel controls"><label for="tax-exit-cap">Exit cap rate <output id="tax-cap-output" for="tax-exit-cap"></output></label><input id="tax-exit-cap" type="range" min="7" max="10" step="0.1" value="8.5"><div class="range-ends"><span>7.0%</span><span>10.0%</span></div><div class="preset-buttons"><button data-cap="8.5" aria-pressed="true">Base: 8.5%</button><button data-cap="9" aria-pressed="false">Higher: 9%</button><button data-cap="10" aria-pressed="false">Stress: 10%</button></div><p class="small">This setting is shared with Section 4. It changes sale price and taxes while the property’s cost basis stays fixed.</p></section>
+   <section class="panel"><p class="eyebrow">First, calculate the gain</p><h3>Net sale price minus adjusted cost basis</h3><div id="tax-gain-math" aria-live="polite"></div><details class="inner-details"><summary>How is adjusted cost basis calculated?</summary><div id="tax-basis-math"></div><p class="small">Capitalized TIs and CapEx increase basis. Depreciation of the building, TIs, and CapEx reduces it. Leasing-commission amortization is separate.</p></details></section>
+  </div>
+  <section class="panel tax-split-panel"><p class="eyebrow">Then, apply each tax rate</p><h3>Two parts of the same gain</h3><div id="gain-split" class="gain-split" role="img"></div><div class="tax-components">
+   <section class="tax-component recapture-component"><h4><span class="tax-dot recapture-dot" aria-hidden="true"></span>Depreciation recapture</h4><p>Depreciation lowered the tax basis during ownership. This part of the gain reflects those prior deductions.</p><div id="recapture-math"></div></section>
+   <section class="tax-component appreciation-component"><h4><span class="tax-dot appreciation-dot" aria-hidden="true"></span>Property appreciation</h4><p>The remaining gain is the net sale price above acquisition cost plus capitalized improvements.</p><div id="appreciation-math"></div></section>
+  </div><div class="tax-total" aria-live="polite"><div><strong>Total sale income tax</strong><p>Tax on depreciation recapture + tax on property appreciation</p></div><strong id="total-sale-tax"></strong></div><p class="small tax-rounding">Displayed dollars are rounded; the total uses unrounded values. The 25% and 15% tax rates are fixed teaching assumptions.</p></section>
+  <div class="lesson-note"><strong>Mortgage payoff does not reduce the taxable gain.</strong> It reduces the cash distributed to equity after the sale. Calculate property gain and sale taxes first, then subtract the remaining loan balance in Section 4.</div>
+  <details class="panel prompt"><summary>Discussion: Why does the exit cap rate affect the two components differently?</summary><p id="tax-discussion"></p></details>
+  <div class="section-next"><button id="tax-to-sale" class="next-button">Continue to 4 · Sell and measure returns</button></div>
+ </section>
+ <section id="view-sale" class="view" hidden aria-labelledby="sale-heading">
+  <div class="section-intro"><div><p class="eyebrow">One assumption, one comparison</p><h2 id="sale-heading">How much of the return comes from selling?</h2><p>Change only the exit cap rate. Operations, financing, and the original reserve stay fixed.</p></div><span class="context-label">End-of-Year-6 sale</span></div>
+  <div class="sale-top">
+   <section class="panel controls"><label for="exit-cap">Exit cap rate <output id="cap-output" for="exit-cap"></output></label><input id="exit-cap" type="range" min="7" max="10" step="0.1" value="8.5"><div class="range-ends"><span>7.0%</span><span>10.0%</span></div><div class="preset-buttons"><button data-cap="8.5" aria-pressed="true">Base: 8.5%</button><button data-cap="9" aria-pressed="false">Higher: 9%</button><button data-cap="10" aria-pressed="false">Stress: 10%</button></div><p class="small">Year 7 adjusted NOI stays at <strong id="forward-noi"></strong>. Selling costs are 2% of gross price.</p></section>
+   <div class="returns-grid" id="return-metrics" aria-live="polite" aria-atomic="true"></div>
+  </div>
+  <div class="sale-grid">
+   <section class="panel"><div class="panel-title"><h3>From property value to equity proceeds</h3><span>At sale</span></div><div class="formula sale-formula" id="sale-formula"></div><div id="sale-math"></div><p class="small sale-tax-reference">Sale income tax combines depreciation recapture and appreciation taxes. <button id="sale-to-tax" class="text-button">Review the calculation in Section 3</button>.</p></section>
+   <section class="panel"><div class="panel-title"><h3>What arrives in Year 6?</h3><span>After tax, to equity</span></div><div id="terminal-breakdown"></div><p class="insight" id="sale-insight"></p><div class="timing-note"><strong>Year 7 is a valuation input.</strong><p>The next owner’s forward income sets the sale price at the end of Year 6. It is not an additional Year 7 distribution to this investor.</p></div></section>
+  </div>
+  <section class="panel timeline-panel"><div class="panel-title"><h3>The investor’s cash-flow timeline</h3><span>Annual dollars, after tax</span></div><div id="return-chart" class="chart" role="img" aria-label="Investment cash-flow timeline from acquisition through Year 6"></div><div class="chart-legend"><span><i class="key operating-key"></i>Operating cash flow</span><span><i class="key refund-key"></i>Reserve refund</span><span><i class="key sale-key"></i>Net sale proceeds</span></div><details class="inner-details"><summary>Show exact cash flows and return formulas</summary><div class="table-scroll" tabindex="0" role="region" aria-label="Cash flows used in return calculation"><table id="returns-table"></table></div><div id="return-formulas"></div></details></section>
+  <details class="panel prompt"><summary>Discussion: Why does a 0.5-point cap-rate increase matter?</summary><p id="cap-discussion"></p><p>Explain the change using the sale-price denominator, then trace the reduction through selling costs, sale taxes, equity proceeds, and the return measures.</p></details>
+ </section>
+ <details class="panel source-notes"><summary>Case assumptions and teaching conventions</summary>
+  <ul><li><strong>Acquisition and financing:</strong> $6.7 million purchase, $225,000 initial reserve, and a six-year hold. The loan funds 75% of purchase price plus the reserve, at 7% interest with 30-year monthly amortization. Equity also pays 1% loan points.</li><li><strong>Operating cash flow:</strong> NOI is measured after the reserve contribution. Adjusted NOI deducts TIs, leasing commissions, and CapEx not covered by reserve withdrawals.</li><li><strong>Tax assumptions:</strong> 21% on operating taxable income, 25% on depreciation recapture, and 15% on property appreciation. Building depreciation spans 27.5 years; TIs and leasing commissions use one year; CapEx and loan points use seven years, with remaining loan points deducted at sale.</li><li><strong>Sale and experiments:</strong> Sale value uses forward adjusted NOI of $793,076.91, with 2% selling costs. The reserve experiment stands alone. Sections 3 and 4 share the same exit cap rate and retain the original reserve and financing.</li></ul>
+ </details>
+</main>
+
+  <footer class="shell">
+    <p><strong>Created by Desen Lin</strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
+    <p>This educational illustration is not financial or investment advice.</p>
+  </footer>
+  <script>
+/* Leslie Court teaching model. Source: supplied Chapter 6 solution workbook. */
+const CASE = Object.freeze({price:6700000,land:1150000,reserve:225000,ltv:.75,points:.01,rate:.07,months:360,hold:6,tax:.21,discount:.15,exitCap:.085,selling:.02,recapture:.25,gainTax:.15,reserveRate:.045});
+const DRIVERS = Object.freeze({rent:[1100305,-.05,.01,.025,.035,.035,.035],vacancy:[.07,.14,.12,.10,.07,.05,.05],ancillary:[6052,-.08,-.07,-.03,.05,.03,.03],opex:[102934,-.02,-.01,0,.04,.035,.03],ti:[35000,.086,.104,-.099,-.10,-.082,-.081],lc:[20458,.27,.108,.18,-.017,-.148,-.033],capex:[75264,-.089,.085,.036,.195,-.219,-.024]});
+const sum = xs => xs.reduce((a,b)=>a+b,0);
+function series(xs){const out=[xs[0]];for(let i=1;i<xs.length;i++)out.push(out[i-1]*(1+xs[i]));return out;}
+function reserveSchedule(initial,rate,rows){let balance=initial;return rows.map(r=>{const begin=balance,contribution=r.rent*rate,available=begin+contribution,draw=Math.min(available,r.capex),uncovered=Math.max(0,r.capex-draw);balance=available-draw;return {...r,begin,contribution,available,draw,uncovered,end:balance,noi:r.egi-r.opex-r.retax-contribution,adjusted:r.egi-r.opex-r.retax-contribution-r.ti-r.lc-uncovered};});}
+function buildBase(){
+ const vectors=Object.fromEntries(['rent','ancillary','opex','ti','lc','capex'].map(k=>[k,series(DRIVERS[k])]));
+ const loan=(CASE.price+CASE.reserve)*CASE.ltv,points=loan*CASE.points,initial=CASE.price+CASE.reserve-loan+points;
+ const mrate=CASE.rate/12,payment=loan*mrate/(1-Math.pow(1+mrate,-CASE.months)),debtService=payment*12;
+ let balance=loan,cumulativeCapex=0;const raw=[];
+ for(let i=0;i<7;i++){const r={year:i+1};for(const k in vectors)r[k]=vectors[k][i];r.vacancy=DRIVERS.vacancy[i];r.vacancyLoss=r.rent*r.vacancy;r.egi=r.rent-r.vacancyLoss+r.ancillary;r.retax=110031*Math.pow(1.03,i);r.principal=0;r.interest=0;
+  for(let m=0;m<12;m++){const interest=balance*mrate,principal=payment-interest;balance-=principal;r.interest+=interest;r.principal+=principal;}
+  r.balance=balance;r.debtService=debtService;r.depBuilding=(CASE.price-CASE.land)/27.5;r.depTI=r.ti;cumulativeCapex+=r.capex;r.depCapex=cumulativeCapex/7;r.amortLC=r.lc;r.amortPoints=points/7*(i===5?2:1);raw.push(r);
+ }
+ const rows=reserveSchedule(CASE.reserve,CASE.reserveRate,raw);
+ for(const r of rows){r.beforeTax=r.adjusted-r.debtService;r.taxable=r.beforeTax-r.depBuilding-r.depTI-r.depCapex-r.amortLC-r.amortPoints+r.contribution+r.ti+r.lc+r.principal;r.tax=Math.round(Math.max(0,r.taxable)*CASE.tax);r.operatingCF=r.beforeTax-r.tax;}
+ const owned=rows.slice(0,6),improvements=sum(owned.map(r=>r.ti+r.capex)),depreciation=sum(owned.map(r=>r.depBuilding+r.depTI+r.depCapex));
+ return {rows,loan,points,initial,payment,debtService,improvements,depreciation,basis:CASE.price+improvements-depreciation};
+}
+function npv(rate,flows){return sum(flows.map((v,t)=>v/Math.pow(1+rate,t)));}
+function irr(flows){let lo=-.99,hi=1;while(npv(hi,flows)>0&&hi<100)hi*=2;for(let i=0;i<100;i++){const mid=(lo+hi)/2;if(npv(mid,flows)>0)lo=mid;else hi=mid;}return(lo+hi)/2;}
+function saleResults(base,cap){
+ const gross=base.rows[6].adjusted/cap,cost=gross*CASE.selling,netPrice=gross-cost,gain=netPrice-base.basis;
+ const recapture=Math.min(Math.max(0,gain),base.depreciation),appreciation=Math.max(0,gain-recapture),saleTax=recapture*CASE.recapture+appreciation*CASE.gainTax,mortgage=base.rows[5].balance,proceeds=netPrice-saleTax-mortgage,refund=base.rows[5].end;
+ const flows=[-base.initial,...base.rows.slice(0,6).map(r=>r.operatingCF)];flows[6]+=refund+proceeds;
+ return {cap,gross,cost,netPrice,gain,recapture,appreciation,saleTax,mortgage,proceeds,refund,flows,irr:irr(flows),npv:npv(CASE.discount,flows),multiple:sum(flows.slice(1))/base.initial,saleShare:proceeds/sum(flows.slice(1))};
+}
+const BASE=buildBase();
+
+const $=id=>document.getElementById(id);
+const fmt=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+const money=v=>fmt.format(Math.abs(v)<.0001?0:v);
+const pct=(v,d=1)=>(v*100).toFixed(d)+'%';
+const signedMoney=v=>(v>0?'+':'')+money(v);
+const compact=v=>Math.abs(v)>=1e6?'$'+(v/1e6).toFixed(2)+'m':'$'+Math.round(v/1000)+'k';
+const state={view:'cash',year:1,step:0,reserve:225000,reserveYear:1,cap:.085};
+const phase=y=>y<=2?'Decline':y<=4?'Recovery':'Stable / sale';
+function math(rows){return rows.map(([label,value,type='',sub=''])=>`<div class="math-row ${type}"><span>${label}${sub?`<small>${sub}</small>`:''}</span><span class="amount">${typeof value==='number'?money(value):value}</span></div>`).join('');}
+function makeYears(id,key){$(id).innerHTML=Array.from({length:6},(_,i)=>`<button data-year="${i+1}" aria-pressed="${state[key]===i+1}"><strong>Year ${i+1}</strong><small>${phase(i+1)}</small></button>`).join('');$(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{state[key]=Number(b.dataset.year);key==='year'?renderCash():renderReserve();$(id).querySelector(`[data-year="${state[key]}"]`).focus({preventScroll:true});}));}
+function renderCash(){
+ makeYears('cash-years','year');const r=BASE.rows[state.year-1];
+ $('market-strip').innerHTML=`<span>Rent growth: <strong>${r.year===1?'Starting year':pct(DRIVERS.rent[r.year-1])}</strong></span><span>Vacancy: <strong>${pct(r.vacancy)}</strong></span><span>Gross rent: <strong>${money(r.rent)}</strong></span>`;
+ const steps=[['Effective gross income',r.egi,'Rent after vacancy, plus other income'],['NOI after reserve contribution',r.noi,'After operating costs and reserve funding'],['Adjusted NOI',r.adjusted,'Cash available before financing'],['Before-tax levered cash flow',r.beforeTax,'After the mortgage payment'],['After-tax operating cash flow',r.operatingCF,'Before sale proceeds and reserve refund']];
+ $('cash-bridge').innerHTML=steps.map(([name,val,sub],i)=>`<button class="bridge-row" data-step="${i}" aria-pressed="${state.step===i}" aria-controls="step-math"><span class="bridge-top"><span class="bridge-name">${name}<small>${sub}</small></span><span class="bridge-value">${money(val)}</span></span><span class="bar-track" aria-hidden="true"><span class="bar-fill" style="width:${val/r.rent*100}%"></span></span></button>`).join('');
+ $('cash-bridge').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{state.step=Number(b.dataset.step);renderCash();$('cash-bridge').querySelector(`[data-step="${state.step}"]`).focus({preventScroll:true});}));
+ const formulas=[
+  [['Gross rental revenue',r.rent,'',r.year===1?'Given starting revenue':`${money(BASE.rows[r.year-2].rent)} × (1 ${DRIVERS.rent[r.year-1]<0?'−':'+'} ${pct(Math.abs(DRIVERS.rent[r.year-1]))})`],['Vacancy loss',-r.vacancyLoss,'negative',`${pct(r.vacancy)} × ${money(r.rent)}`],['Ancillary income',r.ancillary],['Effective gross income',r.egi,'total']],
+  [['Effective gross income',r.egi],['Operating expenses',-r.opex,'negative'],['Real estate taxes',-r.retax,'negative'],['Transfer to replacement reserve',-r.contribution,'negative',`4.5% × gross rent of ${money(r.rent)}`],['NOI after reserve contribution',r.noi,'total']],
+  [['NOI after reserve contribution',r.noi],['Tenant improvements (TI)',-r.ti,'negative'],['Leasing commissions (LC)',-r.lc,'negative'],['Capital expenditures (CapEx)',-r.capex,'negative'],['Withdrawal from the reserve',r.draw],['Adjusted NOI',r.adjusted,'total']],
+  [['Adjusted NOI',r.adjusted],['Mortgage interest',-r.interest,'negative'],['Mortgage principal',-r.principal,'negative'],['Before-tax levered cash flow',r.beforeTax,'total']],
+  [['Before-tax levered cash flow',r.beforeTax],['Operating income tax',-r.tax,'negative',`21% × taxable income of ${money(r.taxable)}; rounded`],['After-tax operating cash flow',r.operatingCF,'total']]
+ ];
+ const notes=[`Vacancy applies to gross rental revenue. Ancillary income is then added separately. ${r.year===2?'Both lower rents and a higher vacancy rate reduce Year 2 collections.':''}`,`The ${money(r.contribution)} transfer remains in the reserve account until drawn. It is not an immediate tax deduction.`,`The reserve covers all ${money(r.capex)} of CapEx in the course case. Deduct the spending and add the withdrawal once; their net effect here is zero.`,`The annual mortgage payment is ${money(r.debtService)}. Both interest and principal reduce cash, but principal repayment does not reduce taxable income.`,`Taxable income differs from cash flow because deductions and cash payments do not always occur together. ${r.year===6?'The reserve refund and sale proceeds are added separately in the sale view.':''}`];
+ $('step-label').textContent=`Year ${r.year} · Step ${state.step+1} of 5`;$('step-title').textContent=steps[state.step][0];$('step-math').innerHTML=math(formulas[state.step]);$('step-note').textContent=notes[state.step];
+ $('step-extra').innerHTML=state.step===4?`<details class="inner-details"><summary>Trace taxable income</summary>${math([['Before-tax cash flow',r.beforeTax],['Add reserve contribution',r.contribution],['Add TI cash spending',r.ti],['Add LC cash spending',r.lc],['Add principal repayment',r.principal],['Deduct building depreciation',-r.depBuilding,'negative'],['Deduct TI depreciation',-r.depTI,'negative'],['Deduct CapEx depreciation',-r.depCapex,'negative'],['Deduct LC amortization',-r.amortLC,'negative'],['Deduct loan-point amortization',-r.amortPoints,'negative'],['Taxable income',r.taxable,'total']])}<p class="small">The course deducts TIs and LCs over one year. Their cash addbacks and deductions offset. Depreciation reduces taxable income without being a current cash payment. At sale, remaining loan points are deducted.</p></details>`:state.step===3?`<details class="inner-details"><summary>Where does the mortgage payment come from?</summary><p class="formula">Monthly payment = L × r ÷ [1 − (1 + r)<sup>−360</sup>]</p><p class="small">L = ${money(BASE.loan)} and r = 7% ÷ 12. Monthly payment is ${money(BASE.payment)}. Summing 12 monthly payments gives annual debt service; summing the monthly interest and principal separately gives this year’s split.</p></details>`:'';
+ const lines=[['Gross rent','rent'],['Effective gross income','egi'],['NOI after reserve contribution','noi'],['Adjusted NOI','adjusted'],['Before-tax levered cash flow','beforeTax'],['Income tax','tax'],['After-tax operating cash flow','operatingCF']];
+ $('annual-summary').innerHTML=`<caption class="small">Original course case, annual dollars</caption><thead><tr><th scope="col">Cash-flow line</th>${BASE.rows.slice(0,6).map(r=>`<th scope="col">Year ${r.year}</th>`).join('')}</tr></thead><tbody>${lines.map(([name,key])=>`<tr><th scope="row">${name}</th>${BASE.rows.slice(0,6).map(r=>`<td>${money(r[key])}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+function svgText(x,y,str,anchor='start',extra=''){return `<text x="${x}" y="${y}" text-anchor="${anchor}" fill="#536678" font-size="12" ${extra}>${str}</text>`;}
+function reserveChart(rows){
+ const w=Math.max(280,$('reserve-chart').clientWidth),h=235,left=64,right=16,top=16,bottom=45,pw=w-left-right,ph=h-top-bottom,max=Math.max(250000,state.reserve)*1.08;
+ const current=[state.reserve,...rows.map(r=>r.end)],base=[CASE.reserve,...BASE.rows.slice(0,6).map(r=>r.end)],x=i=>left+i/6*pw,y=v=>top+ph*(1-v/max);
+ let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>Reserve balance through Year 6</title><desc>Course case begins with 225,000 dollars. Your reserve begins with ${state.reserve} dollars. Year 6 balance is ${rows[5].end.toFixed(0)} dollars before refund.</desc>`;
+ for(let i=0;i<=3;i++){const v=max*i/3;svg+=`<line x1="${left}" x2="${w-right}" y1="${y(v)}" y2="${y(v)}" stroke="#e0e7ee"/>`+svgText(left-9,y(v)+4,'$'+Math.round(v/1000)+'k','end');}
+ svg+=svgText(left,12,'Reserve balance ($)');
+ for(let i=0;i<7;i++){if(w<410&&i%2===1)continue;svg+=svgText(x(i),h-24,i===0?'0':String(i),'middle');}svg+=svgText((left+w-right)/2,h-5,'Year','middle');
+ svg+=`<polyline points="${base.map((v,i)=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="#889aaa" stroke-width="3" stroke-dasharray="6 5"/>`;
+ svg+=`<polyline points="${current.map((v,i)=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="#14669b" stroke-width="3"/>`;
+ current.forEach((v,i)=>{svg+=`<circle cx="${x(i)}" cy="${y(v)}" r="${i===state.reserveYear?6:4}" fill="#14669b"><title>Year ${i}: ${money(v)}</title></circle>`;});svg+='</svg>';$('reserve-chart').innerHTML=svg;
+}
+function renderReserve(){
+ const rows=reserveSchedule(state.reserve,CASE.reserveRate,BASE.rows.slice(0,6)),r=rows[state.reserveYear-1],original=BASE.rows[state.reserveYear-1];
+ $('reserve-output').textContent=money(state.reserve);$('initial-reserve').value=state.reserve;document.querySelectorAll('[data-reserve]').forEach(b=>b.setAttribute('aria-pressed',Number(b.dataset.reserve)===state.reserve));makeYears('reserve-years','reserveYear');reserveChart(rows);
+ const depleted=rows.find(r=>r.uncovered>.001);$('reserve-chart-note').textContent=depleted?`CapEx first needs operating cash in Year ${depleted.year}. Year 6 reserve refund: ${money(rows[5].end)}.`:`The reserve covers all planned CapEx. Year 6 reserve refund: ${money(rows[5].end)}.`;
+ $('reserve-year-label').textContent=`Year ${r.year} · ${phase(r.year)}`;
+ $('reserve-math').innerHTML=math([['Beginning balance',r.begin],['Annual contribution',r.contribution,'',`4.5% × gross rent of ${money(r.rent)}`],['Available for CapEx',r.available,'total'],['CapEx withdrawal',-r.draw,'negative',`Lesser of ${money(r.available)} available and ${money(r.capex)} CapEx`],['Ending balance',r.end,'total']]);
+ $('funding-bar').innerHTML=`<span class="funding-reserve" style="width:${r.draw/r.capex*100}%"></span><span class="funding-cash" style="width:${r.uncovered/r.capex*100}%"></span>`;$('funding-bar').setAttribute('aria-label',`${money(r.draw)} from reserves and ${money(r.uncovered)} from operating cash`);
+ $('funding-math').innerHTML=math([['Total planned CapEx',r.capex],['Funded by reserve withdrawal',r.draw],['Funded by operating cash',r.uncovered,r.uncovered>.001?'negative':''],['Adjusted NOI',r.adjusted,'total'],['Original case adjusted NOI',original.adjusted]]);
+ $('funding-note').textContent=r.uncovered>.001?`${money(r.uncovered)} is uncovered. Adjusted NOI falls by that amount relative to the original case. The initial reserve is applied before calculating the shortfall.`:'The reserve pays the entire CapEx bill. Adjusted NOI still deducts the annual contribution, TIs, and LCs.';
+ $('reserve-conservation').innerHTML=`Across six years: <strong>${money(state.reserve)}</strong> initial reserve + <strong>${money(sum(rows.map(r=>r.contribution)))}</strong> contributions + <strong>${money(sum(rows.map(r=>r.uncovered)))}</strong> uncovered CapEx − <strong>${money(rows[5].end)}</strong> refund = <strong>${money(sum(rows.map(r=>r.capex)))}</strong> total CapEx.`;
+}
+function returnChart(s){
+ const w=Math.max(280,$('return-chart').clientWidth),h=280,left=64,right=18,top=24,bottom=43,pw=w-left-right,ph=h-top-bottom,min=-BASE.initial*1.15,max=s.flows[6]*1.18,y=v=>top+(max-v)/(max-min)*ph,x=i=>left+(i+.5)/7*pw,bw=Math.min(68,pw/7*.53);
+ let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>After-tax investor cash flows, Year 0 through Year 6</title><desc>Initial outlay ${money(BASE.initial)}. Year 6 cash flow ${money(s.flows[6])}, including ${money(s.proceeds)} sale proceeds.</desc>`;
+ const topMillion=Math.floor(max/1e6),botMillion=Math.ceil(min/1e6);
+ for(let n=botMillion;n<=topMillion;n++){const yy=y(n*1e6);svg+=`<line x1="${left}" x2="${w-right}" y1="${yy}" y2="${yy}" stroke="${n===0?'#91a6b8':'#e5ebf1'}"/>`+svgText(left-9,yy+4,(n<0?'−':'')+'$'+Math.abs(n)+'m','end');}svg+=svgText(left,13,'Cash flow ($)');
+ for(let i=0;i<7;i++){
+  if(i===0){svg+=`<rect x="${x(i)-bw/2}" y="${y(0)}" width="${bw}" height="${y(-BASE.initial)-y(0)}" fill="#7f91a2"><title>Initial equity including loan points: ${money(-BASE.initial)}</title></rect>`;}
+  else {const op=BASE.rows[i-1].operatingCF;svg+=`<rect x="${x(i)-bw/2}" y="${y(op)}" width="${bw}" height="${y(0)-y(op)}" fill="#14669b"><title>Year ${i} operating cash flow: ${money(op)}</title></rect>`;if(i===6){svg+=`<rect x="${x(i)-bw/2}" y="${y(op+s.refund)}" width="${bw}" height="${y(op)-y(op+s.refund)}" fill="#44a695"><title>Reserve refund: ${money(s.refund)}</title></rect><rect x="${x(i)-bw/2}" y="${y(s.flows[6])}" width="${bw}" height="${y(op+s.refund)-y(s.flows[6])}" fill="#f58220"><title>Net sale proceeds: ${money(s.proceeds)}</title></rect>`;}}
+  if(w>=420||i%2===0)svg+=svgText(x(i),h-22,String(i),'middle');
+  if((w>700&&i>0)||i===6)svg+=svgText(x(i),y(s.flows[i])-8,compact(s.flows[i]),'middle');
+ }svg+=svgText((left+w-right)/2,h-3,'Year (0 = acquisition)','middle')+'</svg>';$('return-chart').innerHTML=svg;
+}
+function renderTax(){
+ const s=saleResults(BASE,state.cap);
+ $('tax-cap-output').textContent=pct(state.cap);$('tax-exit-cap').value=(state.cap*100).toFixed(1);document.querySelectorAll('[data-cap]').forEach(el=>el.setAttribute('aria-pressed',Math.abs(Number(el.dataset.cap)/100-state.cap)<1e-8));
+ $('tax-gain-math').innerHTML=math([['Gross sale price',s.gross,'',`${money(BASE.rows[6].adjusted)} forward adjusted NOI ÷ ${pct(state.cap)}`],['Selling costs (2%)',-s.cost,'negative'],['Net sale price',s.netPrice,'total'],['Less adjusted cost basis',-BASE.basis,'negative'],['Total gain on sale',s.gain,'total']]);
+ $('tax-basis-math').innerHTML=math([['Acquisition cost',CASE.price],['Add TIs and CapEx, Years 1–6',BASE.improvements],['Less accumulated depreciation',-BASE.depreciation,'negative'],['Adjusted cost basis',BASE.basis,'total']]);
+ $('recapture-math').innerHTML=math([['Depreciation portion of the gain',s.recapture,'','Accumulated depreciation of the building, TIs, and CapEx'],['Tax rate','25%'],['Tax on depreciation recapture',s.recapture*CASE.recapture,'total']]);
+ $('appreciation-math').innerHTML=math([['Appreciation portion of the gain',s.appreciation,'',`${money(s.gain)} total gain − ${money(s.recapture)} recapture`],['Tax rate','15%'],['Tax on property appreciation',s.appreciation*CASE.gainTax,'total']]);
+ $('gain-split').innerHTML=`<span class="gain-rec" style="width:${s.recapture/s.gain*100}%"></span><span class="gain-app" style="width:${s.appreciation/s.gain*100}%"></span>`;
+ $('gain-split').setAttribute('aria-label',`The total gain of ${money(s.gain)} consists of ${money(s.recapture)} depreciation recapture and ${money(s.appreciation)} property appreciation.`);
+ $('total-sale-tax').textContent=money(s.saleTax);
+ $('tax-discussion').textContent=`Across the 7%–10% exit-cap range, sale price remains above acquisition cost plus improvements. Accumulated depreciation stays fixed, so the recapture component remains ${money(BASE.depreciation)} and its tax remains ${money(BASE.depreciation*CASE.recapture)}. A higher exit cap lowers the sale price, reducing the appreciation component and its tax. The tax savings offset only part of the loss in sale proceeds.`;
+}
+function renderSale(){
+ const s=saleResults(BASE,state.cap),b=saleResults(BASE,CASE.exitCap);$('cap-output').textContent=pct(state.cap);$('exit-cap').value=(state.cap*100).toFixed(1);document.querySelectorAll('[data-cap]').forEach(el=>el.setAttribute('aria-pressed',Math.abs(Number(el.dataset.cap)/100-state.cap)<1e-8));$('forward-noi').textContent=money(BASE.rows[6].adjusted);
+ const metrics=[['After-tax IRR',pct(s.irr,2),'Annual internal rate of return',s.irr-b.irr,(s.irr-b.irr>=0?'+':'')+((s.irr-b.irr)*100).toFixed(2)+' pp'],['NPV at 15%',money(s.npv),'Present value after initial equity',s.npv-b.npv,signedMoney(s.npv-b.npv)],['Equity multiple',s.multiple.toFixed(2)+'×','Total distributions ÷ initial equity',s.multiple-b.multiple,(s.multiple-b.multiple>=0?'+':'')+(s.multiple-b.multiple).toFixed(2)+'×']];
+ $('return-metrics').innerHTML=metrics.map(([name,v,unit,diff,ds])=>`<div class="metric"><span class="metric-name">${name}</span><strong class="metric-value">${v}</strong><span class="metric-unit">${unit}</span><span class="metric-delta ${Math.abs(diff)<1e-7?'neutral':diff>0?'positive':''}">${Math.abs(diff)<1e-7?'Original 8.5% case':ds+' vs. 8.5% case'}</span></div>`).join('');
+ $('sale-formula').innerHTML=`<strong>Gross sale price = Year 7 adjusted NOI ÷ exit cap</strong><br>${money(BASE.rows[6].adjusted)} ÷ ${pct(state.cap)} = ${money(s.gross)}`;
+ $('sale-math').innerHTML=math([['Gross sale price',s.gross],['Selling costs (2%)',-s.cost,'negative'],['Net sale price',s.netPrice,'total'],['Sale income tax',-s.saleTax,'negative'],['Mortgage payoff',-s.mortgage,'negative'],['Net sale proceeds to equity',s.proceeds,'total']]);
+ const items=[['Operating cash flow',BASE.rows[5].operatingCF,'#14669b'],['Reserve refund',s.refund,'#44a695'],['Net sale proceeds',s.proceeds,'#f58220']];
+ $('terminal-breakdown').innerHTML=items.map(([name,v,color])=>`<div class="terminal-item"><div class="terminal-label"><span>${name}</span><strong>${money(v)}</strong></div><div class="terminal-track"><div class="terminal-fill" style="width:${v/s.flows[6]*100}%;background:${color}"></div></div></div>`).join('')+`<div class="terminal-total"><div class="terminal-label"><span>Total Year 6 distribution</span><strong>${money(s.flows[6])}</strong></div></div>`;
+ $('sale-insight').textContent=`Net sale proceeds provide ${pct(s.saleShare)} of all six years’ positive distributions, excluding the reserve refund from sale proceeds. This makes the return sensitive to the exit valuation.`;
+ $('returns-table').innerHTML=`<caption class="small">Cash flows used in IRR, NPV, and equity multiple</caption><thead><tr><th scope="col">Year</th>${s.flows.map((_,i)=>`<th scope="col">${i}</th>`).join('')}</tr></thead><tbody><tr><th scope="row">After-tax equity cash flow</th>${s.flows.map(v=>`<td>${money(v)}</td>`).join('')}</tr></tbody>`;
+ $('return-formulas').innerHTML=`<p class="formula">Initial equity = 25% × ($6,700,000 + $225,000) + 1% × $5,193,750 = ${money(BASE.initial)}<br>NPV = −initial equity + Σ [CF<sub>t</sub> ÷ 1.15<sup>t</sup>], for t = 1,…,6<br>IRR is the discount rate that makes NPV equal zero.<br>Equity multiple = ${money(sum(s.flows.slice(1)))} ÷ ${money(BASE.initial)} = ${s.multiple.toFixed(2)}×</p>`;
+ const c9=saleResults(BASE,.09);$('cap-discussion').textContent=`At 8.5%, gross sale price is ${money(b.gross)} and after-tax IRR is ${pct(b.irr,2)}. At 9.0%, price falls to ${money(c9.gross)} and IRR falls to ${pct(c9.irr,2)}, although all operating cash flows are unchanged.`;returnChart(s);
+}
+function showView(view){state.view=view;document.querySelectorAll('.view').forEach(el=>el.hidden=el.id!=='view-'+view);document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});if(view==='reserve')renderReserve();else if(view==='sale')renderSale();else if(view==='tax')renderTax();else renderCash();}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+$('initial-reserve').addEventListener('input',e=>{state.reserve=Number(e.target.value);renderReserve();});
+document.querySelectorAll('[data-reserve]').forEach(b=>b.addEventListener('click',()=>{state.reserve=Number(b.dataset.reserve);renderReserve();}));
+function updateExitCap(value){state.cap=value;renderTax();renderSale();}
+$('exit-cap').addEventListener('input',e=>updateExitCap(Number(e.target.value)/100));
+$('tax-exit-cap').addEventListener('input',e=>updateExitCap(Number(e.target.value)/100));
+document.querySelectorAll('[data-cap]').forEach(b=>b.addEventListener('click',()=>updateExitCap(Number(b.dataset.cap)/100)));
+$('tax-to-sale').addEventListener('click',()=>{showView('sale');$('sale-heading').scrollIntoView({block:'start'});$('nav-sale').focus({preventScroll:true});});
+$('sale-to-tax').addEventListener('click',()=>{showView('tax');$('tax-heading').scrollIntoView({block:'start'});$('nav-tax').focus({preventScroll:true});});
+$('show-year2').addEventListener('click',()=>{state.year=2;state.step=0;renderCash();$('cash-years').scrollIntoView({block:'center'});$('cash-years').querySelector('[data-year="2"]').focus({preventScroll:true});});
+let resizeFrame;const resizeObserver=new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{if(state.view==='reserve')reserveChart(reserveSchedule(state.reserve,CASE.reserveRate,BASE.rows.slice(0,6)));if(state.view==='sale')returnChart(saleResults(BASE,state.cap));});});resizeObserver.observe($('main'));
+renderCash();
+
+</script>
+</body>
+</html>
+

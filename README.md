@@ -79,6 +79,11 @@ The collection is designed to grow over time. New interactive tools and course p
       <td><a href="https://desenlin.com/FIN355/property-pro-forma.html">Launch the tool</a></td>
     </tr>
     <tr>
+      <td><strong>Financial Model Explorer</strong></td>
+      <td>Traces Leslie Court’s cash flows, tests replacement reserves, separates sale taxes, and shows how exit cap rates change investment returns.</td>
+      <td><a href="https://desenlin.com/FIN355/financial-model-explorer.html">Launch the tool</a></td>
+    </tr>
+    <tr>
       <td><strong>Development Feasibility: Replacement Rent and Land Value</strong></td>
       <td>Uses one development model to solve either for the minimum replacement rent or the maximum supportable land cost, with a live feasibility boundary linking rent, land, NOI, and yield on cost.</td>
       <td><a href="https://desenlin.com/FIN355/development-feasibility.html">Launch the tool</a></td>
@@ -153,6 +158,7 @@ To cite this collection:
 
 <p align="center"><strong>Created by <a href="https://desenlin.com/">Desen Lin</a></strong> for instructional purposes in FIN 355 at California State University, Fullerton.</p>
 <p align="center"><em>These materials are provided for educational use and should not be interpreted as financial advice.</em></p>
+
 
 
 
