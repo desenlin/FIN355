@@ -9,9 +9,8 @@ on:
         description: Audit the deployed site as well as source coverage
         type: boolean
         default: true
-  schedule:
-    # Weekly on Monday, staggered across repositories (UTC).
-    - cron: "20 17 * * 1"
+  # Weekly live coverage runs in desenlin/desenlin.github.io so an inactive
+  # teaching repository does not lose its scheduled checks after 60 days.
   workflow_run:
     workflows: ["pages build and deployment"]
     types: [completed]
@@ -26,4 +25,4 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     uses: desenlin/desenlin.github.io/.github/workflows/analytics-reusable.yml@main
     with:
-      live: ${{ github.event_name == 'schedule' || github.event_name == 'page_build' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.live) }}
+      live: ${{ github.event_name == 'page_build' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.live) }}
